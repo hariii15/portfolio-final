@@ -118,17 +118,47 @@ export default function Dock({
 }) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+
+  // Responsive adjustments based on screen size
+  const responsiveItemSize = useMemo(() => {
+    if (windowWidth < 640) return Math.max(32, baseItemSize * 0.7); // Small screens
+    if (windowWidth < 768) return Math.max(40, baseItemSize * 0.8); // Medium screens
+    return baseItemSize; // Default size for larger screens
+  }, [windowWidth, baseItemSize]);
+
+  const responsiveMagnification = useMemo(() => {
+    if (windowWidth < 640) return Math.max(50, magnification * 0.7);
+    if (windowWidth < 768) return Math.max(60, magnification * 0.85);
+    return magnification;
+  }, [windowWidth, magnification]);
+
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const maxHeight = useMemo(
-    () => Math.max(dockHeight, magnification + magnification / 2 + 4),
-    [magnification, dockHeight]
+    () => Math.max(dockHeight, responsiveMagnification + responsiveMagnification / 2 + 4),
+    [responsiveMagnification, dockHeight]
   );
-  const heightRow = useTransform(isHovered, [0, 1], [panelHeight, panelHeight]); // Fixed: don't change height on hover
+
+  const heightRow = useTransform(isHovered, [0, 1], [panelHeight, panelHeight]);
   const height = useSpring(heightRow, spring);
+
+  // Responsive gap size
+  const gapSize = windowWidth < 640 ? 2 : windowWidth < 768 ? 3 : 4;
 
   return (
     <motion.div
-      style={{ height: panelHeight, scrollbarWidth: "none" }} // Fixed: use fixed height instead of animated
+      style={{ height: panelHeight, scrollbarWidth: "none" }}
       className="mx-2 flex max-w-full items-center"
     >
       <motion.div
@@ -140,8 +170,12 @@ export default function Dock({
           isHovered.set(0);
           mouseX.set(Infinity);
         }}
-        className={`${className} absolute bottom-2 left-1/2 transform -translate-x-1/2 flex items-end w-fit gap-4 rounded-2xl border-neutral-700 border-2 pb-2 px-4 bg-[rgba(6,6,6,0.8)]`} // Added bg color with transparency
-        style={{ height: panelHeight, backdropFilter: "blur(8px)" }} // Added backdrop blur
+        className={`${className} absolute bottom-2 left-1/2 transform -translate-x-1/2 flex items-end rounded-2xl border-neutral-700 border-2 pb-2 px-3 sm:px-4 bg-[rgba(6,6,6,0.8)]`}
+        style={{
+          height: panelHeight,
+          backdropFilter: "blur(8px)",
+          gap: `${gapSize * 0.25}rem`
+        }}
         role="toolbar"
         aria-label="Application dock"
       >
@@ -153,10 +187,14 @@ export default function Dock({
             mouseX={mouseX}
             spring={spring}
             distance={distance}
-            magnification={magnification}
-            baseItemSize={baseItemSize}
+            magnification={responsiveMagnification}
+            baseItemSize={responsiveItemSize}
           >
-            <DockIcon>{item.icon}</DockIcon>
+            <DockIcon>
+              {React.cloneElement(item.icon, {
+                size: windowWidth < 640 ? 14 : windowWidth < 768 ? 16 : 18
+              })}
+            </DockIcon>
             <DockLabel>{item.label}</DockLabel>
           </DockItem>
         ))}
