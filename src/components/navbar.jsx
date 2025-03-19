@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react'; // Add the React import
 import {
   motion,
   useMotionValue,
@@ -191,7 +192,7 @@ export default function Dock({
             baseItemSize={responsiveItemSize}
           >
             <DockIcon>
-              {React.cloneElement(item.icon, {
+              {cloneElement(item.icon, { // Use cloneElement instead of React.cloneElement
                 size: windowWidth < 640 ? 14 : windowWidth < 768 ? 16 : 18
               })}
             </DockIcon>
