@@ -10,7 +10,8 @@ import Certificates from './components/certificates';
 
 const AppRouter = () => {
   return (
-    <div className="relative min-h-screen bg-black">
+    // Removed bg-black from this div
+    <div className="relative min-h-screen">
       {/* Application content with adjusted z-index */}
       <div className="relative z-20 min-h-screen">
         <Router>

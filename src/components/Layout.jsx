@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Dock from './navbar';
-import { VscHome, VscFile, VscGraph, VscBook, VscMortarBoard } from 'react-icons/vsc'; // Add VscMortarBoard icon
+import { VscHome, VscFile, VscGraph, VscBook, VscMortarBoard } from 'react-icons/vsc';
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -10,12 +10,13 @@ const Layout = () => {
     { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/hero') },
     { icon: <VscFile size={18} />, label: 'Projects', onClick: () => navigate('/projects') },
     { icon: <VscGraph size={18} />, label: 'Skills', onClick: () => navigate('/about') },
-    { icon: <VscMortarBoard size={18} />, label: 'Certificates', onClick: () => navigate('/certificates') }, // New item
+    { icon: <VscMortarBoard size={18} />, label: 'Certificates', onClick: () => navigate('/certificates') },
     { icon: <VscBook size={18} />, label: 'Contact', onClick: () => navigate('/contact') },
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white relative">
+    // Removed bg-black from this div
+    <div className="min-h-screen text-white relative">
       <main className="pb-24">
         <Outlet />
       </main>
