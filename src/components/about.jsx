@@ -154,8 +154,8 @@ const About = () => {
 
   return (
     <div className="min-h-screen text-white p-4 sm:p-8 flex flex-col items-center">
-      {/* Stats badges in top right corner - improved responsiveness */}
-      <div className="fixed top-3 md:top-5 right-3 md:right-5 flex flex-col items-end gap-1 md:gap-2 z-20">
+      {/* Stats badges - changed from fixed to static positioning */}
+      <div className="self-end flex flex-col items-end gap-1 md:gap-2 z-20 mb-6 md:mb-8">
         <motion.div
           className="border border-white/20 backdrop-blur-md rounded-lg px-3 py-1.5 md:px-4 md:py-2 flex items-center gap-2 md:gap-3"
           initial={{ opacity: 0, y: -20 }}
