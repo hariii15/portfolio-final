@@ -33,9 +33,9 @@ const projects = [
       liveDemoLink: "",
     },
     {
-      title: "Nutrisence Project",
+      title: "Nutrisense Project",
       description:
-        "A project addressing child harassment issues in India, integrating solutions to alert authorities or guardians in real-time.",
+        "An agricultural plant disease detection app that uses computer vision and machine learning to identify crop diseases from images and provide treatment recommendations to farmers.",
       progress: 70,
       color: "#28A745",
       techStack: ["Python", "Flask","Node.js", "ReactNative", "TensorFlow"],
