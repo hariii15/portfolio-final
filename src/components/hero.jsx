@@ -141,6 +141,7 @@ const Hero = () => {
             >
               <a href="https://www.tensorflow.org/learn" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-pink-700/20 text-pink-500 rounded-full text-sm font-semibold hover:bg-pink-700/40 transition-colors'>Machine Learning</a>
               <a href="https://reactjs.org/docs/getting-started.html" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-blue-700/20 text-blue-500 rounded-full text-sm font-semibold hover:bg-blue-700/40 transition-colors'>React</a>
+              <a href="https://reactnative.dev" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-blue-700/20 text-blue-500 rounded-full text-sm font-semibold hover:bg-blue-700/40 transition-colors'>React Native</a>
               <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-yellow-700/20 text-yellow-500 rounded-full text-sm font-semibold hover:bg-yellow-700/40 transition-colors'>JavaScript</a>
               <a href="https://nodejs.org/en/docs/" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-green-700/20 text-green-500 rounded-full text-sm font-semibold hover:bg-green-700/40 transition-colors'>Node.js</a>
               <a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener noreferrer" className='px-3 py-1 bg-cyan-700/20 text-cyan-500 rounded-full text-sm font-semibold hover:bg-cyan-700/40 transition-colors'>SQL</a>

@@ -2,46 +2,68 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const projects = [
+
     {
-      title: "WATCH",
+      title: "Mannmathi",
       description:
-        "A women's safety app with features like automatic SOS alerts, unusual behavior detection, and real-time updates during emergencies.",
-      progress: 10,
-      color: "#FF5733",
-      techStack: ["React", "Node.js", "MongoDB", "Twilio"],
-      githubLink: "https://github.com/hariii15/watch",
-      liveDemoLink: "https://github.com/hariii15/watch",
-    },
-    {
-      title: "WATCH 2.0",
-      description:
-        "An upgraded version of the WATCH app with features like one-on-one consultations with doctors and enhanced safety and wellness tools.",
-      progress: 30,
-      color: "#33B5FF",
-      techStack: ["React", "Flask", "PostgreSQL", "WebRTC"],
-      githubLink: "https://github.com/hariii15/watch2.0",
-      liveDemoLink: "https://github.com/hariii15/watch2.0",
-    },
-    {
-      title: "StockMarket Tracker",
-      description:
-        "Real-time stock market monitoring application with price alerts, portfolio management, and predictive analytics using machine learning algorithms.",
-      progress: 98,
-      color: "#6D28D9",
-      techStack: ["React", "Node.js", "MongoDB", "Python" ],
-      githubLink: "https://github.com/hariii15/stock-pro-frontend",
-      liveDemoLink: "",
-    },
-    {
-      title: "Nutrisense Project",
-      description:
-        "An agricultural plant disease detection app that uses computer vision and machine learning to identify crop diseases from images and provide treatment recommendations to farmers.",
-      progress: 70,
-      color: "#28A745",
-      techStack: ["Python", "Flask","Node.js", "ReactNative", "TensorFlow"],
+        "An agricultural application built for farmers to levrage their yielding by using ai technologies and by collecting the real time data for giving insight about their soild tyoe and suitable crops with multilingual support and voice assistant.",
+      progress: 85,
+      color: "#4A90E2", // Changed to blue, fitting for an agricultural tech app
+      techStack: ["Python", "Flask","Node.js", "ReactNative", "TensorFlow","Docker", "Google Cloud"],
       githubLink: "https://github.com/hariii15/nutrisense",
       liveDemoLink: "https://github.com/hariii15/nutrisense",
     },
+    {
+        title: "Noter",
+        description:
+          "An AI inteligen note taking system which helps users take notes easily and uses ai agent for summarizing the tasks, reviewing their notes etc...",
+        progress: 80,
+        color: "#F2994A", // Changed to amber/orange for note-taking app
+        techStack: ["Node.js", "React", "Tailwind","Deepseek", "Firebase"],
+        githubLink: "https://github.com/hariii15/Noter_v.02",
+        liveDemoLink: "https://noter-v-02-uf23.vercel.app/",
+      },
+      {
+        title: "Buis-bot",
+        description:
+          "An AI based assistant chat-bot built for buisnessmens to ese their day today life, buis-bot stores the uses past data and then helps them leverage thier buiness and helps in need.",
+        progress: 100,
+        color: "#219EBC", // Changed to teal for business/professional app
+        techStack: ["Flask", "React", "Tailwind","Deepseek", "Supabase"],
+        githubLink: "https://github.com/hariii15/buiss_bot",
+        liveDemoLink: "https://buiss-bot.vercel.app/",
+      },
+      {
+        title: "StockMarket Tracker",
+        description:
+          "Real-time stock market monitoring application with price alerts, portfolio management, and predictive analytics using machine learning algorithms.",
+        progress: 98,
+        color: "#6D28D9",
+        techStack: ["React", "Node.js", "MongoDB", "Python" ],
+        githubLink: "https://github.com/hariii15/stock-pro-frontend",
+        liveDemoLink: "",
+      },
+      {
+        title: "WATCH 2.0",
+        description:
+          "An upgraded version of the WATCH app with features like one-on-one consultations with doctors and enhanced safety and wellness tools.",
+        progress: 30,
+        color: "#33B5FF",
+        techStack: ["React", "Flask", "PostgreSQL", "WebRTC"],
+        githubLink: "https://github.com/hariii15/watch2.0",
+        liveDemoLink: "https://github.com/hariii15/watch2.0",
+      },
+      {
+        title: "WATCH",
+        description:
+          "A women's safety app with features like automatic SOS alerts, unusual behavior detection, and real-time updates during emergencies.",
+        progress: 10,
+        color: "#FF5733",
+        techStack: ["React", "Node.js", "MongoDB", "Twilio"],
+        githubLink: "https://github.com/hariii15/watch",
+        liveDemoLink: "https://github.com/hariii15/watch",
+      },
+
   ];
 
 const Projects = () => {

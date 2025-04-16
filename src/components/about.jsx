@@ -23,6 +23,10 @@ const individualSkills = [
   { name: "Machine Learning", level: 55, category: "AI/ML", color: "#FF6F00" },
   { name: "TensorFlow", level: 50, category: "AI/ML", color: "#FF6F00" },
   { name: "Git", level: 85, category: "Tools", color: "#F05033" },
+  { name: "Firebase", level: 72, category: "Backend/Cloud", color: "#FFA611" },
+  { name: "Supabase", level: 65, category: "Backend/Cloud", color: "#3ECF8E" },
+  { name: "Appwrite", level: 60, category: "Backend/Cloud", color: "#F02E65" },
+  { name: "Clerk", level: 68, category: "Authentication", color: "#6C47FF" },
 ];
 
 // Group skills by category for the summary view
@@ -39,8 +43,6 @@ const groupedSkills = [
 // Additional skills for the floating view
 const allSkills = [
   ...individualSkills,
-  { name: "Firebase", level: 72, category: "Cloud", color: "#FFA611" },
-  { name: "Supabase", level: 65, category: "Cloud", color: "#3ECF8E" },
   { name: "Docker", level: 60, category: "DevOps", color: "#2496ED" },
   { name: "Pandas", level: 78, category: "Data Science", color: "#150458" },
   { name: "Next.js", level: 82, category: "Frontend", color: "#000000" },

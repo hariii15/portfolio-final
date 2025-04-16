@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Merncertificate from './merncertficate.jpg';
+import KPR_cert from './kpr-hack-25.png'
 
 const certificateItems = [
   {
@@ -11,6 +12,14 @@ const certificateItems = [
     image: Merncertificate,
     // Fix: Changed object syntax to string for proper URL
     link: "#", // Later you can replace this with actual link or local path
+  },
+  {
+    id:2,
+    title:"KPR-Horizon'25",
+    issuer:"KPR",
+    date:"March 2025",
+    image:KPR_cert,
+    link:"#",
   },
 ];
 
