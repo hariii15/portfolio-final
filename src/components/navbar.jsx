@@ -125,16 +125,22 @@ export default function Dock({
 
   // Responsive adjustments based on screen size
   const responsiveItemSize = useMemo(() => {
-    if (windowWidth < 640) return Math.max(32, baseItemSize * 0.7); // Small screens
-    if (windowWidth < 768) return Math.max(40, baseItemSize * 0.8); // Medium screens
+    if (windowWidth < 640) return Math.max(40, baseItemSize * 0.9); // Increased size for small screens
+    if (windowWidth < 768) return Math.max(48, baseItemSize * 0.95); // Slightly larger for medium screens
     return baseItemSize; // Default size for larger screens
   }, [windowWidth, baseItemSize]);
 
   const responsiveMagnification = useMemo(() => {
-    if (windowWidth < 640) return Math.max(50, magnification * 0.7);
-    if (windowWidth < 768) return Math.max(60, magnification * 0.85);
+    if (windowWidth < 640) return Math.max(60, magnification * 0.9); // Increased magnification for small screens
+    if (windowWidth < 768) return Math.max(70, magnification * 0.95); // Slightly larger for medium screens
     return magnification;
   }, [windowWidth, magnification]);
+
+  const responsivePanelHeight = useMemo(() => {
+    if (windowWidth < 640) return Math.max(72, panelHeight * 1.2); // Increased height for small screens
+    if (windowWidth < 768) return Math.max(80, panelHeight * 1.1); // Slightly larger for medium screens
+    return panelHeight; // Default height for larger screens
+  }, [windowWidth, panelHeight]);
 
   // Update window width on resize
   useEffect(() => {
@@ -159,7 +165,7 @@ export default function Dock({
 
   return (
     <motion.div
-      style={{ height: panelHeight, scrollbarWidth: "none" }}
+      style={{ height: responsivePanelHeight, scrollbarWidth: "none" }}
       className="mx-2 flex max-w-full items-center"
     >
       <motion.div
