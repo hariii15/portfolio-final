@@ -21,7 +21,7 @@ const projects = [
         color: "#F2994A", // Changed to amber/orange for note-taking app
         techStack: ["Node.js", "React", "Tailwind","Deepseek", "Firebase"],
         githubLink: "https://github.com/hariii15/Noter_v.02",
-        liveDemoLink: "https://noter-v-02-uf23.vercel.app/",
+        liveDemoLink: "https://noter-7d803.web.app/",
       },
       {
         title: "Buis-bot",
