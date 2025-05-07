@@ -1,28 +1,37 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import DjangoCert from './django.png';
-import SQLCert from './sql.png';
+import Merncertificate from './merncertficate.jpg';
+import KPR_cert from './kpr-hack-25.png'
+import InternalHack from './internal.png'; // Import the new image
 
 const certificateItems = [
   {
     id: 1,
-    title: "Django Masterclass",
-    issuer: "Knowledge Nest",
-    date: "May 2025",
-    image: DjangoCert,
-    link: "#", // Replace with actual link if available
+    title: "Mern-stack Internship ",
+    issuer: "G-Zoft",
+    date: "January 2023",
+    image: Merncertificate,
+    link: "#", // Later you can replace this with actual link or local path
   },
   {
-    id: 2,
-    title: "Learn SQL in 3 Hours",
-    issuer: "OCSALY Academy",
-    date: "May 2025",
-    image: SQLCert,
-    link: "", // Replace with actual link if available
+    id:2,
+    title:"KPR-Horizon'25",
+    issuer:"KPR",
+    date:"March 2025",
+    image:KPR_cert,
+    link:"#",
+  },
+  {
+    id: 3,
+    title: "Internal Hackathon",
+    issuer: "Sri Eshwar College of Engineering",
+    date: "April 2025",
+    image: InternalHack,
+    link: "#",
   },
 ];
 
-const Certificates = () => {
+const Acheivements = () => {
   // Function to handle certificate viewing
   const handleViewCertificate = (cert) => {
     // Open the image in a new tab
@@ -37,7 +46,7 @@ const Certificates = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        My Certificates
+        My Acheivements
       </motion.h1>
 
       <motion.p
@@ -46,7 +55,7 @@ const Certificates = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        A collection of certifications that reflect my continuous learning journey.
+        A collection of certifications that reflect my continuous learning journey
       </motion.p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full">
@@ -66,6 +75,7 @@ const Certificates = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-4">
+                {/* Fix: Changed to button with onClick handler */}
                 <button
                   onClick={() => handleViewCertificate(cert)}
                   className="text-white text-sm bg-pink-600/80 px-4 py-2 rounded-full hover:bg-pink-600 transition-colors"
@@ -88,4 +98,4 @@ const Certificates = () => {
   );
 };
 
-export default Certificates;
+export default Acheivements;

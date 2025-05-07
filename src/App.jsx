@@ -7,6 +7,7 @@ import About from './components/about';
 import Projects from './components/projects';
 import Contact from './components/contact';
 import Certificates from './components/certificates';
+import Acheivements from './components/acheivements';
 
 const AppRouter = () => {
   return (
@@ -26,6 +27,7 @@ const AppRouter = () => {
               <Route path="/projects" element={<Projects />} />
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/acheivements" element={<Acheivements />} />
             </Route>
           </Routes>
         </Router>
