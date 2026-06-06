@@ -44,7 +44,7 @@ const Hero = () => {
         icon: <FiBriefcase className="h-[16px] w-[16px] text-white" />,
     },
   ];  return (
-    <div className='relative h-screen bg-black text-white px-8 flex flex-col justify-center items-center overflow-hidden'>
+    <div className='relative min-h-screen bg-black text-white px-4 sm:px-8 py-16 md:py-24 flex flex-col justify-center items-center overflow-x-hidden'>
       {/* SideRays background */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <SideRays
@@ -64,20 +64,18 @@ const Hero = () => {
 
       <div className="relative z-10 w-full max-w-7xl">
         {/* Top Section with Profile and Introduction */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center w-full'>
           {/* Left column - Profile image with orb effect */}
           <motion.div
-            className='relative w-full h-80 md:h-96 mx-auto max-w-md flex items-center justify-center'
+            className='relative w-full h-64 sm:h-80 md:h-96 mx-auto max-w-md flex items-center justify-center'
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
             {/* Distinct animated backlight sunlight glow behind the profile picture */}
             <motion.div
-              className="absolute rounded-full pointer-events-none"
+              className="absolute rounded-full pointer-events-none w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[480px] md:h-[480px]"
               style={{
-                width: '480px',
-                height: '480px',
                 background: 'radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(251, 191, 36, 0.2) 80%, transparent 70%)',
                 filter: 'blur(80px)',
                 opacity: 0.4,
@@ -100,27 +98,19 @@ const Hero = () => {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="relative z-10"
-              style={{
-                width: '280px',
-                height: '280px',
-                borderRadius: '50%',
-                overflow: 'hidden',
-              }}  
+              className="relative z-10 w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] rounded-full overflow-hidden"
             >
               <img
                 src={Profile}
                 alt='Profile'
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
               />
-              {/* Sunlight amber/gold feather overlay */}
-              
             </motion.div>
           </motion.div>
 
           {/* Right column - Text introduction */}
           <motion.div
-            className='space-y-6 text-left'
+            className='space-y-4 sm:space-y-6 text-left'
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
@@ -129,7 +119,7 @@ const Hero = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className='text-4xl md:text-5xl font-extrabold'
+              className='text-3xl sm:text-4xl md:text-5xl font-extrabold'
             >
               Im <span className='text-pink-600'>Hariharpradeep J</span>
             </motion.h1>
@@ -138,7 +128,7 @@ const Hero = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className='text-lg text-gray-300'
+              className='text-sm sm:text-base md:text-lg text-gray-300'
             >
               AI & Full-Stack Developer passionate about building intelligent, scalable applications that solve real-world problems. Experienced in Machine Learning, Generative AI, FastAPI, React, and cloud-native technologies.
             </motion.p>
@@ -147,20 +137,20 @@ const Hero = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className='text-lg text-gray-300'
+              className='text-sm sm:text-base md:text-lg text-gray-300'
             >
               Built AI-powered platforms across infrastructure intelligence, agriculture, and financial risk prediction, with hands-on industry experience as a Software Engineering Intern at Evalio AI. Strong believer in turning innovative ideas into impactful products through engineering excellence and data-driven solutions.
             </motion.p>
 
             {/* Expertise Section - Moved directly below intro text with reduced spacing */}
             <motion.div
-              className='pt-4'
+              className='pt-2 sm:pt-4'
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <motion.h2
-                className='text-xl font-bold mb-3'
+                className='text-lg sm:text-xl font-bold mb-3'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
@@ -169,21 +159,21 @@ const Hero = () => {
               </motion.h2>
 
               <motion.div
-                className='flex flex-wrap gap-2'
+                className='flex flex-wrap gap-1.5 sm:gap-2'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
               >
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Generative AI</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Machine Learning</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Infrastructure AI</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>FastAPI</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>React & Next.js</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Python</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Node.js</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Kubernetes</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>Docker</span>
-                <span className='px-3 py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-sm font-semibold'>System Design</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Generative AI</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Machine Learning</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Infrastructure AI</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>FastAPI</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>React & Next.js</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Python</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Node.js</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Kubernetes</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Docker</span>
+                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>System Design</span>
               </motion.div>
             </motion.div>
           </motion.div>
