@@ -330,9 +330,9 @@ const About = () => {
         {/* ── Competitive coding stats ── */}
         <div className="w-full max-w-6xl mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { label: 'LeetCode Problems', value: '147', sub: 'Solved' },
+            { label: 'LeetCode Problems', value: '250+', sub: 'Solved' },
             { label: 'Contest Rating',    value: '1,462', sub: 'LeetCode' },
-            { label: 'SkillRack Problems',value: '167',  sub: 'Solved' },
+            { label: 'SkillRack Problems',value: '400+',  sub: 'Solved' },
           ].map((stat, i) => (
             <div
               key={i}

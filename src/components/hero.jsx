@@ -50,7 +50,7 @@ const Hero = () => {
         <SideRays
           rayColor1="#EAB308"
           rayColor2="#96c8ff"
-          origin="top-left"
+          origin="top-right"
           speed={1.7}
           intensity={2}
           spread={2}
@@ -72,20 +72,30 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
-            {/* Subtle background sunlight blob behind the profile picture */}
-            <div
+            {/* Distinct animated backlight sunlight glow behind the profile picture */}
+            <motion.div
               className="absolute rounded-full pointer-events-none"
               style={{
-                width: '320px',
-                height: '320px',
-                background: 'radial-gradient(circle, #f59e0b 0%, #fbbf24 35%, transparent 70%)',
-                filter: 'blur(70px)',
-                opacity: 0.16,
+                width: '480px',
+                height: '480px',
+                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(251, 191, 36, 0.2) 80%, transparent 70%)',
+                filter: 'blur(80px)',
+                opacity: 0.4,
                 zIndex: 0,
+              }}
+              animate={{
+                x: [0, 20, -15, 25, 0],
+                y: [0, -25, 15, -10, 0],
+                scale: [1, 1.08, 0.95, 1.04, 1],
+              }}
+              transition={{
+                duration: 12,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
             />
 
-            {/* Profile image with feathered/fading edges */}
+            {/* Profile image with glowing yellow feather/fading overlay */}
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -96,15 +106,15 @@ const Hero = () => {
                 height: '280px',
                 borderRadius: '50%',
                 overflow: 'hidden',
-                WebkitMaskImage: 'radial-gradient(circle, black 40%, transparent 75%)',
-                maskImage: 'radial-gradient(circle, black 40%, transparent 75%)',
-              }}
+              }}  
             >
               <img
                 src={Profile}
                 alt='Profile'
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
               />
+              {/* Sunlight amber/gold feather overlay */}
+              
             </motion.div>
           </motion.div>
 
