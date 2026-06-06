@@ -12,7 +12,6 @@ const Layout = () => {
     { icon: <VscGraph size={18} />, label: 'Skills', onClick: () => navigate('/about') },
     { icon: <VscMortarBoard size={18} />, label: 'Acheivements', onClick: () => navigate('/acheivements') },
     { icon: <VscBook size={18} />, label: 'Contact', onClick: () => navigate('/contact') },
-    { icon: <VscBook size={18} />, label: 'Certificates', onClick: () => navigate('/certificates') },
   ];
 
   return (

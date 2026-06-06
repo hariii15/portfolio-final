@@ -72,11 +72,25 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
+            {/* Subtle background sunlight blob behind the profile picture */}
+            <div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: '320px',
+                height: '320px',
+                background: 'radial-gradient(circle, #f59e0b 0%, #fbbf24 35%, transparent 70%)',
+                filter: 'blur(70px)',
+                opacity: 0.16,
+                zIndex: 0,
+              }}
+            />
+
             {/* Profile image with feathered/fading edges */}
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative z-10"
               style={{
                 width: '280px',
                 height: '280px',

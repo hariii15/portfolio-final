@@ -1,5 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ScrollFloat from './ScrollFloat';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -90,8 +95,52 @@ const projects = [
 ];
 
 const Projects = () => {
+  const cardsRef = useRef([]);
+
+  useEffect(() => {
+    const triggers = [];
+
+    cardsRef.current.forEach((card, i) => {
+      if (!card) return;
+
+      // Alternate cards drift in from slightly left or right for layered depth
+      const xFrom = i % 2 === 0 ? -12 : 12;
+
+      const st = gsap.fromTo(
+        card,
+        {
+          opacity: 0,
+          y: 120,
+          x: xFrom,
+          scale: 0.94,
+          rotateX: 6,
+          transformOrigin: 'top center',
+          transformPerspective: 1200,
+          willChange: 'transform, opacity',
+        },
+        {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          scale: 1,
+          rotateX: 0,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top bottom',        // start when top of card hits bottom of viewport
+            end: 'top 30%',             // finish when top of card is 30% from top
+            scrub: 2,                   // very slow, buttery smooth scrub
+          },
+        }
+      );
+      if (st.scrollTrigger) triggers.push(st.scrollTrigger);
+    });
+
+    return () => triggers.forEach(t => t.kill());
+  }, []);
+
   return (
-    <div className="relative min-h-screen text-white overflow-hidden" style={{ paddingBottom: '8rem' }}>
+    <div className="relative min-h-screen text-white" style={{ paddingBottom: '8rem' }}>
       <style>{`
         @keyframes silverShimmer {
           0%   { background-position: -200% center; }
@@ -114,94 +163,94 @@ const Projects = () => {
         }
       `}</style>
 
-      {/* ── Background blobs with layered blur — extend below page ── */}
-      <div className="pointer-events-none absolute overflow-hidden" style={{ inset: 0, bottom: '-250px' }}>
-        {/* Large warm amber blob — top left */}
+      {/* ── Fixed background blobs — stay static as cards scroll ── */}
+      <div
+        className="pointer-events-none"
+        style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden' }}
+      >
+        {/* LARGE warm amber blob — top left */}
         <div
-          className="absolute -top-32 -left-40 w-[600px] h-[600px] rounded-full opacity-20"
+          className="absolute rounded-full"
           style={{
-            background: 'radial-gradient(circle, #f59e0b 0%, #d97706 40%, transparent 70%)',
-            filter: 'blur(90px)',
-          }}
-        />
-        {/* Softer warm white glow — centre right */}
-        <div
-          className="absolute top-1/3 -right-48 w-[500px] h-[500px] rounded-full opacity-15"
-          style={{
-            background: 'radial-gradient(circle, #fef3c7 0%, #fbbf24 40%, transparent 70%)',
+            top: '-120px', left: '-160px',
+            width: '900px', height: '900px',
+            background: 'radial-gradient(circle, #f59e0b 0%, #d97706 35%, transparent 68%)',
             filter: 'blur(110px)',
+            opacity: 0.10,
           }}
         />
-        {/* Deep amber blob — bottom, extended lower */}
+        {/* LARGE warm white glow — top right */}
         <div
-          className="absolute w-[500px] h-[500px] rounded-full opacity-12"
+          className="absolute rounded-full"
           style={{
-            bottom: '-80px',
-            left: '25%',
+            top: '-80px', right: '-180px',
+            width: '800px', height: '800px',
+            background: 'radial-gradient(circle, #fef3c7 0%, #fbbf24 35%, transparent 68%)',
+            filter: 'blur(130px)',
+            opacity: 0.08,
+          }}
+        />
+        {/* Mid depth amber blob */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            top: '40%', left: '-100px',
+            width: '500px', height: '500px',
             background: 'radial-gradient(circle, #b45309 0%, #78350f 50%, transparent 70%)',
             filter: 'blur(100px)',
+            opacity: 0.06,
           }}
         />
-        {/* Tiny warm accent — top right */}
+        {/* Small warm accent — mid right */}
         <div
-          className="absolute top-16 right-20 w-[200px] h-[200px] rounded-full opacity-10"
+          className="absolute rounded-full"
           style={{
+            top: '35%', right: '5%',
+            width: '250px', height: '250px',
             background: 'radial-gradient(circle, #fde68a 0%, transparent 70%)',
-            filter: 'blur(60px)',
-          }}
-        />
-        {/* Bottom-right seam filler */}
-        <div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-10"
-          style={{
-            bottom: '-120px',
-            right: '20%',
-            background: 'radial-gradient(circle, #92400e 0%, #1c1002 60%, transparent 70%)',
-            filter: 'blur(120px)',
+            filter: 'blur(70px)',
+            opacity: 0.04,
           }}
         />
       </div>
 
       {/* ── Content ── */}
-      <div className="relative z-10 p-8 flex flex-col items-center">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl font-extrabold mb-2 tracking-tight text-white"
-          style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}
+      <div className="relative p-8 flex flex-col items-center" style={{ zIndex: 10 }}>
+        <ScrollFloat
+          animationDuration={1}
+          ease="back.inOut(2)"
+          scrollStart="center bottom+=50%"
+          scrollEnd="bottom bottom-=40%"
+          stagger={0.01}
+          containerClassName="text-4xl font-extrabold tracking-tight text-white mb-2"
         >
           My Projects
-        </motion.h1>
+        </ScrollFloat>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
           className="silver-shimmer text-sm mb-12 tracking-widest uppercase font-medium"
         >
-          Things I’ve built
+          Things I've built
         </motion.p>
 
         <div className="space-y-8 w-full max-w-4xl">
           {projects.map((project, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.06 }}
-              whileHover={{ scale: 1.015 }}
+              ref={el => { cardsRef.current[index] = el; }}
               className="group relative p-8 rounded-2xl overflow-hidden"
               style={{
                 background: 'rgba(10, 9, 9, 0.6)',
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
-                /* Sunlight-toned border glow — very subtle */
                 boxShadow: '0 0 0 1px rgba(245,158,11,0.18), 0 0 18px 0px rgba(245,158,11,0.06)',
                 border: '1px solid rgba(245,158,11,0.22)',
               }}
             >
-              {/* Per-card inner top highlight */}
+              {/* Per-card top highlight line */}
               <div
                 className="pointer-events-none absolute inset-x-0 top-0 h-px"
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(253,230,138,0.35), transparent)' }}
@@ -227,23 +276,22 @@ const Projects = () => {
               {/* Tech Stack Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {project.techStack.map((tech, i) => (
-                  <motion.span
+                  <span
                     key={i}
-                    className="px-3 py-1 rounded-full text-sm font-semibold transition-all duration-200"
+                    className="px-3 py-1 rounded-full text-sm font-semibold"
                     style={{
                       background: 'rgba(0,0,0,0.5)',
                       border: '1px solid rgba(255,255,255,0.28)',
                       color: 'rgba(255,255,255,0.9)',
                       backdropFilter: 'blur(12px)',
                     }}
-                    whileHover={{ scale: 1.05 }}
                   >
                     {tech}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
 
-              {/* Links */}
+              {/* Links — glass style, no pink */}
               {(project.githubLink || project.liveDemoLink) && (
                 <div className="flex gap-4 mt-2">
                   {project.githubLink && (
@@ -254,7 +302,7 @@ const Projects = () => {
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                       style={{
                         background: 'rgba(30,30,30,0.8)',
-                        border: '1px solid rgba(255,255,255,0.12)',
+                        border: '1px solid rgba(255,255,255,0.15)',
                         color: 'rgba(255,255,255,0.85)',
                       }}
                     >
@@ -266,18 +314,19 @@ const Projects = () => {
                       href={project.liveDemoLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-all duration-200"
+                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                       style={{
-                        background: 'linear-gradient(135deg, #be185d, #9d174d)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: 'rgba(30,30,30,0.8)',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        color: 'rgba(255,255,255,0.85)',
                       }}
                     >
-                      {project.title.includes("Evalio") ? "Visit Website" : "Live Demo"}
+                      {project.title.includes('Evalio') ? 'Visit Website' : 'Live Demo'}
                     </a>
                   )}
                 </div>
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
