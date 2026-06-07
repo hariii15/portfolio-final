@@ -20,6 +20,19 @@ const projects = [
     githubLink: "https://github.com/hariii15/abb",
     liveDemoLink: "",
   },
+    {
+    title: "Thoth AI Companion",
+    subtitle: "Personalized Multi-Agent Desktop AI Assistant & RAG System",
+    description:
+      "Thoth is a personalized, desktop-native AI assistant and development partner. It leverages an intelligent LangGraph backend to route queries to specialized agents, including a code reviewer, a computer science educator, and a general assistant. The platform features persistent semantic memory using a Pinecone vector database and integrates native system tooling for directory exploration, calendar management, and system resource inspection, all packaged in a custom Electron client.",
+    techStack: [
+      "Electron", "Vite", "TypeScript", "FastAPI", "Python",
+      "LangChain", "LangGraph", "Pinecone", "Sentence-Transformers",
+      "OpenRouter", "Google Calendar API", "Tavily API", "Prism.js"
+    ],
+    githubLink: "https://github.com/hariii15/Thoth",
+    liveDemoLink: "",
+  },
   {
     title: "Mannmathi",
     subtitle: "AI-Powered Smart Farming Assistant",
