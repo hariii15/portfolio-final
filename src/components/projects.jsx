@@ -26,7 +26,7 @@ const projects = [
     description:
       "Mannmathi is a multilingual mobile application built to empower small-scale farmers through AI-driven agricultural insights. The platform detects plant diseases using machine learning, analyzes soil health through IoT-enabled sensors, and delivers personalized recommendations to improve crop productivity. An intelligent multilingual chatbot makes advanced agricultural support accessible to farmers regardless of language barriers.",
     techStack: ["React Native", "Python", "Google Cloud Platform (GCP)", "Docker", "Hugging Face", "NodeMCU"],
-    githubLink: "https://github.com/hariii15/nutrisense",
+    githubLink: "https://github.com/hariii15/mannmathi",
     liveDemoLink: "",
   },
   {
