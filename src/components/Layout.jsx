@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Dock from './navbar';
-import { VscHome, VscFile, VscGraph, VscBook, VscMortarBoard } from 'react-icons/vsc';
+import { VscHome, VscFile, VscGraph, VscBook, VscMortarBoard, VscNotebook } from 'react-icons/vsc';
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -10,6 +10,7 @@ const Layout = () => {
     { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/hero') },
     { icon: <VscFile size={18} />, label: 'Projects', onClick: () => navigate('/projects') },
     { icon: <VscGraph size={18} />, label: 'Skills', onClick: () => navigate('/about') },
+    { icon: <VscNotebook size={18} />, label: 'Blog', onClick: () => navigate('/blog') },
     { icon: <VscMortarBoard size={18} />, label: 'Acheivements', onClick: () => navigate('/acheivements') },
     { icon: <VscBook size={18} />, label: 'Contact', onClick: () => navigate('/contact') },
   ];

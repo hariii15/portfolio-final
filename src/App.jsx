@@ -8,6 +8,11 @@ import About from './components/about';
 import Projects from './components/projects';
 import Contact from './components/contact';
 import Acheivements from './components/acheivements';
+import Blog from './components/blog';
+import BlogDetail from './components/blogDetail';
+import AdminLogin from './components/adminLogin';
+import AdminDashboard from './components/adminDashboard';
+import AdminEditor from './components/adminEditor';
 
 // Helper to wait until all current images in the page DOM are loaded
 const waitForPageImages = (callback) => {
@@ -203,13 +208,21 @@ const AppRouter = () => {
               {/* Welcome page rendered directly without Layout */}
               <Route path="/" element={<Welcome />} />
 
-              {/* All other routes use Layout */}
+              {/* Admin Panel Pages (Independent layouts, no main portfolio Dock) */}
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/create" element={<AdminEditor />} />
+              <Route path="/admin/edit/:id" element={<AdminEditor />} />
+
+              {/* All other routes use Layout (with the main portfolio Dock navigation) */}
               <Route element={<Layout />}>
                 <Route path="/hero" element={<Hero />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/acheivements" element={<Acheivements />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogDetail />} />
               </Route>
             </Routes>
           </NavigationLoader>
