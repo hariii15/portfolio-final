@@ -37,17 +37,39 @@ const Welcome = () => {
         <p style={{ marginTop: '0.75rem', maxWidth: '28rem', textAlign: 'center', fontSize: 'clamp(0.85rem, 2vw, 1rem)', color: 'rgba(255,255,255,0.6)' }}>
           Building intelligent, scalable applications with ML, Generative AI &amp; cloud-native tech.
         </p>
-        <a
-          style={{ cursor: 'pointer', border: '1px solid rgba(255,255,255,0.5)', marginTop: '2.5rem', padding: '0.75rem 1.5rem', fontSize: 'clamp(0.85rem, 2vw, 1.1rem)', backdropFilter: 'blur(8px)', transition: 'background 0.2s', borderRadius: '2px' }}
-          onClick={() => navigate('/hero')}
-        >
-          <ShinyText
-            text="Know more about me"
-            disabled={false}
-            speed={3}
-            className='custom-class'
-          />
-        </a>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '2.5rem' }}>
+          <a
+            style={{ cursor: 'pointer', border: '1px solid rgba(255,255,255,0.5)', padding: '0.75rem 1.5rem', fontSize: 'clamp(0.85rem, 2vw, 1.1rem)', backdropFilter: 'blur(8px)', transition: 'background 0.2s', borderRadius: '2px' }}
+            onClick={() => navigate('/hero')}
+          >
+            <ShinyText
+              text="Know more about me"
+              disabled={false}
+              speed={3}
+              className='custom-class'
+            />
+          </a>
+          <a
+            style={{
+              cursor: 'pointer',
+              border: '1px solid rgba(245,158,11,0.45)',
+              padding: '0.65rem 1.5rem',
+              fontSize: 'clamp(0.8rem, 2vw, 1rem)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: '2px',
+              color: 'rgba(251,191,36,0.85)',
+              letterSpacing: '0.05em',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+            onClick={() => navigate('/blog')}
+          >
+            <span>Read My Blog</span>
+            <span style={{ fontSize: '0.85em' }}>↗</span>
+          </a>
+        </div>
       </div>
     </div>
   );

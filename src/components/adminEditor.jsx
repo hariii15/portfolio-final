@@ -3,83 +3,29 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 import { FiArrowLeft, FiSave, FiEye, FiEdit3, FiPlus, FiX } from 'react-icons/fi';
+import { marked } from 'marked';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// In-house Lightweight Markdown Parser Component (matches BlogDetail)
+// Configure marked options
+marked.setOptions({
+  gfm: true,
+  breaks: true
+});
+
+// Live Markdown Parser Component
 const MarkdownPreview = ({ content }) => {
   if (!content) return <p className="text-white/30 italic">Live markdown preview will appear here...</p>;
-  const lines = content.split('\n');
-  let inList = false;
-  let listItems = [];
-  const parsed = [];
-
-  const flushList = (key) => {
-    if (listItems.length > 0) {
-      parsed.push(
-        <ul key={`ul-${key}`} className="list-disc pl-6 mb-6 space-y-2 text-white/80">
-          {listItems.map((item, index) => (
-            <li key={`li-${key}-${index}`} dangerouslySetInnerHTML={{ __html: item }} />
-          ))}
-        </ul>
-      );
-      listItems = [];
-      inList = false;
-    }
-  };
-
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-
-    // check header
-    const headerMatch = line.match(/^(#{1,6})\s+(.*)$/);
-    if (headerMatch) {
-      flushList(i);
-      const level = headerMatch[1].length;
-      const text = headerMatch[2];
-      const headingClasses = 
-        level === 1 ? 'text-xl sm:text-2xl font-extrabold text-white mt-6 mb-3' :
-        level === 2 ? 'text-lg sm:text-xl font-bold text-white mt-5 mb-2 border-b border-white/10 pb-2' :
-        level === 3 ? 'text-base sm:text-lg font-semibold text-white mt-4 mb-2' :
-        'text-sm sm:text-base font-medium text-white mt-3 mb-1';
-      const HeadingTag = `h${level}`;
-      parsed.push(<HeadingTag key={i} className={headingClasses}>{text}</HeadingTag>);
-      continue;
-    }
-
-    // check list
-    const listMatch = line.match(/^[-*+]\s+(.*)$/);
-    if (listMatch) {
-      inList = true;
-      listItems.push(parseInlineMarkdown(listMatch[1]));
-      continue;
-    }
-
-    if (!listMatch && inList) {
-      flushList(i);
-    }
-
-    if (line.trim() === '') {
-      continue;
-    }
-
-    parsed.push(
-      <p key={i} className="text-white/70 leading-relaxed mb-4 text-sm sm:text-base" 
-         dangerouslySetInnerHTML={{ __html: parseInlineMarkdown(line) }} />
-    );
-  }
-
-  flushList(lines.length);
-
-  return <div className="markdown-preview-content">{parsed}</div>;
+  // Replace double-escaped literal \n strings with actual newline characters
+  const cleanContent = typeof content === 'string' ? content.replace(/\\n/g, '\n') : content;
+  const html = marked.parse(cleanContent);
+  return (
+    <div 
+      className="markdown-preview-content"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
 };
-
-function parseInlineMarkdown(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code class="px-1 py-0.5 bg-white/10 text-amber-400 font-mono rounded text-xs">$1</code>');
-}
 
 const generateClientSlug = (title) => {
   return title
