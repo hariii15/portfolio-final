@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://portfolio-final-virid-eta.vercel.app/hero",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
