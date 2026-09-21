@@ -1,32 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FiArrowLeft, FiCalendar, FiClock, FiTag } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiClock } from 'react-icons/fi';
 import { auth } from '../firebase';
 import { marked } from 'marked';
+import { Page, Card, SecondaryButton } from './ui';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Configure marked options
-marked.setOptions({
-  gfm: true,
-  breaks: true
-});
+marked.setOptions({ gfm: true, breaks: true });
 
 const Markdown = ({ content }) => {
   if (!content) return null;
-  // Replace double-escaped literal \n strings with actual newline characters
-  const cleanContent = typeof content === 'string' ? content.replace(/\\n/g, '\n') : content;
-  const html = marked.parse(cleanContent);
-  return (
-    <div 
-      className="markdown-content"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  const clean = typeof content === 'string' ? content.replace(/\\n/g, '\n') : content;
+  const html = marked.parse(clean);
+  return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
-// ── Main Component ─────────────────────────────────────────────────
 const BlogDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -35,7 +24,7 @@ const BlogDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBlogDetails = async () => {
+    const fetchBlog = async () => {
       try {
         setLoading(true);
         const headers = {};
@@ -51,167 +40,93 @@ const BlogDetail = () => {
         setBlog(data);
         setError(null);
       } catch (err) {
-        console.error(err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchBlogDetails();
+    fetchBlog();
   }, [slug]);
 
-  const formatDate = (dateStr) =>
-    new Date(dateStr).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+  const formatDate = (d) =>
+    new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div
-      className="relative min-h-screen bg-black text-white overflow-x-hidden blog-container"
-    >
-      {/* Ambient blobs */}
-      <div
-        className="fixed top-[5%] left-[-10%] w-[45rem] h-[45rem] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 70%)',
-          filter: 'blur(120px)',
-          zIndex: 0,
-        }}
-      />
-
-      <div className="relative z-10 w-full max-w-3xl mx-auto px-5 sm:px-8 py-20 pb-36">
-
-        {/* Back button */}
-        <motion.button
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
+    <Page narrow>
+      <div className="pt-10 sm:pt-14">
+        <button
           onClick={() => navigate('/blog')}
-          className="group flex items-center gap-2 text-xs font-semibold tracking-[0.15em] uppercase text-white/30 hover:text-white/70 cursor-pointer mb-14 transition-colors duration-200"
+          className="group flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] transition-colors hover:text-[#111111] dark:text-[#6E6E6E] dark:hover:text-[#EDEDED]"
         >
-          <FiArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
+          <FiArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
           Back
-        </motion.button>
+        </button>
 
-        {/* Loading */}
         {loading && (
-          <div className="py-32 flex flex-col items-center justify-center">
-            <div className="w-8 h-8 border-2 border-transparent border-t-amber-500 rounded-full animate-spin mb-4" />
-            <p className="text-[11px] text-white/25 tracking-[0.3em] uppercase">Loading</p>
+          <div className="flex flex-col items-center py-24">
+            <div className="h-7 w-7 animate-spin rounded-full border-2 border-[#E9E9E6] border-t-[#111111] dark:border-[#232323] dark:border-t-[#EDEDED]" />
+            <p className="mono mt-3 text-[11px] uppercase tracking-[0.2em] text-[#9B9A93] dark:text-[#6E6E6E]">Loading</p>
           </div>
         )}
 
-        {/* Error */}
         {!loading && error && (
-          <div className="py-20 text-center border border-red-500/10 bg-red-950/10 rounded-2xl">
-            <p className="text-sm text-red-400/70 font-medium mb-4">{error}</p>
-            <button
-              onClick={() => navigate('/blog')}
-              className="px-5 py-2 bg-white/[0.04] border border-white/10 rounded-lg text-xs font-semibold text-white/60 hover:text-white cursor-pointer"
-            >
-              Go back
-            </button>
-          </div>
+          <Card className="mt-8 p-8 text-center">
+            <p className="text-sm text-[#EC4899]">{error}</p>
+            <div className="mt-4 flex justify-center">
+              <SecondaryButton onClick={() => navigate('/blog')}>Go back</SecondaryButton>
+            </div>
+          </Card>
         )}
 
-        {/* Article */}
         {!loading && !error && blog && (
-          <motion.article
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {/* Draft badge */}
+          <article className="mt-8">
             {!blog.published && (
-              <div className="mb-6">
-                <span className="inline-block text-[10px] font-bold tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400">
-                  Previewing Draft
-                </span>
-              </div>
+              <span className="mono inline-block rounded-md border border-[#EC4899]/30 bg-[#EC4899]/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#EC4899]">
+                Draft preview
+              </span>
             )}
-
-            {/* Tags row */}
-            {blog.tags && blog.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
+            {blog.tags?.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-1.5">
                 {blog.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.07] text-white/35 text-[11px] font-medium"
-                  >
-                    <FiTag className="w-2.5 h-2.5" />
-                    {tag}
+                  <span key={tag} className="mono rounded-md bg-[#F7F7F5] px-2 py-1 text-[11px] text-[#6F6E69] dark:bg-[#161616] dark:text-[#A1A1A1]">
+                    #{tag}
                   </span>
                 ))}
               </div>
             )}
-
-            {/* Title */}
-            <h1
-              className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.05] mb-8 blog-title"
-              style={{ letterSpacing: '-0.03em' }}
-            >
+            <h1 className="font-display mt-4 text-[2rem] font-bold leading-[1.1] tracking-tight sm:text-[2.75rem]">
               {blog.title}
             </h1>
-
-            {/* Meta bar */}
-            <div className="flex items-center gap-6 text-[12px] text-white/30 mb-10 pb-8 border-b border-white/[0.06]">
-              <span className="flex items-center gap-1.5">
-                <FiCalendar className="w-3.5 h-3.5" />
-                {formatDate(blog.createdAt)}
-              </span>
-              {blog.readingTime && (
-                <span className="flex items-center gap-1.5">
-                  <FiClock className="w-3.5 h-3.5" />
-                  {blog.readingTime}
-                </span>
-              )}
-              {blog.views != null && (
-                <span>{blog.views} views</span>
-              )}
+            <div className="mono mt-5 flex flex-wrap items-center gap-4 border-b border-[#E9E9E6] pb-6 text-[12px] text-[#9B9A93] dark:border-[#232323] dark:text-[#6E6E6E]">
+              <span className="flex items-center gap-1.5"><FiCalendar size={13} />{formatDate(blog.createdAt)}</span>
+              {blog.readingTime && <span className="flex items-center gap-1.5"><FiClock size={13} />{blog.readingTime}</span>}
+              {blog.views != null && <span>{blog.views} views</span>}
             </div>
-
-            {/* Cover image */}
             {blog.coverImage && (
-              <div className="w-full overflow-hidden rounded-2xl border border-white/[0.06] mb-12 bg-white/[0.02]">
-                <img
-                  src={blog.coverImage}
-                  alt={blog.title}
-                  className="w-full object-cover max-h-[420px]"
-                />
+              <div className="mt-8 overflow-hidden rounded-apple-lg border border-[#E9E9E6] dark:border-[#232323]">
+                <img src={blog.coverImage} alt={blog.title} className="max-h-[420px] w-full object-cover" />
               </div>
             )}
-
-            {/* Excerpt lead */}
             {blog.excerpt && (
-              <p
-                className="text-xl sm:text-2xl text-white/50 leading-relaxed mb-10 font-light"
-                style={{ letterSpacing: '-0.01em' }}
-              >
+              <p className="mt-8 text-[19px] font-light leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
                 {blog.excerpt}
               </p>
             )}
-
-            {/* Article body */}
-            <div className="mb-16">
+            <div className="mt-6">
               <Markdown content={blog.content} />
             </div>
-
-            {/* Bottom divider */}
-            <div className="border-t border-white/[0.05] pt-8">
+            <div className="mt-12 border-t border-[#E9E9E6] pt-6 dark:border-[#232323]">
               <button
                 onClick={() => navigate('/blog')}
-                className="group flex items-center gap-2 text-xs font-semibold tracking-[0.15em] uppercase text-white/25 hover:text-white/60 cursor-pointer transition-colors duration-200"
+                className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] hover:text-[#111111] dark:text-[#6E6E6E] dark:hover:text-[#EDEDED]"
               >
-                <FiArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
-                All Articles
+                <FiArrowLeft size={14} /> All articles
               </button>
             </div>
-          </motion.article>
+          </article>
         )}
       </div>
-    </div>
+    </Page>
   );
 };
 

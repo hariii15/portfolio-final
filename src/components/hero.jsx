@@ -1,185 +1,129 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { FiArrowRight, FiMapPin, FiBriefcase } from 'react-icons/fi';
 import Profile from '../profile.jpeg';
-import { motion } from 'framer-motion';
-import SideRays from './SideRays';
-import { FiCode, FiFileText, FiLayers, FiLayout, FiDatabase, FiBriefcase, FiServer, FiPieChart } from "react-icons/fi";
+import HeroMascot from './HeroMascot';
+import ShinyText from './shinyText';
+import { Page, Eyebrow, PageTitle, PageSubtitle, Card, Pill, Tag, SecondaryButton, PrimaryButton, SectionLabel } from './ui';
+
+const experiences = [
+  {
+    index: '01',
+    role: 'AI SWE Intern',
+    company: 'Evalio AI',
+    text: 'Built AI pipelines and agent workflows for personalized learning, with full-stack delivery across frontend and backend services.',
+    stack: ['React', 'AI Pipelines', 'Agents', 'Node.js', 'Firebase'],
+  },
+  {
+    index: '02',
+    role: 'Product Engineering Intern',
+    company: 'Effigo',
+    current: true,
+    text: 'Building scalable backend services and interfaces for production systems, working across microservices, messaging, and data layers.',
+    stack: ['Spring Boot', 'React', 'Scalable Applications', 'Kafka', 'Microservices', 'PostgreSQL'],
+  },
+];
 
 const Hero = () => {
-  // Custom carousel items
-  const carouselItems = [
-    {
-        title: "Steve Jobs",
-        description: "Innovation distinguishes between a leader and a follower.",
-        id: 1,
-        icon: <FiCode className="h-[16px] w-[16px] text-white" />,
-    },
-    {
-        title: "Satya Nadella",
-        description: "Our industry does not respect tradition. It only respects innovation.",
-        id: 2,
-        icon: <FiServer className="h-[16px] w-[16px] text-white" />,
-    },
-    {
-        title: "Sundar Pichai",
-        description: "Wear your failure as a badge of honor.",
-        id: 3,
-        icon: <FiDatabase className="h-[16px] w-[16px] text-white" />,
-    },
-    {
-        title: "Elon Musk",
-        description: "When something is important enough, you do it even if the odds are not in your favor.",
-        id: 4,
-        icon: <FiLayout className="h-[16px] w-[16px] text-white" />,
-    },
-    {
-        title: "Jeff Bezos",
-        description: "If you double the number of experiments you do per year, you’re going to double your inventiveness.",
-        id: 5,
-        icon: <FiPieChart className="h-[16px] w-[16px] text-white" />,
-    },
-    {
-        title: "Mark Zuckerberg",
-        description: "The biggest risk is not taking any risk.",
-        id: 6,
-        icon: <FiBriefcase className="h-[16px] w-[16px] text-white" />,
-    },
-  ];  return (
-    <div className='relative min-h-screen bg-black text-white px-4 sm:px-8 py-16 md:py-24 flex flex-col justify-center items-center overflow-x-hidden'>
-      {/* SideRays background */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-        <SideRays
-          rayColor1="#EAB308"
-          rayColor2="#96c8ff"
-          origin="top-right"
-          speed={1.7}
-          intensity={2}
-          spread={2}
-          tilt={47}
-          saturation={1.5}
-          blend={0.75}
-          falloff={1.4}
-          opacity={0.35}
-        />
-      </div>
+  const runwayRef = useRef(null);
+  const primaryRef = useRef(null);
+  const secondaryRef = useRef(null);
 
-      <div className="relative z-10 w-full max-w-7xl">
-        {/* Top Section with Profile and Introduction */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center w-full'>
-          {/* Left column - Profile image with orb effect */}
-          <motion.div
-            className='relative w-full h-64 sm:h-80 md:h-96 mx-auto max-w-md flex items-center justify-center'
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Distinct animated backlight sunlight glow behind the profile picture */}
-            <motion.div
-              className="absolute rounded-full pointer-events-none w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[480px] md:h-[480px]"
-              style={{
-                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(251, 191, 36, 0.2) 80%, transparent 70%)',
-                filter: 'blur(80px)',
-                opacity: 0.4,
-                zIndex: 0,
-              }}
-              animate={{
-                x: [0, 20, -15, 25, 0],
-                y: [0, -25, 15, -10, 0],
-                scale: [1, 1.08, 0.95, 1.04, 1],
-              }}
-              transition={{
-                duration: 12,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
+  return (
+    <Page>
+      <div className="pt-12 sm:pt-16">
+        <Eyebrow>Hi, this is</Eyebrow>
+        <div className="mt-3">
+          <PageTitle>Hariharpradeep J</PageTitle>
+        </div>
 
-            {/* Profile image with glowing yellow feather/fading overlay */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="relative z-10 w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] rounded-full overflow-hidden"
-            >
+        <div className="mt-10 grid grid-cols-1 items-stretch gap-5 lg:grid-cols-3">
+          {/* Profile card */}
+          <Card className="flex h-full flex-col overflow-hidden">
+            <div className="border-b border-[#E9E9E6] bg-[#F7F7F5] dark:border-[#232323] dark:bg-[#0A0A0A]">
               <img
                 src={Profile}
-                alt='Profile'
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
+                alt="Hariharpradeep J"
+                className="h-72 w-full object-cover"
+                style={{ objectPosition: 'center 20%' }}
               />
-            </motion.div>
-          </motion.div>
+            </div>
+            <div className="flex flex-1 flex-col p-6">
+              <SectionLabel>Profile</SectionLabel>
+              <h2 className="font-display mt-2 text-xl font-bold tracking-tight">
+                AI &amp; Full-Stack Developer
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
+                Experienced in ML, generative AI, FastAPI, React, and
+                cloud-native technologies.
+              </p>
+              {/* Free-floating mascot runway — NOT a card/box. Roams between text and buttons. */}
+              <div ref={runwayRef} className="relative mt-1 h-[86px] overflow-visible">
+                <HeroMascot runwayRef={runwayRef} primaryRef={primaryRef} secondaryRef={secondaryRef} />
+              </div>
+              <div className="mt-auto flex flex-col gap-2 pt-1 sm:flex-row">
+                <div ref={primaryRef} className="flex-1">
+                  <PrimaryButton to="/projects" className="w-full">
+                    View projects <FiArrowRight size={15} />
+                  </PrimaryButton>
+                </div>
+                <div ref={secondaryRef} className="flex-1">
+                  <SecondaryButton to="/contact" className="w-full">
+                    Contact
+                  </SecondaryButton>
+                </div>
+              </div>
+            </div>
+          </Card>
 
-          {/* Right column - Text introduction */}
-          <motion.div
-            className='space-y-4 sm:space-y-6 text-left'
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <motion.h1
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className='text-3xl sm:text-4xl md:text-5xl font-extrabold'
-            >
-              Im <span className='text-pink-600'>Hariharpradeep J</span>
-            </motion.h1>
+          {/* About + experience — stretches to match profile card height */}
+          <div className="flex h-full flex-col gap-5 lg:col-span-2">
+            <Card className="p-6 sm:p-8">
+              <SectionLabel>About</SectionLabel>
+              <p className="mt-3 text-[15.5px] leading-relaxed text-[#37352F] dark:text-[#c9c9c9]">
+                I’m a software engineer who loves building things that people can actually use. I’ve worked across RAG pipelines, AI agents, developer workflows, and end-to-end applications, turning ideas into working products from the ground up.
+              </p>
+              <p className="mt-3 text-[15.5px] leading-relaxed text-[#37352F] dark:text-[#c9c9c9]">
+                Currently focusing on building software that scales, survives change, and stands the test of time, including working with complex and legacy systems. enjoying the process of understanding how things work under the hood and building systems that are reliable, and useful.
+              </p>
+            </Card>
 
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className='text-sm sm:text-base md:text-lg text-gray-300'
-            >
-              AI & Full-Stack Developer passionate about building intelligent, scalable applications that solve real-world problems. Experienced in Machine Learning, Generative AI, FastAPI, React, and cloud-native technologies.
-            </motion.p>
-
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className='text-sm sm:text-base md:text-lg text-gray-300'
-            >
-              Built AI-powered platforms across infrastructure intelligence, agriculture, and financial risk prediction, with hands-on industry experience as a Software Engineering Intern at Evalio AI. Strong believer in turning innovative ideas into impactful products through engineering excellence and data-driven solutions.
-            </motion.p>
-
-            {/* Expertise Section - Moved directly below intro text with reduced spacing */}
-            <motion.div
-              className='pt-2 sm:pt-4'
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <motion.h2
-                className='text-lg sm:text-xl font-bold mb-3'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-              >
-                My Expertise
-              </motion.h2>
-
-              <motion.div
-                className='flex flex-wrap gap-1.5 sm:gap-2'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-              >
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Generative AI</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Machine Learning</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Infrastructure AI</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>FastAPI</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>React & Next.js</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Python</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Node.js</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Kubernetes</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>Docker</span>
-                <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 bg-black/50 text-white/95 border border-white/35 backdrop-blur-xl shadow-lg rounded-full text-xs sm:text-sm font-semibold'>System Design</span>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+            <Card className="flex-1 p-6 sm:p-8">
+              <SectionLabel>Experience</SectionLabel>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {experiences.map((e) => (
+                  <div
+                    key={e.company}
+                    className="relative flex flex-col rounded-apple border border-[#E9E9E6] bg-[#F7F7F5] p-5 dark:border-[#232323] dark:bg-[#0A0A0A]"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="mono text-[11px] font-semibold text-[#EC4899]">{e.index}</p>
+                      {e.current && (
+                        <ShinyText
+                          text="Current"
+                          className="mono text-[10.5px] font-medium tracking-[0.14em] uppercase"
+                        />
+                      )}
+                    </div>
+                    <h3 className="mt-1.5 text-[15px] font-bold leading-snug">{e.role}</h3>
+                    <p className="mt-0.5 text-[13.5px] font-medium text-[#6F6E69] dark:text-[#A1A1A1]">
+                      {e.company}
+                    </p>
+                    <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
+                      {e.text}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {e.stack.map((t) => (
+                        <Tag key={t}>{t}</Tag>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </Page>
   );
 };
 

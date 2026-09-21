@@ -2,50 +2,32 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiArrowLeft, FiSave, FiEye, FiEdit3, FiPlus, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiSave, FiEye, FiEdit3, FiX } from 'react-icons/fi';
 import { marked } from 'marked';
+import { Field, inputCls, PrimaryButton, SecondaryButton } from './ui';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Configure marked options
-marked.setOptions({
-  gfm: true,
-  breaks: true
-});
+marked.setOptions({ gfm: true, breaks: true });
 
-// Live Markdown Parser Component
 const MarkdownPreview = ({ content }) => {
-  if (!content) return <p className="text-white/30 italic">Live markdown preview will appear here...</p>;
-  // Replace double-escaped literal \n strings with actual newline characters
-  const cleanContent = typeof content === 'string' ? content.replace(/\\n/g, '\n') : content;
-  const html = marked.parse(cleanContent);
-  return (
-    <div 
-      className="markdown-preview-content"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  if (!content) return <p className="text-sm italic text-[#9B9A93] dark:text-[#6E6E6E]">Preview will appear here…</p>;
+  const clean = typeof content === 'string' ? content.replace(/\\n/g, '\n') : content;
+  const html = marked.parse(clean);
+  return <div className="markdown-preview-content" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
-const generateClientSlug = (title) => {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-};
+const slugify = (t) =>
+  t.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
-const estimateClientReadingTime = (content) => {
-  const wpm = 200;
-  const words = content ? content.trim().split(/\s+/).length : 0;
-  return `${Math.ceil(words / wpm)} min read`;
+const readingTime = (c) => {
+  const words = c ? c.trim().split(/\s+/).length : 0;
+  return `${Math.ceil(words / 200)} min read`;
 };
 
 const AdminEditor = () => {
-  const { id } = useParams(); // present if editing
+  const { id } = useParams();
   const navigate = useNavigate();
-  
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [excerpt, setExcerpt] = useState('');
@@ -54,204 +36,109 @@ const AdminEditor = () => {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [published, setPublished] = useState(false);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [mode, setMode] = useState('edit'); // 'edit' or 'preview' (split on desktop, toggle on mobile)
-  
-  const isAutoSavingRef = useRef(false);
-  const localBackupKey = id ? `autosave_edit_${id}` : `autosave_create`;
+  const [mode, setMode] = useState('edit');
 
-  // Auth Protection
+  const localBackupKey = id ? `autosave_edit_${id}` : 'autosave_create';
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        navigate('/admin');
-      }
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user) navigate('/admin');
     });
-    return () => unsubscribe();
+    return () => unsub();
   }, [navigate]);
 
-  // Load initial data (if editing)
   useEffect(() => {
-    const loadBlog = async () => {
+    const load = async () => {
       if (!id) {
-        // Create mode: Check for autosaved backup
         const backup = localStorage.getItem(localBackupKey);
         if (backup) {
           try {
-            const parsed = JSON.parse(backup);
-            if (window.confirm('Restoring local draft found from your previous session.')) {
-              setTitle(parsed.title || '');
-              setSlug(parsed.slug || '');
-              setExcerpt(parsed.excerpt || '');
-              setContent(parsed.content || '');
-              setCoverImage(parsed.coverImage || '');
-              setTags(parsed.tags || []);
-              setPublished(parsed.published || false);
+            const p = JSON.parse(backup);
+            if (window.confirm('Restore local draft from previous session?')) {
+              setTitle(p.title || ''); setSlug(p.slug || ''); setExcerpt(p.excerpt || '');
+              setContent(p.content || ''); setCoverImage(p.coverImage || '');
+              setTags(p.tags || []); setPublished(p.published || false);
             }
-          } catch (e) {
-            console.error(e);
-          }
+          } catch {}
         }
         setLoading(false);
         return;
       }
-
       try {
-        const token = await auth.currentUser.getIdToken();
         const res = await fetch(`${API_URL}/blogs`);
         if (!res.ok) throw new Error('Authentication failed.');
-        const blogsList = await res.json();
-        
-        const blogToEdit = blogsList.find(b => b.id === id);
-        if (!blogToEdit) throw new Error('Blog article not found.');
-
-        setTitle(blogToEdit.title);
-        setSlug(blogToEdit.slug);
-        setExcerpt(blogToEdit.excerpt || '');
-        setContent(blogToEdit.content);
-        setCoverImage(blogToEdit.coverImage || '');
-        setTags(blogToEdit.tags || []);
-        setPublished(blogToEdit.published);
-
-        // Check if there is a local backup that is newer
-        const backup = localStorage.getItem(localBackupKey);
-        if (backup) {
-          const parsed = JSON.parse(backup);
-          if (parsed.updatedAt && new Date(parsed.updatedAt) > new Date(blogToEdit.updatedAt)) {
-            if (window.confirm('An auto-saved version exists that is newer than the database. Restore it?')) {
-              setTitle(parsed.title || '');
-              setSlug(parsed.slug || '');
-              setExcerpt(parsed.excerpt || '');
-              setContent(parsed.content || '');
-              setCoverImage(parsed.coverImage || '');
-              setTags(parsed.tags || []);
-              setPublished(parsed.published || false);
-            }
-          }
-        }
-
+        const list = await res.json();
+        const b = list.find((x) => x.id === id);
+        if (!b) throw new Error('Blog article not found.');
+        setTitle(b.title); setSlug(b.slug); setExcerpt(b.excerpt || '');
+        setContent(b.content); setCoverImage(b.coverImage || '');
+        setTags(b.tags || []); setPublished(b.published);
       } catch (err) {
-        console.error(err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
-    if (auth.currentUser) {
-      loadBlog();
-    } else {
-      const checkUser = setInterval(() => {
+    if (auth.currentUser) load();
+    else {
+      const iv = setInterval(() => {
         if (auth.currentUser) {
-          clearInterval(checkUser);
-          loadBlog();
+          clearInterval(iv);
+          load();
         }
       }, 100);
-      return () => clearInterval(checkUser);
+      return () => clearInterval(iv);
     }
   }, [id, localBackupKey]);
 
-  // Handle Title input change (auto generates slug if not manually altered)
-  const handleTitleChange = (e) => {
-    const val = e.target.value;
-    setTitle(val);
-    setSlug(generateClientSlug(val));
-  };
-
-  // Auto-Save Draft Loop
   useEffect(() => {
     if (loading) return;
-
-    const autoSaveInterval = setInterval(() => {
+    const iv = setInterval(() => {
       if (title || content) {
-        const payload = {
-          title,
-          slug,
-          excerpt,
-          content,
-          coverImage,
-          tags,
-          published,
-          updatedAt: new Date().toISOString()
-        };
-        localStorage.setItem(localBackupKey, JSON.stringify(payload));
-        isAutoSavingRef.current = true;
-        
-        // Brief visual indication
-        setTimeout(() => {
-          isAutoSavingRef.current = false;
-        }, 1000);
+        localStorage.setItem(localBackupKey, JSON.stringify({
+          title, slug, excerpt, content, coverImage, tags, published, updatedAt: new Date().toISOString(),
+        }));
       }
-    }, 15000); // Autosave backup to localStorage every 15 seconds
-
-    return () => clearInterval(autoSaveInterval);
+    }, 15000);
+    return () => clearInterval(iv);
   }, [title, slug, excerpt, content, coverImage, tags, published, loading, localBackupKey]);
 
-  // Tag Manager Helpers
-  const handleAddTag = (e) => {
+  const addTag = (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      const tag = tagInput.trim().replace(/,/g, '');
-      if (tag && !tags.includes(tag)) {
-        setTags([...tags, tag]);
-      }
+      const t = tagInput.trim().replace(/,/g, '');
+      if (t && !tags.includes(t)) setTags([...tags, t]);
       setTagInput('');
     }
   };
 
-  const handleRemoveTag = (indexToRemove) => {
-    setTags(tags.filter((_, idx) => idx !== indexToRemove));
-  };
-
-  const handleSave = async (publishImmediate = null) => {
+  const save = async (publishVal = null) => {
     if (!title.trim() || !content.trim()) {
       alert('Title and content are required.');
       return;
     }
-
     setSaving(true);
     setError(null);
-
-    const isPublishing = publishImmediate !== null ? publishImmediate : published;
-
+    const isPublishing = publishVal !== null ? publishVal : published;
     try {
       const token = await auth.currentUser.getIdToken(true);
-      const payload = {
-        title,
-        slug,
-        excerpt,
-        content,
-        coverImage,
-        tags,
-        published: isPublishing
-      };
-
+      const payload = { title, slug, excerpt, content, coverImage, tags, published: isPublishing };
       const url = id ? `${API_URL}/blogs/${id}` : `${API_URL}/blogs`;
-      const method = id ? 'PUT' : 'POST';
-
       const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(payload),
       });
-
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.details || errData.error || 'Failed to save blog post.');
+        const d = await res.json();
+        throw new Error(d.details || d.error || 'Failed to save.');
       }
-
-      // Clear local backup on successful server save
       localStorage.removeItem(localBackupKey);
-
       navigate('/admin/dashboard');
     } catch (err) {
-      console.error(err);
       setError(err.message);
     } finally {
       setSaving(false);
@@ -260,209 +147,106 @@ const AdminEditor = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex flex-col justify-center items-center">
-        <div className="w-10 h-10 border-2 border-transparent border-t-amber-500 rounded-full animate-spin mb-4" />
-        <p className="text-[10px] text-white/45 tracking-widest uppercase">Loading editor...</p>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-[#0A0A0A]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#E9E9E6] border-t-[#111111] dark:border-[#232323] dark:border-t-[#EDEDED]" />
+        <p className="mono mt-3 text-[11px] uppercase tracking-[0.2em] text-[#9B9A93] dark:text-[#6E6E6E]">Loading editor</p>
       </div>
     );
   }
 
+  const tabBtn = (active) =>
+    `flex items-center gap-1.5 rounded-[8px] px-3 py-1.5 text-xs font-semibold transition-colors ${
+      active
+        ? 'bg-[#111111] text-white dark:bg-[#EDEDED] dark:text-[#0A0A0A]'
+        : 'text-[#6F6E69] dark:text-[#A1A1A1]'
+    }`;
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-      {/* ── Editor Toolbar Header ── */}
-      <header className="px-4 sm:px-6 py-4 border-b border-white/10 bg-neutral-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight">
-              {id ? 'Edit Blog Post' : 'Create Blog Post'}
-            </h1>
-            <p className="text-[10px] text-white/40">
-              {estimateClientReadingTime(content)} estimated
-            </p>
-          </div>
-        </div>
-
-        {/* Action controls */}
-        <div className="flex items-center gap-2">
-          {/* Editor view toggles for smaller screens */}
-          <div className="flex bg-neutral-900 border border-white/10 p-0.5 rounded-xl mr-2">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-[#0A0A0A]">
+      <header className="border-b border-[#E9E9E6] dark:border-[#232323]">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => setMode('edit')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                mode === 'edit' ? 'bg-amber-500 text-black shadow' : 'text-white/60 hover:text-white'
-              }`}
+              onClick={() => navigate('/admin/dashboard')}
+              className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#E9E9E6] dark:border-[#2E2E2E]"
+              aria-label="Back"
             >
-              <FiEdit3 className="w-3.5 h-3.5" />
-              Write
+              <FiArrowLeft size={16} />
             </button>
-            <button
-              onClick={() => setMode('preview')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                mode === 'preview' ? 'bg-amber-500 text-black shadow' : 'text-white/60 hover:text-white'
-              }`}
-            >
-              <FiEye className="w-3.5 h-3.5" />
-              Preview
-            </button>
+            <div>
+              <h1 className="font-display text-[17px] font-bold tracking-tight">{id ? 'Edit post' : 'New post'}</h1>
+              <p className="mono text-[11px] text-[#9B9A93] dark:text-[#6E6E6E]">{readingTime(content)} · autosaves locally</p>
+            </div>
           </div>
-
-          <button
-            onClick={() => handleSave(false)}
-            disabled={saving}
-            className="flex items-center gap-1.5 px-4.5 py-2.5 bg-neutral-900 border border-white/15 hover:border-white/30 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
-          >
-            <FiSave className="w-4 h-4" />
-            Save Draft
-          </button>
-
-          <button
-            onClick={() => handleSave(true)}
-            disabled={saving}
-            className="flex items-center gap-1.5 px-4.5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs rounded-xl shadow-lg shadow-amber-500/10 transition-all cursor-pointer"
-          >
-            Publish Post
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-[10px] border border-[#E9E9E6] p-1 dark:border-[#2E2E2E]">
+              <button onClick={() => setMode('edit')} className={tabBtn(mode === 'edit')}>
+                <FiEdit3 size={13} /> Write
+              </button>
+              <button onClick={() => setMode('preview')} className={tabBtn(mode === 'preview')}>
+                <FiEye size={13} /> Preview
+              </button>
+            </div>
+            <SecondaryButton onClick={() => save(false)} className="px-4 py-2 text-[13px]">
+              <FiSave size={14} /> {saving ? 'Saving…' : 'Save draft'}
+            </SecondaryButton>
+            <PrimaryButton onClick={() => save(true)} className="px-4 py-2 text-[13px]">
+              Publish
+            </PrimaryButton>
+          </div>
         </div>
       </header>
 
-      {/* ── Editor Body Workspace ── */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        
-        {/* Editor Inputs Panel (Visible in 'edit' or split) */}
-        <div className={`flex-1 p-5 overflow-y-auto space-y-5 border-r border-white/5 bg-neutral-950/20 ${
-          mode === 'preview' ? 'hidden md:block' : 'block'
-        }`}>
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-0 md:flex-row">
+        <div className={`flex-1 border-r border-[#E9E9E6] p-5 dark:border-[#232323] sm:p-6 ${mode === 'preview' ? 'hidden md:block' : 'block'}`}>
           {error && (
-            <div className="p-4 rounded-xl border border-red-500/20 bg-red-950/20 text-red-400 text-sm">
-              {error}
-            </div>
+            <div className="mb-4 rounded-apple border border-[#EC4899]/30 bg-[#EC4899]/5 p-3 text-sm text-[#EC4899]">{error}</div>
           )}
-
-          {/* Form fields */}
           <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">Article Title</label>
-              <input
-                type="text"
-                placeholder="e.g. My ABB Accelerator Journey"
-                value={title}
-                onChange={handleTitleChange}
-                className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-amber-500/50 rounded-xl text-white focus:outline-none transition-colors"
-              />
+            <Field label="Title">
+              <input value={title} onChange={(e) => { setTitle(e.target.value); setSlug(slugify(e.target.value)); }} placeholder="Post title" className={inputCls} />
+            </Field>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field label="Slug">
+                <input value={slug} onChange={(e) => setSlug(slugify(e.target.value))} placeholder="post-slug" className={`${inputCls} mono text-[13px]`} />
+              </Field>
+              <Field label="Cover image URL">
+                <input value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="https://…" className={`${inputCls} text-[13px]`} />
+              </Field>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">URL Slug (Auto-generated)</label>
-                <input
-                  type="text"
-                  placeholder="my-abb-accelerator-journey"
-                  value={slug}
-                  onChange={(e) => setSlug(generateClientSlug(e.target.value))}
-                  className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-amber-500/50 rounded-xl text-white focus:outline-none transition-colors font-mono text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">Cover Image URL</label>
-                <input
-                  type="text"
-                  placeholder="https://example.com/image.jpg"
-                  value={coverImage}
-                  onChange={(e) => setCoverImage(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-amber-500/50 rounded-xl text-white focus:outline-none transition-colors text-xs"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">Tag Management (Press comma or enter)</label>
-              <div className="flex flex-wrap gap-2 p-2 bg-black/60 border border-white/10 focus-within:border-amber-500/50 rounded-xl transition-colors">
-                {tags.map((tag, idx) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold"
-                  >
+            <Field label="Tags — press Enter">
+              <div className={`flex flex-wrap gap-2 rounded-apple border border-[#E9E9E6] bg-white p-2 dark:border-[#2E2E2E] dark:bg-[#0A0A0A]`}>
+                {tags.map((tag, i) => (
+                  <span key={tag} className="mono inline-flex items-center gap-1 rounded-md bg-[#F7F7F5] px-2 py-1 text-[12px] dark:bg-[#161616]">
                     {tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(idx)}
-                      className="text-amber-500 hover:text-amber-300 ml-1 cursor-pointer focus:outline-none"
-                    >
-                      <FiX className="w-3.5 h-3.5" />
-                    </button>
+                    <button onClick={() => setTags(tags.filter((_, x) => x !== i))} aria-label="Remove tag"><FiX size={13} /></button>
                   </span>
                 ))}
-                <input
-                  type="text"
-                  placeholder={tags.length === 0 ? "Type tag & hit Enter..." : ""}
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-white text-xs py-1 px-2"
-                />
+                <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={addTag} placeholder={tags.length ? '' : 'Add tags…'} className="min-w-[120px] flex-1 bg-transparent px-2 py-1 text-[13px] outline-none" />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">Excerpt (SEO Metadata)</label>
-              <textarea
-                placeholder="A brief summary of the article..."
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                rows={2}
-                className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-amber-500/50 rounded-xl text-white focus:outline-none transition-colors text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-white/45 mb-1.5">Content (Markdown format)</label>
-              <textarea
-                placeholder="Write your article using standard Markdown (# Heading, - List, **Bold**)..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={12}
-                className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-amber-500/50 rounded-xl text-white focus:outline-none transition-colors font-mono text-sm leading-relaxed"
-              />
-            </div>
+            </Field>
+            <Field label="Excerpt">
+              <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} placeholder="Brief summary…" className={`${inputCls} resize-y text-sm`} />
+            </Field>
+            <Field label="Content — Markdown">
+              <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={14} placeholder="# Heading…" className={`${inputCls} mono resize-y text-[13.5px] leading-relaxed`} />
+            </Field>
           </div>
         </div>
-
-        {/* Live Preview Panel (Visible in 'preview' or split) */}
-        <div className={`flex-1 p-6 overflow-y-auto bg-neutral-900/40 backdrop-blur-3xl ${
-          mode === 'edit' ? 'hidden md:block border-l border-white/5' : 'block'
-        }`}>
-          <div className="max-w-2xl mx-auto">
+        <div className={`flex-1 bg-[#F7F7F5] p-5 dark:bg-[#0A0A0A] sm:p-6 ${mode === 'edit' ? 'hidden md:block' : 'block'}`}>
+          <div className="mx-auto max-w-2xl">
             {coverImage && (
-              <div className="w-full max-h-[240px] overflow-hidden rounded-xl border border-white/10 mb-6 bg-neutral-950 flex items-center justify-center">
-                <img
-                  src={coverImage}
-                  alt="Cover Preview"
-                  className="w-full h-full object-cover"
-                />
+              <div className="mb-5 overflow-hidden rounded-apple-lg border border-[#E9E9E6] dark:border-[#232323]">
+                <img src={coverImage} alt="Cover" className="max-h-[240px] w-full object-cover" />
               </div>
             )}
-            <h2 className="text-3xl font-extrabold text-white mb-2 leading-tight">
-              {title || <span className="text-white/25">Untranslated Title</span>}
-            </h2>
-            <div className="flex gap-4 text-xs text-white/40 mb-6 pb-4 border-b border-white/10">
-              <span>{new Date().toLocaleDateString()}</span>
-              <span>•</span>
-              <span>{estimateClientReadingTime(content)} read</span>
-            </div>
-
-            <main className="prose prose-invert max-w-none">
+            <h2 className="font-display text-2xl font-bold tracking-tight">{title || <span className="text-[#9B9A93] dark:text-[#6E6E6E]">Untitled</span>}</h2>
+            <p className="mono mt-1 text-[12px] text-[#9B9A93] dark:text-[#6E6E6E]">{readingTime(content)}</p>
+            <div className="mt-4 border-t border-[#E9E9E6] pt-4 dark:border-[#232323]">
               <MarkdownPreview content={content} />
-            </main>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   );

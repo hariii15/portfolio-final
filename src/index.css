@@ -2,160 +2,237 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #FFFFFF;
+  --surface: #F7F7F5;
+  --border: #E9E9E6;
+  --text: #111111;
+  --muted: #6F6E69;
+}
+
+.dark {
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --border: #232323;
+  --text: #EDEDED;
+  --muted: #A1A1A1;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-    background: #000;
-    color: #fff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-#container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* TypeSafe-style eyebrow */
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-/* Media Queries */
-@media (max-width: 1200px) {
-    h1 {
-        font-size: 2.5em;
-    }
-    h2 {
-        font-size: 1.5em;
-    }
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-@media (max-width: 800px) {
-    h1 {
-        font-size: 2em;
-    }
-    h2 {
-        font-size: 1.2em;
-    }
+/* Flat code block — TypeSafe docs style */
+.codeblock {
+  border: 1px solid #E9E9E6;
+  background: #F7F7F5;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dark .codeblock {
+  border-color: #232323;
+  background: #111111;
+}
+.codeblock-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-bottom: 1px solid #E9E9E6;
+  color: #6F6E69;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dark .codeblock-header {
+  border-bottom-color: #232323;
+  color: #6E6E6E;
+}
+.codeblock-body {
+  padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  overflow-x: auto;
 }
 
-/* Blog specific typography */
-.blog-container, .blog-container * {
-    font-family: 'Inter', 'Outfit', sans-serif !important;
-}
-
-.blog-title, .blog-title * {
-    font-family: 'Outfit', 'Inter', sans-serif !important;
-}
-
-/* Markdown Content Styling */
+/* Markdown — flat, theme aware, no glow */
 .markdown-content, .markdown-preview-content {
-    line-height: 1.85;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.05rem;
+  line-height: 1.8;
+  font-size: 1rem;
 }
+.markdown-content { color: #37352F; }
+.dark .markdown-content, .dark .markdown-preview-content { color: rgba(237,237,237,0.72); }
+.markdown-preview-content { color: #37352F; }
 
 .markdown-content h1, .markdown-preview-content h1 {
-    font-size: 2.25rem;
-    font-weight: 900;
-    color: #fff;
-    margin-top: 2.5rem;
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.03em;
-    font-family: 'Outfit', sans-serif !important;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 2rem 0 1rem;
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  color: #111111;
 }
+.dark .markdown-content h1, .dark .markdown-preview-content h1 { color: #EDEDED; }
 
 .markdown-content h2, .markdown-preview-content h2 {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: #fff;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-    font-family: 'Outfit', sans-serif !important;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 1.75rem 0 0.75rem;
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  color: #111111;
 }
+.dark .markdown-content h2, .dark .markdown-preview-content h2 { color: #EDEDED; }
 
 .markdown-content h3, .markdown-preview-content h3 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: #fff;
-    margin-top: 1.75rem;
-    margin-bottom: 0.75rem;
-    font-family: 'Outfit', sans-serif !important;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+  color: #111111;
 }
+.dark .markdown-content h3, .dark .markdown-preview-content h3 { color: #EDEDED; }
 
-.markdown-content p, .markdown-preview-content p {
-    margin-bottom: 1.25rem;
-}
-
+.markdown-content p, .markdown-preview-content p { margin-bottom: 1.15rem; }
 .markdown-content ul, .markdown-preview-content ul {
-    list-style-type: disc !important;
-    padding-left: 1.5rem !important;
-    margin-bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
-
 .markdown-content ol, .markdown-preview-content ol {
-    list-style-type: decimal !important;
-    padding-left: 1.5rem !important;
-    margin-bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
-
-.markdown-content li, .markdown-preview-content li {
-    color: rgba(255, 255, 255, 0.75);
-}
-
 .markdown-content code, .markdown-preview-content code {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fbbf24;
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.25rem;
-    font-family: monospace;
-    font-size: 0.875em;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: #EFEFEA;
+  border: 1px solid #E9E9E6;
+  color: #111111;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
 }
-
+.dark .markdown-content code, .dark .markdown-preview-content code {
+  background: #1A1A1A;
+  border-color: #2E2E2E;
+  color: #EDEDED;
+}
 .markdown-content pre, .markdown-preview-content pre {
-    background-color: #111;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 1rem;
-    border-radius: 0.75rem;
-    overflow-x: auto;
-    margin-bottom: 1.5rem;
+  background: #F7F7F5;
+  border: 1px solid #E9E9E6;
+  padding: 1rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
 }
-
+.dark .markdown-content pre, .dark .markdown-preview-content pre {
+  background: #111111;
+  border-color: #232323;
+}
 .markdown-content pre code, .markdown-preview-content pre code {
-    background-color: transparent;
-    color: #e5e7eb;
-    padding: 0;
-    font-size: 0.9em;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
-
 .markdown-content blockquote, .markdown-preview-content blockquote {
-    border-left: 4px solid #f59e0b;
-    padding-left: 1.25rem;
-    color: rgba(255, 255, 255, 0.5);
-    font-style: italic;
-    margin-bottom: 1.5rem;
+  border-left: 3px solid #D9D9D3;
+  padding-left: 1rem;
+  color: #6F6E69;
+  margin-bottom: 1.25rem;
 }
-
-.markdown-content strong, .markdown-preview-content strong {
-    color: #fff;
-    font-weight: 700;
+.dark .markdown-content blockquote, .dark .markdown-preview-content blockquote {
+  border-left-color: #2E2E2E;
+  color: #A1A1A1;
 }
-
+.markdown-content strong, .markdown-preview-content strong { font-weight: 700; color: inherit; }
 .markdown-content a, .markdown-preview-content a {
-    color: #f59e0b;
-    text-decoration: underline;
-    transition: color 0.2s;
+  color: #EC4899;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.markdown-content a:hover, .markdown-preview-content a:hover {
-    color: #fbbf24;
+.blog-container, .blog-container * { font-family: 'Inter', sans-serif; }
+.blog-title, .blog-title * { font-family: 'Inter Tight', 'Inter', sans-serif; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Flat focus ring — no glow */
+.flat-focus:focus {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
 }
+.dark .flat-focus:focus {
+  outline-color: #EDEDED;
+}
+
+/* Muted shiny text */
+@keyframes shine {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.shiny-text {
+  display: inline-block;
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 4s linear infinite;
+  background-image: linear-gradient(
+    120deg,
+    #78716c 25%,
+    #1c1917 50%,
+    #78716c 75%
+  );
+}
+
+.dark .shiny-text {
+  background-image: linear-gradient(
+    120deg,
+    #71717a 25%,
+    #ffffff 50%,
+    #71717a 75%
+  );
+}
+

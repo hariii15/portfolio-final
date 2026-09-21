@@ -1,22 +1,22 @@
-const ShinyText = ({ text, disabled = false, speed = 5, className = '' }) => {
-    const animationDuration = `${speed}s`;
+import React from 'react';
 
-    return (
-      <div
-        className={`text-[#b5b5b5a4] bg-clip-text inline-block ${disabled ? '' : 'animate-shine'} ${className}`}
-        style={{
-          backgroundImage: 'linear-gradient(120deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 60%)',
-          backgroundSize: '200% 100%',
-          WebkitBackgroundClip: 'text',
-          animationDuration: animationDuration,
-        }}
-      >
-        {text}
-      </div>
-    );
-  };
+const ShinyText = ({ text, disabled = false, speed = 4, className = '' }) => {
+  const animationDuration = `${speed}s`;
 
-  export default ShinyText;
+  return (
+    <span
+      className={`shiny-text ${disabled ? '!animation-none' : ''} ${className}`}
+      style={{
+        animationDuration: animationDuration,
+      }}
+    >
+      {text}
+    </span>
+  );
+};
+
+export default ShinyText;
+
 
   // tailwind.config.js
   // module.exports = {
