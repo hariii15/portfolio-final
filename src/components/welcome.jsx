@@ -27,13 +27,6 @@ const Welcome = () => {
       </div>
 
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-20 text-center">
-        <span className="mono inline-block bg-[#111111] px-3 py-1.5 text-[12px] font-medium tracking-wide text-white dark:bg-[#EDEDED] dark:text-[#0A0A0A]">
-          Portfolio — 2026
-        </span>
-        <p className="mono mt-5 text-[12.5px] tracking-wide text-[#6F6E69] dark:text-[#6E6E6E]">
-          Sep 2026 · AI &amp; Full-Stack Development
-        </p>
-
         <h1
           className="font-display mt-8 font-bold leading-[0.95] tracking-tight"
           style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', letterSpacing: '-0.04em' }}
@@ -45,11 +38,6 @@ const Welcome = () => {
           style={{ fontSize: 'clamp(1.4rem, 4vw, 2.6rem)', letterSpacing: '-0.02em' }}
         >
           AI &amp; Full-Stack Developer
-        </p>
-
-        <p className="mt-6 max-w-xl text-[15.5px] leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
-          Building intelligent, scalable applications with machine learning,
-          generative AI, and cloud-native engineering.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
