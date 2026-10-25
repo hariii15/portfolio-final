@@ -21,9 +21,9 @@ export default function useAdminAuth() {
 
       try {
         const token = await user.getIdToken();
-        const res = await fetch(`${API_URL}/blogs`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const headers = { Authorization: `Bearer ${token}` };
+        let res = await fetch(`${API_URL}/auth/verify`, { headers });
+        if (res.status === 404) res = await fetch(`${API_URL}/blogs`, { headers });
         if (!active) return;
         if (!res.ok) {
           await signOut(auth);
