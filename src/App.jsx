@@ -16,6 +16,7 @@ import { ThemeProvider } from './theme/ThemeContext';
 
 const WorldExplorer = React.lazy(() => import('./components/tools/WorldExplorer'));
 const DumbTypes = React.lazy(() => import('./components/tools/DumbTypes'));
+const CubeTimer = React.lazy(() => import('./components/tools/CubeTimer'));
 
 // Flat, static loader — no glow, no blur, no gradient.
 const Loader = ({ label }) => (
@@ -81,6 +82,7 @@ const AppRouter = () => {
                 <Route path="/admin/edit/:id" element={<AdminEditor />} />
                 <Route path="/admin/tools/world-explorer" element={<WorldExplorer />} />
                 <Route path="/admin/tools/dumb-types" element={<DumbTypes />} />
+                <Route path="/admin/tools/cube-timer" element={<CubeTimer />} />
                 <Route element={<Layout />}>
                   <Route path="/hero" element={<Hero />} />
                   <Route path="/about" element={<About />} />

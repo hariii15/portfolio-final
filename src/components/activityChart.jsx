@@ -12,6 +12,7 @@ const dayStart = (value) => {
 const ActivityChart = ({ activities = [] }) => {
   const typing = activities.filter((a) => a.type === 'typing');
   const quizzes = activities.filter((a) => a.type === 'quiz');
+  const cubes = activities.filter((a) => a.type === 'cube');
 
   const bestWpm = typing.reduce((max, a) => Math.max(max, Number(a.data?.wpm) || 0), 0);
   const typingAcc = typing.length
@@ -20,6 +21,10 @@ const ActivityChart = ({ activities = [] }) => {
   const quizAcc = quizzes.length
     ? Math.round(quizzes.reduce((sum, a) => sum + (Number(a.data?.accuracy) || 0), 0) / quizzes.length)
     : 0;
+  const bestSolve = cubes.reduce((best, a) => {
+    const v = Number(a.data?.durationSec);
+    return Number.isFinite(v) && v > 0 ? Math.min(best, v) : best;
+  }, Infinity);
 
   const total = activities.length;
   const days = 14;
@@ -28,6 +33,7 @@ const ActivityChart = ({ activities = [] }) => {
     date: new Date(today.getFullYear(), today.getMonth(), today.getDate() - (days - 1 - i)),
     typing: 0,
     quiz: 0,
+    cube: 0,
   }));
   const index = new Map(buckets.map((b, i) => [b.date.getTime(), i]));
 
@@ -38,9 +44,10 @@ const ActivityChart = ({ activities = [] }) => {
     if (i === undefined) return;
     if (a.type === 'typing') buckets[i].typing += 1;
     else if (a.type === 'quiz') buckets[i].quiz += 1;
+    else if (a.type === 'cube') buckets[i].cube += 1;
   });
 
-  const max = Math.max(2, ...buckets.map((b) => b.typing + b.quiz));
+  const max = Math.max(2, ...buckets.map((b) => b.typing + b.quiz + b.cube));
 
   const W = 720;
   const H = 190;
@@ -56,9 +63,11 @@ const ActivityChart = ({ activities = [] }) => {
     { label: 'sessions', value: total },
     { label: 'typing tests', value: typing.length },
     { label: 'quizzes', value: quizzes.length },
+    { label: 'cube solves', value: cubes.length },
     { label: 'best wpm', value: bestWpm },
     { label: 'typing acc', value: `${typingAcc}%` },
     { label: 'quiz acc', value: `${quizAcc}%` },
+    { label: 'best solve', value: Number.isFinite(bestSolve) ? `${bestSolve.toFixed(2)}s` : '—' },
   ];
 
   return (
@@ -67,7 +76,7 @@ const ActivityChart = ({ activities = [] }) => {
         <div>
           <SectionLabel>Activity</SectionLabel>
           <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Every completed quiz and typing test.
+            Every completed quiz, typing test, and cube solve.
           </p>
         </div>
         <div className="hidden items-center gap-4 pt-1 text-[11px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">
@@ -77,6 +86,9 @@ const ActivityChart = ({ activities = [] }) => {
           <span className="flex items-center gap-1.5">
             <i className="inline-block h-0.5 w-3 rounded-full bg-[#111111] dark:bg-[#EDEDED]" /> quiz
           </span>
+          <span className="flex items-center gap-1.5">
+            <i className="inline-block h-0.5 w-3 rounded-full bg-[#9B9A93] dark:bg-[#6E6E6E]" /> cube
+          </span>
         </div>
       </div>
 
@@ -85,7 +97,7 @@ const ActivityChart = ({ activities = [] }) => {
           <FiActivity size={22} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
           <p className="mt-3 text-[13px] font-semibold">No activity yet</p>
           <p className="mt-1 text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Finish a quiz or typing test to start the graph.
+            Finish a quiz, typing test, or cube solve to start the graph.
           </p>
         </div>
       ) : (
@@ -123,9 +135,10 @@ const ActivityChart = ({ activities = [] }) => {
               const x = padL + i * slot + (slot - barW) / 2;
               const tH = (b.typing / max) * (H - padT - padB);
               const qH = (b.quiz / max) * (H - padT - padB);
+              const cH = (b.cube / max) * (H - padT - padB);
               return (
                 <g key={b.date.toISOString()}>
-                  <title>{`${b.date.toLocaleDateString()} · ${b.typing} typing · ${b.quiz} quiz`}</title>
+                  <title>{`${b.date.toLocaleDateString()} · ${b.typing} typing · ${b.quiz} quiz · ${b.cube} cube`}</title>
                   {b.typing > 0 && (
                     <rect x={x} y={y(b.typing)} width={barW} height={tH} rx="1.5" fill="#EC4899" />
                   )}
@@ -138,6 +151,17 @@ const ActivityChart = ({ activities = [] }) => {
                       rx="1.5"
                       fill="currentColor"
                       className="text-[#111111] dark:text-[#EDEDED]"
+                    />
+                  )}
+                  {b.cube > 0 && (
+                    <rect
+                      x={x}
+                      y={y(b.typing + b.quiz + b.cube)}
+                      width={barW}
+                      height={cH}
+                      rx="1.5"
+                      fill="currentColor"
+                      className="text-[#9B9A93] dark:text-[#6E6E6E]"
                     />
                   )}
                   {i % 2 === 0 && (
@@ -157,7 +181,7 @@ const ActivityChart = ({ activities = [] }) => {
             })}
           </svg>
 
-          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
             {summary.map((s) => (
               <div
                 key={s.label}

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiArrowUpRight } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiArrowUpRight } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
+import ActivityInsights from './activityInsights';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -166,6 +167,8 @@ const AdminDashboard = () => {
           <ActivityChart activities={activities} />
         </Card>
 
+        <ActivityInsights activities={activities} />
+
         <Card className="mt-5 p-5">
           <div>
             <SectionLabel>Playground</SectionLabel>
@@ -178,6 +181,7 @@ const AdminDashboard = () => {
               { to: '/admin/create', icon: <FiEdit3 size={17} />, title: 'Blog Writing', sub: 'Draft, edit, and publish articles' },
               { to: '/admin/tools/world-explorer', icon: <FiGlobe size={17} />, title: 'World Explorer', sub: 'Interactive country map, facts, and quiz' },
               { to: '/admin/tools/dumb-types', icon: <FiType size={17} />, title: 'Dumb Types', sub: 'Typing speed and accuracy test' },
+              { to: '/admin/tools/cube-timer', icon: <FiBox size={17} />, title: 'Cube Timer', sub: 'Inspection countdown and solve timer' },
             ].map((tool) => (
               <button
                 key={tool.to}
