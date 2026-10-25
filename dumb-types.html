@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>monkeytype</title>
+<style>
+  :root {
+    --bg: #131315;
+    --panel: #1b1b1d;
+    --panel-hover: #252528;
+    --border: #2a2a2d;
+    --border-strong: #3a3a3e;
+    --text: #e7e7ec;
+    --text-dim: #8b8b92;
+    --text-faint: #56565d;
+    --accent: #e2b714;
+    --accent-hover: #f1c92e;
+    --error: #ff453a;
+    --extra: #7c2f36;
+    --type-size: 30px;
+    --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+
+  button { font-family: inherit; }
+
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ---------- top bar ---------- */
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 26px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    user-select: none;
+    padding-right: 6px;
+  }
+
+  .logo-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #141414;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .brand-name {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .config {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+  }
+
+  .pill {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 7px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+    white-space: nowrap;
+  }
+
+  .pill:hover {
+    color: var(--text);
+    background: var(--panel-hover);
+  }
+
+  .pill.active {
+    color: var(--accent);
+    background: var(--panel-hover);
+    font-weight: 600;
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn,
+  .round-btn {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+  }
+
+  .icon-btn:hover,
+  .round-btn:hover {
+    color: var(--text);
+    background: var(--panel-hover);
+    border-color: var(--border-strong);
+  }
+
+  .round-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .round-btn:hover { color: var(--accent); }
+
+  /* ---------- layout ---------- */
+
+  .main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 44px 26px 24px;
+    width: 100%;
+  }
+
+  .test,
+  .results {
+    width: min(1000px, 100%);
+  }
+
+  .test {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    animation: rise .18s ease;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- test meta ---------- */
+
+  .test-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 30px;
+  }
+
+  .meta-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    letter-spacing: .01em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: 0 0 auto;
+  }
+
+  .meta-sep { color: #3a3a3e; }
+
+  .hint { transition: opacity .25s ease; }
+  .hint.faded { opacity: 0; }
+
+  .meta-right {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex: 0 0 auto;
+  }
+
+  .live {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .live .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -.02em;
+  }
+
+  .live .unit {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-dim);
+  }
+
+  .timer {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+    min-width: 1.25em;
+    text-align: right;
+  }
+
+  /* ---------- words ---------- */
+
+  .words-viewport {
+    height: calc(var(--type-size) * 4.8);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .words {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: .58em;
+    row-gap: 0;
+    font-family: var(--font-mono);
+    font-size: var(--type-size);
+    line-height: 1.6;
+    color: var(--text-faint);
+    user-select: none;
+    transition: transform .14s ease;
+    will-change: transform;
+  }
+
+  .word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .letter { display: inline-block; }
+  .letter.correct { color: var(--text); }
+  .letter.incorrect { color: var(--error); }
+  .letter.extra { color: var(--extra); }
+
+  .caret {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    transition: transform .07s ease;
+    animation: blink 1s step-end infinite;
+    will-change: transform;
+  }
+
+  .caret.typing {
+    animation: none;
+    opacity: 1;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  .restart-row {
+    display: flex;
+    justify-content: center;
+    padding-top: 2px;
+  }
+
+  /* ---------- results ---------- */
+
+  .results-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 56px;
+    flex-wrap: wrap;
+  }
+
+  .result-block {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .result-block .result-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 58px;
+    font-weight: 600;
+    line-height: .95;
+    letter-spacing: -.04em;
+    color: var(--text);
+  }
+
+  .result-block.accent .result-value { color: var(--accent); }
+  .result-block:not(.accent) .result-value { font-size: 46px; }
+
+  .result-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: .02em;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .grid-cell {
+    background: var(--panel);
+    padding: 15px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .grid-cell .k {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: .02em;
+  }
+
+  .grid-cell .v {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 21px;
+    color: var(--text);
+    letter-spacing: -.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .grid-cell .v.chars { font-size: 18px; }
+
+  .results-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .primary {
+    appearance: none;
+    border: 0;
+    background: var(--accent);
+    color: #141414;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 18px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background-color .15s ease;
+  }
+
+  .primary:hover { background: var(--accent-hover); }
+
+  .hint-line {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  kbd {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-bottom-color: var(--border-strong);
+    border-radius: 5px;
+    padding: 2px 6px;
+    line-height: 1.2;
+  }
+
+  /* ---------- footer ---------- */
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px 26px 20px;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
+  .foot-hints {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .foot-brand {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: .01em;
+  }
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width: 980px) {
+    .topbar { padding: 12px 18px; gap: 12px; }
+    .config { order: 3; width: 100%; margin-left: 0; }
+    .top-actions { margin-left: auto; }
+    .main { padding: 32px 18px 16px; padding-top: 9vh; align-items: flex-start; }
+    .footer { padding: 14px 18px 18px; }
+    .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 620px) {
+    :root { --type-size: 22px; }
+    .brand-name { font-size: 14px; }
+    .main { padding-top: 7vh; }
+    .test-meta { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .meta-right { width: 100%; justify-content: flex-end; }
+    .results-head { gap: 28px; }
+    .result-block .result-value { font-size: 46px; }
+    .result-block:not(.accent) .result-value { font-size: 38px; }
+    .grid-cell { padding: 13px 14px; }
+    .footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caret { animation: none; }
+    .words { transition: none; }
+    .results { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo-mark">m</span>
+      <span class="brand-name">monkeytype</span>
+    </div>
+
+    <nav class="config" aria-label="test settings">
+      <div class="group" aria-label="time mode">
+        <button class="pill" data-mode="time" data-value="15" aria-pressed="false">15</button>
+        <button class="pill" data-mode="time" data-value="30" aria-pressed="false">30</button>
+        <button class="pill" data-mode="time" data-value="60" aria-pressed="false">60</button>
+        <button class="pill" data-mode="time" data-value="120" aria-pressed="false">120</button>
+      </div>
+
+      <div class="group" aria-label="words mode">
+        <button class="pill" data-mode="words" data-value="10" aria-pressed="false">10</button>
+        <button class="pill" data-mode="words" data-value="25" aria-pressed="false">25</button>
+        <button class="pill" data-mode="words" data-value="50" aria-pressed="false">50</button>
+        <button class="pill" data-mode="words" data-value="100" aria-pressed="false">100</button>
+      </div>
+
+      <div class="group" aria-label="options">
+        <button class="pill" data-toggle="punctuation" aria-pressed="false">punctuation</button>
+        <button class="pill" data-toggle="numbers" aria-pressed="false">numbers</button>
+      </div>
+    </nav>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="restartTop" title="restart test (tab)" aria-label="restart test">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+          <path d="M21 3v6h-6"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="test" id="test">
+      <div class="test-meta">
+        <div class="meta-left">
+          <span class="status-dot"></span>
+          <span id="modeLabel">time 30</span>
+          <span id="hint" class="hint"><span class="meta-sep">/</span> start typing to begin</span>
+        </div>
+        <div class="meta-right">
+          <div class="live"><span class="num" id="liveWpm">0</span><span class="unit">wpm</span></div>
+          <div class="live"><span class="num" id="liveAcc">100%</span><span class="unit">acc</span></div>
+          <div class="timer" id="timer">30</div>
+        </div>
+      </div>
+
+      <div class="words-viewport">
+        <div class="words" id="words"></div>
+      </div>
+
+      <div class="restart-row">
+        <button class="round-btn" id="restartBtn" title="restart test (tab)" aria-label="restart test">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+            <path d="M21 3v6h-6"></path>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="results hidden" id="results" aria-live="polite">
+      <div class="results-head">
+        <div class="result-block accent">
+          <span class="result-value" id="resWpm">0</span>
+          <span class="result-label">wpm</span>
+        </div>
+        <div class="result-block">
+          <span class="result-value" id="resAcc">100%</span>
+          <span class="result-label">accuracy</span>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="grid-cell"><span class="k">raw</span><span class="v" id="resRaw">0</span></div>
+        <div class="grid-cell"><span class="k">characters</span><span class="v chars" id="resChars">0/0/0/0</span></div>
+        <div class="grid-cell"><span class="k">time</span><span class="v" id="resTime">0s</span></div>
+        <div class="grid-cell"><span class="k">mode</span><span class="v" id="resMode">time 30</span></div>
+      </div>
+
+      <div class="results-actions">
+        <button class="primary" id="againBtn">restart test</button>
+        <span class="hint-line">or press <kbd>tab</kbd></span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="foot-hints">
+      <span><kbd>tab</kbd> restart</span>
+      <span><kbd>esc</kbd> reset</span>
+      <span><kbd>backspace</kbd> fix</span>
+    </div>
+    <span class="foot-brand">english</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var BASE_WORDS = (
+    'the of and to in a is you that it he was for on are as with his they i at be this have from or one had by word but not what all were we when your can said there use an each which she do how their if will up other about out many then them these so some her would make like him into time has look two more write go see number no way could people my than first water been call who oil its now find long down day did get come made may part over new sound take only little work know place year live me back give most very after thing our just name good sentence man think say great where help through much before line right too mean old any same tell boy follow came want show also around form three small set put end does another well large must big even such because turn here why ask went men read need land different home us move try kind hand picture again change off play spell air away animal house point page letter mother answer found study still learn should world high every near add food between own below country plant last school father keep tree never start city earth eye light thought head under story saw left few while along might close something seem next hard open example begin life always those both paper together got group often run important until children side feet car mile night walk white sea began grow took river four carry state once book hear stop without second later miss idea enough eat face watch far really almost let above girl sometimes mountain cut young talk soon list song being leave family'
+  ).split(/\s+/);
+
+  var state = {
+    mode: 'time',
+    value: 30,
+    punctuation: false,
+    numbers: false,
+    words: [],
+    inputs: [],
+    wordEls: [],
+    wordIndex: 0,
+    running: false,
+    finished: false,
+    startTime: 0,
+    tickId: null,
+    caretTimer: null,
+    totalKeys: 0,
+    errorKeys: 0
+  };
+
+  var caretEl = null;
+
+  var els = {
+    words: document.getElementById('words'),
+    timer: document.getElementById('timer'),
+    liveWpm: document.getElementById('liveWpm'),
+    liveAcc: document.getElementById('liveAcc'),
+    modeLabel: document.getElementById('modeLabel'),
+    hint: document.getElementById('hint'),
+    test: document.getElementById('test'),
+    results: document.getElementById('results'),
+    resWpm: document.getElementById('resWpm'),
+    resAcc: document.getElementById('resAcc'),
+    resRaw: document.getElementById('resRaw'),
+    resChars: document.getElementById('resChars'),
+    resTime: document.getElementById('resTime'),
+    resMode: document.getElementById('resMode')
+  };
+
+  function modeLabel() {
+    return state.mode === 'time' ? 'time ' + state.value : 'words ' + state.value;
+  }
+
+  function generateWords(count) {
+    var out = [];
+    for (var i = 0; i < count; i++) {
+      var word = BASE_WORDS[Math.floor(Math.random() * BASE_WORDS.length)];
+
+      if (state.numbers && Math.random() < 0.09) {
+        word = String(Math.floor(Math.random() * 1000));
+      } else if (state.punctuation) {
+        if (Math.random() < 0.2) {
+          word = word.charAt(0).toUpperCase() + word.slice(1);
+        }
+        var r = Math.random();
+        if (r < 0.08) word += ',';
+        else if (r < 0.16) word += '.';
+        else if (r < 0.18) word += '?';
+        else if (r < 0.20) word += '!';
+        else if (r < 0.22) word += ';';
+
+        var q = Math.random();
+        if (q < 0.03) word = '"' + word + '"';
+        else if (q < 0.05) word = "'" + word + "'";
+      }
+
+      out.push(word);
+    }
+    return out;
+  }
+
+  function renderWord(i) {
+    var el = state.wordEls[i];
+    if (!el) return;
+
+    var target = state.words[i] || '';
+    var typed = state.inputs[i] || '';
+    var frag = document.createDocumentFragment();
+    var max = Math.max(target.length, typed.length);
+
+    for (var j = 0; j < max; j++) {
+      var span = document.createElement('span');
+      span.className = 'letter';
+
+      if (j < target.length) {
+        span.textContent = target.charAt(j);
+        if (j < typed.length) {
+          span.classList.add(typed.charAt(j) === target.charAt(j) ? 'correct' : 'incorrect');
+        }
+      } else {
+        span.classList.add('extra');
+        span.textContent = typed.charAt(j);
+      }
+
+      frag.appendChild(span);
+    }
+
+    el.replaceChildren(frag);
+  }
+
+  function updateCaret() {
+    if (!caretEl) return;
+
+    var i = state.wordIndex;
+    var wordEl = state.wordEls[i];
+    var target = state.words[i];
+    if (!wordEl || target === undefined) return;
+
+    var typed = state.inputs[i] || '';
+    var letters = wordEl.children;
+    if (!letters.length) return;
+
+    var left, top, h;
+
+    if (typed.length < target.length) {
+      var next = letters[Math.min(typed.length, letters.length - 1)];
+      left = next.offsetLeft;
+      top = next.offsetTop;
+      h = next.offsetHeight;
+    } else {
+      var last = letters[letters.length - 1];
+      left = last.offsetLeft + last.offsetWidth;
+      top = last.offsetTop;
+      h = last.offsetHeight;
+    }
+
+    var caretH = Math.max(16, Math.round(h * 0.7));
+    var y = top + (h - caretH) / 2;
+
+    caretEl.style.height = caretH + 'px';
+    caretEl.style.transform = 'translate(' + left + 'px, ' + y + 'px)';
+
+    var lineH = letters[0].offsetHeight || h;
+    var lineIndex = Math.round(top / lineH);
+    var scroll = Math.max(0, lineIndex - 1) * lineH;
+    els.words.style.transform = scroll ? 'translateY(' + (-scroll) + 'px)' : 'translateY(0px)';
+  }
+
+  function pulseCaret() {
+    if (!caretEl) return;
+    caretEl.classList.add('typing');
+    clearTimeout(state.caretTimer);
+    state.caretTimer = setTimeout(function () {
+      if (caretEl) caretEl.classList.remove('typing');
+    }, 500);
+  }
+
+  function computeStats() {
+    var correct = 0;
+    var incorrect = 0;
+    var extra = 0;
+    var missed = 0;
+    var limit = Math.min(state.wordIndex, state.words.length - 1);
+
+    for (var i = 0; i <= limit; i++) {
+      var target = state.words[i] || '';
+      var typed = state.inputs[i] || '';
+
+      if (!typed) {
+        if (i < state.wordIndex || state.finished) missed += target.length;
+        continue;
+      }
+
+      var max = Math.max(target.length, typed.length);
+      for (var j = 0; j < max; j++) {
+        if (j >= typed.length) {
+          if (i < state.wordIndex || state.finished) missed++;
+        } else if (j >= target.length) {
+          incorrect++;
+          extra++;
+        } else if (typed.charAt(j) === target.charAt(j)) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      }
+    }
+
+    return { correct: correct, incorrect: incorrect, extra: extra, missed: missed };
+  }
+
+  function updateLiveStats(now) {
+    if (!state.running) return;
+
+    now = now || performance.now();
+    var stats = computeStats();
+    var spaces = Math.min(state.wordIndex, state.words.length - 1);
+    var seconds = Math.max((now - state.startTime) / 1000, 0.35);
+    var minutes = seconds / 60;
+    var wpm = Math.round(((stats.correct + spaces) / 5) / minutes);
+    var acc = state.totalKeys
+      ? Math.round(((state.totalKeys - state.errorKeys) / state.totalKeys) * 100)
+      : 100;
+
+    els.liveWpm.textContent = String(wpm);
+    els.liveAcc.textContent = acc + '%';
+  }
+
+  function startTest() {
+    if (state.running || state.finished) return;
+
+    state.running = true;
+    state.startTime = performance.now();
+    els.hint.classList.add('faded');
+
+    if (state.tickId) clearInterval(state.tickId);
+    state.tickId = setInterval(tick, 100);
+    updateLiveStats();
+  }
+
+  function tick() {
+    if (!state.running) return;
+
+    var now = performance.now();
+    var elapsed = (now - state.startTime) / 1000;
+
+    if (state.mode === 'time') {
+      var remaining = state.value - elapsed;
+      if (remaining <= 0) {
+        els.timer.textContent = '0';
+        finishTest();
+        return;
+      }
+      els.timer.textContent = String(Math.ceil(remaining));
+    } else {
+      els.timer.textContent = String(Math.floor(elapsed));
+    }
+
+    updateLiveStats(now);
+  }
+
+  function handleChar(char) {
+    if (state.finished) return;
+    if (!state.running) startTest();
+
+    var i = state.wordIndex;
+    var target = state.words[i];
+    if (!target) return;
+
+    var typed = state.inputs[i] || '';
+    if (typed.length >= target.length + 12) return;
+
+    var expected = target.charAt(typed.length);
+    state.totalKeys++;
+    if (char !== expected) state.errorKeys++;
+
+    state.inputs[i] = typed + char;
+    renderWord(i);
+    updateCaret();
+    pulseCaret();
+    updateLiveStats();
+
+    if (state.mode === 'words' && i === state.words.length - 1 && state.inputs[i] === target) {
+      finishTest();
+    }
+  }
+
+  function handleSpace() {
+    if (state.finished) return;
+
+    var i = state.wordIndex;
+    var typed = state.inputs[i] || '';
+    if (!typed) return;
+
+    state.totalKeys++;
+
+    if (!state.running) startTest();
+
+    if (state.mode === 'words' && i === state.words.length - 1) {
+      finishTest();
+      return;
+    }
+
+    state.wordIndex = i + 1;
+
+    if (state.inputs[state.wordIndex]) {
+      state.inputs[state.wordIndex] = '';
+      renderWord(state.wordIndex);
+    }
+
+    if (state.mode === 'time' && state.words.length - state.wordIndex < 40) {
+      appendWords(80);
+    }
+
+    updateCaret();
+    pulseCaret();
+    updateLiveStats();
+  }
+
+  function handleBackspace() {
+    if (state.finished || !state.running) return;
+
+    var i = state.wordIndex;
+    var typed = state.inputs[i] || '';
+
+    if (typed.length) {
+      state.inputs[i] = typed.slice(0, -1);
+      renderWord(i);
+    } else if (i > 0) {
+      state.wordIndex = i - 1;
+      for (var k = i; k < state.words.length; k++) {
+        if (state.inputs[k]) {
+          state.inputs[k] = '';
+          renderWord(k);
+        }
+      }
+      renderWord(state.wordIndex);
+    } else {
+      return;
+    }
+
+    updateCaret();
+    pulseCaret();
+    updateLiveStats();
+  }
+
+  function appendWords(count) {
+    var newWords = generateWords(count);
+
+    for (var i = 0; i < newWords.length; i++) {
+      state.words.push(newWords[i]);
+      state.inputs.push('');
+
+      var el = document.createElement('div');
+      el.className = 'word';
+      els.words.insertBefore(el, caretEl);
+      state.wordEls.push(el);
+
+      renderWord(state.words.length - 1);
+    }
+  }
+
+  function formatTime(seconds) {
+    var s = Math.max(0, Math.round(seconds));
+    if (s < 60) return s + 's';
+    var m = Math.floor(s / 60);
+    var rest = s % 60;
+    return m + 'm ' + rest + 's';
+  }
+
+  function finishTest() {
+    if (state.finished) return;
+
+    state.finished = true;
+    state.running = false;
+
+    if (state.tickId) {
+      clearInterval(state.tickId);
+      state.tickId = null;
+    }
+
+    var elapsed = state.mode === 'time'
+      ? state.value
+      : Math.max(0.1, (performance.now() - state.startTime) / 1000);
+    var minutes = Math.max(elapsed / 60, 1 / 6000);
+    var stats = computeStats();
+    var spaces = Math.min(state.wordIndex, state.words.length - 1);
+    var correctChars = stats.correct + spaces;
+    var wpm = Math.round((correctChars / 5) / minutes);
+    var raw = Math.round((state.totalKeys / 5) / minutes);
+    var acc = state.totalKeys
+      ? Math.round(((state.totalKeys - state.errorKeys) / state.totalKeys) * 100)
+      : 100;
+
+    els.resWpm.textContent = String(wpm);
+    els.resAcc.textContent = acc + '%';
+    els.resRaw.textContent = String(raw);
+    els.resChars.textContent = stats.correct + '/' + stats.incorrect + '/' + stats.extra + '/' + stats.missed;
+    els.resTime.textContent = formatTime(elapsed);
+    els.resMode.textContent = modeLabel();
+
+    els.test.classList.add('hidden');
+    els.results.classList.remove('hidden');
+  }
+
+  function updateConfigUI() {
+    var pills = document.querySelectorAll('.pill');
+
+    for (var i = 0; i < pills.length; i++) {
+      var btn = pills[i];
+      var active = false;
+
+      if (btn.dataset.mode) {
+        active = btn.dataset.mode === state.mode && Number(btn.dataset.value) === state.value;
+      } else if (btn.dataset.toggle) {
+        active = Boolean(state[btn.dataset.toggle]);
+      }
+
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    }
+  }
+
+  function buildTest() {
+    if (state.tickId) {
+      clearInterval(state.tickId);
+      state.tickId = null;
+    }
+    clearTimeout(state.caretTimer);
+    state.caretTimer = null;
+
+    state.running = false;
+    state.finished = false;
+    state.startTime = 0;
+    state.totalKeys = 0;
+    state.errorKeys = 0;
+    state.wordIndex = 0;
+    state.wordEls = [];
+
+    state.words = generateWords(state.mode === 'time' ? 150 : state.value);
+    state.inputs = state.words.map(function () { return ''; });
+
+    els.words.innerHTML = '';
+    els.words.style.transform = 'translateY(0px)';
+
+    state.wordEls = state.words.map(function () {
+      var el = document.createElement('div');
+      el.className = 'word';
+      els.words.appendChild(el);
+      return el;
+    });
+
+    for (var i = 0; i < state.words.length; i++) {
+      renderWord(i);
+    }
+
+    caretEl = document.createElement('div');
+    caretEl.className = 'caret';
+    els.words.appendChild(caretEl);
+
+    els.timer.textContent = state.mode === 'time' ? String(state.value) : '0';
+    els.liveWpm.textContent = '0';
+    els.liveAcc.textContent = '100%';
+    els.modeLabel.textContent = modeLabel();
+    els.hint.classList.remove('faded');
+    els.results.classList.add('hidden');
+    els.test.classList.remove('hidden');
+
+    updateConfigUI();
+    updateCaret();
+  }
+
+  /* ---------- events ---------- */
+
+  var pills = document.querySelectorAll('.pill');
+  for (var p = 0; p < pills.length; p++) {
+    pills[p].addEventListener('click', function () {
+      if (this.dataset.mode) {
+        state.mode = this.dataset.mode;
+        state.value = Number(this.dataset.value);
+      } else if (this.dataset.toggle) {
+        state[this.dataset.toggle] = !state[this.dataset.toggle];
+      }
+
+      buildTest();
+      this.blur();
+    });
+  }
+
+  function bindRestart(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', function () {
+      buildTest();
+      this.blur();
+    });
+  }
+
+  bindRestart('restartTop');
+  bindRestart('restartBtn');
+  bindRestart('againBtn');
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      buildTest();
+      return;
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      buildTest();
+      return;
+    }
+
+    if (state.finished) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        buildTest();
+      }
+      return;
+    }
+
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      handleBackspace();
+      return;
+    }
+
+    if (e.key === ' ') {
+      e.preventDefault();
+      handleSpace();
+      return;
+    }
+
+    if (e.key.length === 1) {
+      e.preventDefault();
+      handleChar(e.key);
+    }
+  });
+
+  buildTest();
+})();
+</script>
+</body>
+</html>

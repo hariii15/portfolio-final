@@ -23,14 +23,14 @@ const MetricLineChart = ({
   const header = (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h3 className="text-[14px] font-bold tracking-tight">{title}</h3>
+        <h3 className="font-display text-[17px] font-bold tracking-tight">{title}</h3>
         {subtitle && (
-          <p className="mt-0.5 text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">{subtitle}</p>
+          <p className="mt-1 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">{subtitle}</p>
         )}
       </div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
         {filter}
-        <span className="mono text-[10.5px] uppercase tracking-[0.1em] text-[#9B9A93] dark:text-[#6E6E6E]">
+        <span className="mono text-[11px] uppercase tracking-[0.1em] text-[#9B9A93] dark:text-[#6E6E6E]">
           {data.length} session{data.length === 1 ? '' : 's'}
         </span>
       </div>
@@ -41,10 +41,10 @@ const MetricLineChart = ({
     return (
       <div>
         {header}
-        <div className="mt-5 flex h-[180px] flex-col items-center justify-center rounded-apple border border-dashed border-[#E9E9E6] text-center dark:border-[#232323]">
-          <FiTrendingUp size={22} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
-          <p className="mt-3 text-[13px] font-semibold">No data yet</p>
-          <p className="mt-1 max-w-[240px] text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
+        <div className="mt-6 flex h-[280px] flex-col items-center justify-center rounded-apple border border-dashed border-[#D9D9D3] text-center dark:border-[#2E2E2E]">
+          <FiTrendingUp size={26} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
+          <p className="mt-4 text-[15px] font-semibold">No data yet</p>
+          <p className="mt-1.5 max-w-[280px] text-[13.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
             {emptyText}
           </p>
         </div>
@@ -56,12 +56,12 @@ const MetricLineChart = ({
   const minV = valueList.reduce((m, v) => Math.min(m, v), Infinity);
   const maxV = valueList.reduce((m, v) => Math.max(m, v), -Infinity);
 
-  const W = 720;
-  const H = 220;
-  const padL = 50;
-  const padR = 12;
-  const padT = 14;
-  const padB = 28;
+  const W = 900;
+  const H = 300;
+  const padL = 64;
+  const padR = 18;
+  const padT = 20;
+  const padB = 40;
 
   const count = data.length;
   const firstT = data[0].t;
@@ -94,7 +94,7 @@ const MetricLineChart = ({
   return (
     <div>
       {header}
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 h-auto w-full" role="img" aria-label={title}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="mt-6 h-auto w-full" role="img" aria-label={title}>
         {grid.map((f) => {
           const gy = y(lo + range * f);
           return (
@@ -105,16 +105,16 @@ const MetricLineChart = ({
                 y1={gy}
                 y2={gy}
                 stroke="currentColor"
-                className="text-[#EFEFEA] dark:text-[#1d1d1d]"
+                className="text-[#E9E9E6] dark:text-[#232323]"
                 strokeWidth="1"
               />
               <text
-                x={padL - 8}
-                y={gy + 3}
+                x={padL - 10}
+                y={gy + 4}
                 textAnchor="end"
                 fill="currentColor"
                 className="text-[#9B9A93] dark:text-[#6E6E6E]"
-                fontSize="9"
+                fontSize="10.5"
               >
                 {formatValue(lo + range * f)}
               </text>
@@ -127,20 +127,20 @@ const MetricLineChart = ({
           d={line}
           fill="none"
           stroke={color}
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
         {count <= 40 &&
           data.map((p, i) => (
-            <circle key={`${p.t}-${i}`} cx={x(p.t)} cy={y(p.value)} r="2.6" fill={color}>
+            <circle key={`${p.t}-${i}`} cx={x(p.t)} cy={y(p.value)} r="3.2" fill={color}>
               <title>{p.label || `${formatValue(p.value)} · ${shortDate(p.t)}`}</title>
             </circle>
           ))}
 
         {count > 40 && (
-          <circle cx={x(lastT)} cy={y(data[count - 1].value)} r="3" fill={color}>
+          <circle cx={x(lastT)} cy={y(data[count - 1].value)} r="3.6" fill={color}>
             <title>{data[count - 1].label || formatValue(data[count - 1].value)}</title>
           </circle>
         )}
@@ -149,11 +149,11 @@ const MetricLineChart = ({
           <text
             key={`${t}-${i}`}
             x={x(t)}
-            y={H - 8}
+            y={H - 12}
             textAnchor={i === 0 ? 'start' : i === xTicks.length - 1 ? 'end' : 'middle'}
             fill="currentColor"
             className="text-[#9B9A93] dark:text-[#6E6E6E]"
-            fontSize="8.5"
+            fontSize="10"
           >
             {shortDate(t)}
           </text>

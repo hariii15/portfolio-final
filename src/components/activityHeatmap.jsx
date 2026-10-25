@@ -86,19 +86,19 @@ const ActivityHeatmap = ({ activities = [] }) => {
   const opacity = [0, 0.28, 0.5, 0.74, 1];
   const level = (n) => (n === 0 ? 0 : n === 1 ? 1 : n <= 3 ? 2 : n <= 6 ? 3 : 4);
 
-  const cell = 11;
+  const cell = 14;
   const gap = 3;
-  const padLeft = 28;
-  const padTop = 20;
+  const padLeft = 34;
+  const padTop = 28;
   const W = padLeft + model.weeks.length * (cell + gap) + 2;
-  const H = padTop + 7 * (cell + gap) + 18;
+  const H = padTop + 7 * (cell + gap) + 24;
 
   return (
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <SectionLabel>Participation</SectionLabel>
-          <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+          <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
             {model.total} session{model.total === 1 ? '' : 's'} across {model.activeDays} active day
             {model.activeDays === 1 ? '' : 's'} in the last year.
           </p>
@@ -107,7 +107,7 @@ const ActivityHeatmap = ({ activities = [] }) => {
           value={app}
           onChange={(e) => setApp(e.target.value)}
           aria-label="Filter participation by application"
-          className="rounded-apple border border-[#E9E9E6] bg-white px-3 py-2 text-[12.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]"
+          className="rounded-apple border border-[#E9E9E6] bg-white px-3.5 py-2.5 text-[13.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]"
         >
           {APPS.map((a) => (
             <option key={a.value} value={a.value}>
@@ -117,10 +117,10 @@ const ActivityHeatmap = ({ activities = [] }) => {
         </select>
       </div>
 
-      <div className="mt-4 overflow-x-auto pb-1">
+      <div className="mt-6 overflow-x-auto pb-2">
         <svg
           viewBox={`0 0 ${W} ${H}`}
-          className="h-auto w-full min-w-[580px]"
+          className="h-auto w-full min-w-[760px]"
           role="img"
           aria-label="Participation intensity over the last year"
         >
@@ -128,10 +128,10 @@ const ActivityHeatmap = ({ activities = [] }) => {
             <text
               key={`${m.wi}-${m.label}`}
               x={padLeft + m.wi * (cell + gap)}
-              y={11}
+              y={14}
               fill="currentColor"
               className="text-[#9B9A93] dark:text-[#6E6E6E]"
-              fontSize="9"
+              fontSize="10.5"
             >
               {m.label}
             </text>
@@ -141,10 +141,10 @@ const ActivityHeatmap = ({ activities = [] }) => {
             <text
               key={row}
               x={0}
-              y={padTop + row * (cell + gap) + cell - 2}
+              y={padTop + row * (cell + gap) + cell - 3}
               fill="currentColor"
               className="text-[#9B9A93] dark:text-[#6E6E6E]"
-              fontSize="8.5"
+              fontSize="10"
             >
               {['Mon', 'Wed', 'Fri'][i]}
             </text>
@@ -161,10 +161,10 @@ const ActivityHeatmap = ({ activities = [] }) => {
                   y={padTop + di * (cell + gap)}
                   width={cell}
                   height={cell}
-                  rx="2.5"
+                  rx="3"
                   fill={l === 0 ? 'currentColor' : '#EC4899'}
                   opacity={l === 0 ? 1 : opacity[l]}
-                  className={l === 0 ? 'text-[#EFEFEA] dark:text-[#161616]' : undefined}
+                  className={l === 0 ? 'text-[#E9E9E6] dark:text-[#1A1A1A]' : undefined}
                 >
                   <title>{`${sessionLabel(app, d.count)} · ${d.date.toLocaleDateString()}`}</title>
                 </rect>
@@ -174,12 +174,12 @@ const ActivityHeatmap = ({ activities = [] }) => {
         </svg>
       </div>
 
-      <div className="mt-2 flex items-center justify-end gap-2 text-[10.5px] text-[#9B9A93] dark:text-[#6E6E6E]">
+      <div className="mt-3 flex items-center justify-end gap-2.5 text-[11.5px] text-[#9B9A93] dark:text-[#6E6E6E]">
         <span>Less</span>
         {[0, 1, 2, 3, 4].map((l) => (
           <span
             key={l}
-            className="inline-block h-[10px] w-[10px] rounded-[2px]"
+            className="inline-block h-[13px] w-[13px] rounded-[3px]"
             style={{
               backgroundColor: l === 0 ? undefined : '#EC4899',
               opacity: l === 0 ? 1 : opacity[l],

@@ -49,12 +49,12 @@ const ActivityChart = ({ activities = [] }) => {
 
   const max = Math.max(2, ...buckets.map((b) => b.typing + b.quiz + b.cube));
 
-  const W = 720;
-  const H = 190;
-  const padL = 26;
-  const padR = 6;
-  const padT = 10;
-  const padB = 24;
+  const W = 900;
+  const H = 240;
+  const padL = 34;
+  const padR = 10;
+  const padT = 16;
+  const padB = 30;
   const slot = (W - padL - padR) / days;
   const barW = slot * 0.56;
   const y = (v) => H - padB - (v / max) * (H - padT - padB);
@@ -75,28 +75,28 @@ const ActivityChart = ({ activities = [] }) => {
       <div className="flex items-start justify-between gap-3">
         <div>
           <SectionLabel>Activity</SectionLabel>
-          <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+          <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
             Every completed quiz, typing test, and cube solve.
           </p>
         </div>
-        <div className="hidden items-center gap-4 pt-1 text-[11px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">
-          <span className="flex items-center gap-1.5">
-            <i className="inline-block h-0.5 w-3 rounded-full bg-[#EC4899]" /> typing
+        <div className="hidden items-center gap-5 pt-1.5 text-[12px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">
+          <span className="flex items-center gap-2">
+            <i className="inline-block h-0.5 w-4 rounded-full bg-[#EC4899]" /> typing
           </span>
-          <span className="flex items-center gap-1.5">
-            <i className="inline-block h-0.5 w-3 rounded-full bg-[#111111] dark:bg-[#EDEDED]" /> quiz
+          <span className="flex items-center gap-2">
+            <i className="inline-block h-0.5 w-4 rounded-full bg-[#111111] dark:bg-[#EDEDED]" /> quiz
           </span>
-          <span className="flex items-center gap-1.5">
-            <i className="inline-block h-0.5 w-3 rounded-full bg-[#9B9A93] dark:bg-[#6E6E6E]" /> cube
+          <span className="flex items-center gap-2">
+            <i className="inline-block h-0.5 w-4 rounded-full bg-[#9B9A93] dark:bg-[#6E6E6E]" /> cube
           </span>
         </div>
       </div>
 
       {total === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center rounded-apple border border-dashed border-[#E9E9E6] py-10 text-center dark:border-[#232323]">
-          <FiActivity size={22} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
-          <p className="mt-3 text-[13px] font-semibold">No activity yet</p>
-          <p className="mt-1 text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
+        <div className="mt-6 flex flex-col items-center justify-center rounded-apple border border-dashed border-[#D9D9D3] py-14 text-center dark:border-[#2E2E2E]">
+          <FiActivity size={26} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
+          <p className="mt-4 text-[15px] font-semibold">No activity yet</p>
+          <p className="mt-1.5 text-[13.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
             Finish a quiz, typing test, or cube solve to start the graph.
           </p>
         </div>
@@ -104,7 +104,7 @@ const ActivityChart = ({ activities = [] }) => {
         <>
           <svg
             viewBox={`0 0 ${W} ${H}`}
-            className="mt-5 h-auto w-full"
+            className="mt-6 h-auto w-full"
             role="img"
             aria-label="Completed activity over the last 14 days"
           >
@@ -120,12 +120,12 @@ const ActivityChart = ({ activities = [] }) => {
                   strokeWidth="1"
                 />
                 <text
-                  x={padL - 6}
-                  y={y(max * f) + 3}
+                  x={padL - 8}
+                  y={y(max * f) + 4}
                   textAnchor="end"
                   fill="currentColor"
                   className="text-[#9B9A93] dark:text-[#6E6E6E]"
-                  fontSize="9"
+                  fontSize="10.5"
                 >
                   {Math.round(max * f)}
                 </text>
@@ -167,11 +167,11 @@ const ActivityChart = ({ activities = [] }) => {
                   {i % 2 === 0 && (
                     <text
                       x={x + barW / 2}
-                      y={H - 7}
+                      y={H - 10}
                       textAnchor="middle"
                       fill="currentColor"
                       className="text-[#9B9A93] dark:text-[#6E6E6E]"
-                      fontSize="8.5"
+                      fontSize="10"
                     >
                       {b.date.getDate()}
                     </text>
@@ -181,16 +181,16 @@ const ActivityChart = ({ activities = [] }) => {
             })}
           </svg>
 
-          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
             {summary.map((s) => (
               <div
                 key={s.label}
-                className="flex items-baseline justify-between gap-2 border-b border-[#E9E9E6] pb-2 dark:border-[#232323]"
+                className="flex items-baseline justify-between gap-2 border-b border-[#E9E9E6] pb-2.5 dark:border-[#232323]"
               >
-                <span className="text-[11px] uppercase tracking-[0.1em] text-[#9B9A93] dark:text-[#6E6E6E]">
+                <span className="text-[12px] uppercase tracking-[0.1em] text-[#9B9A93] dark:text-[#6E6E6E]">
                   {s.label}
                 </span>
-                <span className="mono text-[15px] font-semibold tabular-nums">{s.value}</span>
+                <span className="mono text-[18px] font-semibold tabular-nums">{s.value}</span>
               </div>
             ))}
           </div>

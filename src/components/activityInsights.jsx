@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card } from './ui';
 import ActivityHeatmap from './activityHeatmap';
 import MetricLineChart from './metricLineChart';
 
@@ -25,7 +24,7 @@ const CUBE_OPTIONS = [
 ];
 
 const selectCls =
-  'rounded-apple border border-[#E9E9E6] bg-white px-3 py-2 text-[12.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]';
+  'rounded-apple border border-[#E9E9E6] bg-white px-3.5 py-2.5 text-[13.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]';
 
 const Select = ({ value, onChange, options, label }) => (
   <select value={value} onChange={(e) => onChange(e.target.value)} aria-label={label} className={selectCls}>
@@ -84,68 +83,58 @@ const ActivityInsights = ({ activities = [] }) => {
   }));
 
   return (
-    <div className="mt-5 space-y-5">
-      <Card className="p-6">
-        <ActivityHeatmap activities={activities} />
-      </Card>
+    <div className="space-y-20">
+      <ActivityHeatmap activities={activities} />
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Card className="p-6">
-          <MetricLineChart
-            title="Typing speed"
-            subtitle="Words per minute for completed tests."
-            points={wpmPoints}
-            formatValue={(v) => Math.round(v)}
-            emptyText="Complete a typing test to see the trend."
-            filter={
-              <Select
-                value={wpmFilter}
-                onChange={setWpmFilter}
-                options={WPM_OPTIONS}
-                label="Filter typing tests"
-              />
-            }
+      <MetricLineChart
+        title="Typing speed"
+        subtitle="Words per minute for completed tests."
+        points={wpmPoints}
+        formatValue={(v) => Math.round(v)}
+        emptyText="Complete a typing test to see the trend."
+        filter={
+          <Select
+            value={wpmFilter}
+            onChange={setWpmFilter}
+            options={WPM_OPTIONS}
+            label="Filter typing tests"
           />
-        </Card>
+        }
+      />
 
-        <Card className="p-6">
-          <MetricLineChart
-            title="Quiz score"
-            subtitle="First-try accuracy for completed quizzes."
-            points={quizPoints}
-            formatValue={(v) => `${Math.round(v)}%`}
-            yMin={0}
-            yMax={100}
-            emptyText="Finish a quiz to see the trend."
-            filter={
-              <Select
-                value={quizFilter}
-                onChange={setQuizFilter}
-                options={QUIZ_OPTIONS}
-                label="Filter quizzes by region"
-              />
-            }
+      <MetricLineChart
+        title="Quiz score"
+        subtitle="First-try accuracy for completed quizzes."
+        points={quizPoints}
+        formatValue={(v) => `${Math.round(v)}%`}
+        yMin={0}
+        yMax={100}
+        emptyText="Finish a quiz to see the trend."
+        filter={
+          <Select
+            value={quizFilter}
+            onChange={setQuizFilter}
+            options={QUIZ_OPTIONS}
+            label="Filter quizzes by region"
           />
-        </Card>
-      </div>
+        }
+      />
 
-      <Card className="p-6">
-        <MetricLineChart
-          title="Cube solve time"
-          subtitle="Seconds per solve — lower is better."
-          points={cubePoints}
-          formatValue={formatCube}
-          emptyText="Finish a cube solve to see the trend."
-          filter={
-            <Select
-              value={cubeFilter}
-              onChange={setCubeFilter}
-              options={CUBE_OPTIONS}
-              label="Filter cube solves by method"
-            />
-          }
-        />
-      </Card>
+      <MetricLineChart
+        title="Cube solve time"
+        subtitle="Seconds per solve — lower is better."
+        points={cubePoints}
+        formatValue={formatCube}
+        emptyText="Finish a cube solve to see the trend."
+        filter={
+          <Select
+            value={cubeFilter}
+            onChange={setCubeFilter}
+            options={CUBE_OPTIONS}
+            label="Filter cube solves by method"
+          />
+        }
+      />
     </div>
   );
 };

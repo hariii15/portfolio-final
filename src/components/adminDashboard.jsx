@@ -127,7 +127,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F7F5] dark:bg-[#0A0A0A]">
-      <div className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
+      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
         <div className="flex flex-col gap-4 border-b border-[#E9E9E6] pb-6 dark:border-[#232323] sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">Admin</p>
@@ -163,13 +163,12 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <Card className="mt-5 p-6">
+        <div className="mt-10 space-y-16">
           <ActivityChart activities={activities} />
-        </Card>
+          <ActivityInsights activities={activities} />
+        </div>
 
-        <ActivityInsights activities={activities} />
-
-        <Card className="mt-5 p-5">
+        <Card className="mt-16 p-5">
           <div>
             <SectionLabel>Playground</SectionLabel>
             <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
@@ -201,7 +200,7 @@ const AdminDashboard = () => {
           </div>
         </Card>
 
-        <Card className="mt-5 overflow-hidden">
+        <Card className="mt-10 overflow-hidden">
           <div className="border-b border-[#E9E9E6] p-5 dark:border-[#232323]">
             <h2 className="text-[15px] font-bold">Articles</h2>
           </div>
