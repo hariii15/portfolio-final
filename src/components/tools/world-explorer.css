@@ -240,6 +240,10 @@
   fill: var(--we-bad);
 }
 
+.we-root path.locate {
+  fill: var(--we-accent);
+}
+
 .we-root text.map-label {
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 600;
@@ -256,6 +260,10 @@
 
 .we-root.we-quiz text.map-label {
   display: none;
+}
+
+.we-root.we-quiz text.map-label.lit {
+  display: block;
 }
 
 /* ---------- overlays ---------- */
@@ -367,6 +375,8 @@
   text-align: center;
   min-width: 240px;
   max-width: calc(100% - 32px);
+  max-height: calc(100% - 28px);
+  overflow-y: auto;
   z-index: 40;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
@@ -400,6 +410,99 @@
 
 .we-qb button:hover {
   background: var(--we-border);
+}
+
+.we-review-note {
+  color: var(--we-faint);
+  font-size: 11.5px;
+  margin: 6px 0 2px;
+}
+
+.we-review {
+  max-height: 36vh;
+  overflow-y: auto;
+  text-align: left;
+  padding-right: 4px;
+  margin: 6px 0 8px;
+}
+
+.we-review-grp + .we-review-grp {
+  margin-top: 10px;
+}
+
+.we-review-h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--we-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.we-review-h span {
+  border: 1px solid var(--we-border);
+  border-radius: 999px;
+  padding: 0 6px;
+  color: var(--we-faint);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.we-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.we-qb .we-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 9px 4px 6px;
+  border: 1px solid var(--we-border);
+  border-radius: 999px;
+  background: var(--we-surface);
+  color: var(--we-text);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.we-qb .we-chip:hover {
+  background: var(--we-border);
+}
+
+.we-qb .we-chip img {
+  width: 16px;
+  height: 12px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.we-qb .we-chip.good {
+  color: var(--we-ok);
+}
+
+.we-qb .we-chip.miss {
+  color: var(--we-miss);
+}
+
+.we-review-empty {
+  color: var(--we-ok);
+  font-size: 12.5px;
+  font-weight: 500;
+  margin: 8px 0 4px;
+}
+
+.we-qbtns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
 }
 
 /* ---------- dock / detail panel ---------- */

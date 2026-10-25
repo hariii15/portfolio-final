@@ -32,6 +32,7 @@ const formatCube = (v) =>
 const ActivityInsights = ({ activities = [] }) => {
   const [wpmFilter, setWpmFilter] = useState('any');
   const [quizFilter, setQuizFilter] = useState('any');
+  const [retryFilter, setRetryFilter] = useState('any');
   const [cubeFilter, setCubeFilter] = useState('any');
 
   const typing = activities.filter((a) => a.type === 'typing');
@@ -48,6 +49,10 @@ const ActivityInsights = ({ activities = [] }) => {
     (a) => quizFilter === 'any' || a.data?.region === quizFilter
   );
 
+  const retryFiltered = quizzes.filter(
+    (a) => a.data?.retry && (retryFilter === 'any' || a.data?.region === retryFilter)
+  );
+
   const cubeFiltered = cubes.filter(
     (a) => cubeFilter === 'any' || a.data?.method === cubeFilter
   );
@@ -61,8 +66,23 @@ const ActivityInsights = ({ activities = [] }) => {
   const quizPoints = quizFiltered.map((a) => ({
     t: a.createdAt,
     value: Number(a.data?.accuracy) || 0,
-    label: `${a.data?.accuracy ?? 0}% · ${a.data?.firstTry ?? 0}/${a.data?.total ?? 0}`,
+    label: `${a.data?.accuracy ?? 0}% · ${a.data?.firstTry ?? 0}/${a.data?.total ?? 0}${
+      a.data?.retry ? ' · retry' : ''
+    }`,
   }));
+
+  const retryPoints = retryFiltered.map((a) => {
+    const total = Number(a.data?.total) || 0;
+    const corrected = Number(a.data?.corrected) || 0;
+    const needsWork = Number(a.data?.needsWork);
+    return {
+      t: a.createdAt,
+      value: total ? (corrected / total) * 100 : 0,
+      label: `${corrected}/${total} fixed${
+        Number.isFinite(needsWork) ? ` · ${needsWork} to review` : ''
+      }`,
+    };
+  });
 
   const cubePoints = cubeFiltered.map((a) => ({
     t: a.createdAt,
@@ -93,7 +113,7 @@ const ActivityInsights = ({ activities = [] }) => {
 
       <MetricLineChart
         title="Quiz score"
-        subtitle="First-try accuracy for completed quizzes."
+        subtitle="First-try accuracy for completed quizzes, including retries."
         points={quizPoints}
         formatValue={(v) => `${Math.round(v)}%`}
         yMin={0}
@@ -105,6 +125,26 @@ const ActivityInsights = ({ activities = [] }) => {
             onChange={setQuizFilter}
             options={QUIZ_OPTIONS}
             ariaLabel="Filter quizzes by region"
+            className="w-full sm:w-[190px]"
+          />
+        }
+      />
+
+      <MetricLineChart
+        title="Quiz retry fix rate"
+        subtitle="First-try fixes for countries that needed another pass."
+        points={retryPoints}
+        color="#16A34A"
+        formatValue={(v) => `${Math.round(v)}%`}
+        yMin={0}
+        yMax={100}
+        emptyText="Finish a quiz, then continue it to track fixes."
+        filter={
+          <Dropdown
+            value={retryFilter}
+            onChange={setRetryFilter}
+            options={QUIZ_OPTIONS}
+            ariaLabel="Filter retries by region"
             className="w-full sm:w-[190px]"
           />
         }

@@ -178,7 +178,7 @@ const WorldExplorerApp = () => {
     };
 
     const updateLabels = () => {
-      if (quiz) {
+      if (quiz && !quiz.locate) {
         labelLayer.style('display', 'none');
         return;
       }
@@ -239,6 +239,16 @@ const WorldExplorerApp = () => {
           const c = pos.get(R(idOf(f)));
           return c && c.show ? null : 'none';
         });
+      if (quiz && quiz.locate) {
+        const r = R(quiz.locate);
+        if (r && r._c) {
+          labels
+            .filter((f) => idOf(f) === quiz.locate)
+            .attr('x', t.x + t.k * r._c[0])
+            .attr('y', t.y + t.k * r._c[1])
+            .attr('display', null);
+        }
+      }
     };
 
     /* geographic location (lon/lat) of each country's largest landmass */
@@ -340,13 +350,15 @@ const WorldExplorerApp = () => {
           const s = quiz.state[id];
           if (s) c += ' ' + s;
           if (quiz.flash === id) c += ' bad';
+          if (quiz.locate === id) c += ' locate';
         } else {
           if (nb.has(id)) c += ' nb';
           if (id === sel) c += ' sel';
         }
         return c;
       });
-      paths.filter((f) => idOf(f) === sel).raise();
+      const focus = quiz ? quiz.locate : sel;
+      paths.filter((f) => idOf(f) === focus).raise();
       scheduleLabels();
     }
 
@@ -524,8 +536,14 @@ const WorldExplorerApp = () => {
       }, 1500);
     }
 
-    function startQuiz() {
-      const pool = d3.shuffle(all.filter((r) => r.ind && (cont === 'All' || r.cont === cont)));
+    function startQuiz(opts = {}) {
+      const round = opts.round || 1;
+      const incoming = opts.incoming || [];
+      const pool = d3.shuffle(
+        opts.pool
+          ? opts.pool.slice()
+          : all.filter((r) => r.ind && (cont === 'All' || r.cont === cont))
+      );
       quiz = {
         pool,
         i: 0,
@@ -537,12 +555,19 @@ const WorldExplorerApp = () => {
         hint: false,
         lock: false,
         state: {},
+        results: {},
         flash: null,
+        locate: null,
         startedAt: Date.now(),
         recorded: false,
-        missedNames: [],
+        weakRows: [],
+        round,
+        incoming,
+        sessionId:
+          opts.sessionId || Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       };
       sel = null;
+      labels.classed('lit', false);
       dock.classList.remove('open');
       dock.style.display = 'none';
       root.classList.add('we-quiz');
@@ -555,6 +580,7 @@ const WorldExplorerApp = () => {
 
     function exitQuiz() {
       quiz = null;
+      labels.classed('lit', false);
       root.classList.remove('we-quiz');
       dock.style.display = '';
       quizBtn.textContent = 'Quiz';
@@ -562,26 +588,97 @@ const WorldExplorerApp = () => {
       flyCont();
     }
 
+    function locateCountry(id) {
+      if (!quiz) return;
+      const r = R(id);
+      const f = feats.find((x) => idOf(x) === id);
+      if (!r || !f) return;
+      quiz.locate = id;
+      labels.classed('lit', (x) => idOf(x) === id);
+      paint();
+      fly(mainB(f), 12);
+      toast(r.n);
+    }
+
+    function finishRound(q) {
+      const total = q.pool.length;
+      const wrongThenRight = q.pool.filter((r) => {
+        const res = q.results[r.id];
+        return res && res.correct && !res.firstTry;
+      });
+      const missed = q.pool.filter((r) => q.results[r.id]?.missed);
+      const weak = q.pool.filter((r) => !q.results[r.id]?.firstTry);
+      const fixed =
+        q.round > 1
+          ? q.incoming.map(R).filter(Boolean).filter((r) => q.results[r.id]?.firstTry)
+          : [];
+      q.weakRows = weak;
+      q.locate = null;
+      labels.classed('lit', false);
+
+      if (!q.recorded) {
+        q.recorded = true;
+        logActivity('quiz', {
+          region: cont,
+          total,
+          firstTry: q.first,
+          missed: q.miss,
+          wrongClicks: q.wrong,
+          accuracy: total ? Math.round((q.first / total) * 100) : 0,
+          missedCountries: missed.map((r) => r.n),
+          wrongThenRightCountries: wrongThenRight.map((r) => r.n),
+          reviewCountries: weak.map((r) => r.n),
+          correctedCountries: fixed.map((r) => r.n),
+          needsWorkCountries: weak.map((r) => r.n),
+          corrected: fixed.length,
+          needsWork: weak.length,
+          priorTotal: q.incoming.length,
+          retry: q.round > 1,
+          round: q.round,
+          sessionId: q.sessionId,
+          durationSec: Math.round((Date.now() - q.startedAt) / 1000),
+        });
+      }
+
+      const chip = (r, cls) => {
+        const code = iso2(r.flag);
+        return `<button class="we-chip${cls ? ` ${cls}` : ''}" data-locate="${r.id}" title="Show ${r.n} on the map">${
+          code ? `<img src="https://flagcdn.com/w40/${code}.png" alt="" loading="lazy">` : ''
+        }${r.n}</button>`;
+      };
+      const group = (title, rows, cls) =>
+        rows.length
+          ? `<div class="we-review-grp"><div class="we-review-h">${title}<span>${rows.length}</span></div><div class="we-chips">${rows
+              .map((r) => chip(r, cls))
+              .join('')}</div></div>`
+          : '';
+      const review =
+        (q.round > 1 ? group('Fixed first try', fixed, 'good') : '') +
+        group('Wrong, then right', wrongThenRight, 'good') +
+        group('Missed / skipped', missed, 'miss');
+
+      qb.innerHTML = `<div class="we-qt"><b>${
+        q.round > 1 ? 'Retry finished!' : 'Finished!'
+      }</b></div><div class="we-qs">First try: ${q.first}/${total} · Missed: ${q.miss} · Wrong clicks: ${
+        q.wrong
+      }</div>${
+        review
+          ? `<div class="we-review-note">Click a country to find it on the map.</div><div class="we-review">${review}</div>`
+          : '<div class="we-review-empty">Perfect run — no missed countries.</div>'
+      }<div class="we-qbtns">${
+        weak.length ? `<button data-q="continue">Continue test (${weak.length})</button>` : ''
+      }<button data-q="new">New test</button><button data-q="exit">Exit</button></div>`;
+    }
+
     function qrender() {
       const q = quiz;
       const t = q.pool[q.i];
       if (!t) {
-        if (!q.recorded) {
-          q.recorded = true;
-          const total = q.pool.length;
-          logActivity('quiz', {
-            region: cont,
-            total,
-            firstTry: q.first,
-            missed: q.miss,
-            wrongClicks: q.wrong,
-            accuracy: total ? Math.round((q.first / total) * 100) : 0,
-            missedCountries: q.missedNames,
-            durationSec: Math.round((Date.now() - q.startedAt) / 1000),
-          });
-        }
-        qb.innerHTML = `<div class="we-qt"><b>Finished!</b></div><div class="we-qs">First try: ${q.first}/${q.pool.length} · Missed: ${q.miss} · Wrong clicks: ${q.wrong}</div><button data-q="again">Play again</button><button data-q="exit">Exit</button>`;
+        finishRound(q);
         return;
+      }
+      if (!q.results[t.id]) {
+        q.results[t.id] = { wrong: 0, correct: false, missed: false, firstTry: false };
       }
       qb.innerHTML = `<div class="we-qt">Find: <b>${t.n}</b></div><div class="we-qs">${q.i + 1}/${
         q.pool.length
@@ -597,18 +694,20 @@ const WorldExplorerApp = () => {
       quiz.hint = false;
       quiz.lock = false;
       quiz.flash = null;
+      quiz.locate = null;
+      labels.classed('lit', false);
       paint();
       qrender();
     }
 
-    function reveal() {
+    function reveal(force) {
       const q = quiz;
-      if (!q || q.lock || !q.pool[q.i]) return;
+      if (!q || (!force && q.lock) || !q.pool[q.i]) return;
       const t = q.pool[q.i];
       q.lock = true;
       q.miss++;
       q.state[t.id] = 'miss';
-      q.missedNames.push(t.n);
+      q.results[t.id] = { wrong: q.tries, correct: false, missed: true, firstTry: false };
       paint();
       toast(`It was ${t.n}`);
       fly(mainB(feats.find((x) => idOf(x) === t.id)), 12);
@@ -627,6 +726,12 @@ const WorldExplorerApp = () => {
       if (id === t.id) {
         q.state[id] = 'found';
         q.ok++;
+        q.results[t.id] = {
+          wrong: q.tries,
+          correct: true,
+          missed: false,
+          firstTry: q.tries === 0,
+        };
         if (!q.tries) q.first++;
         advance();
         return;
@@ -649,8 +754,9 @@ const WorldExplorerApp = () => {
       }, 700);
       qrender();
       if (q.tries >= 3) {
+        q.lock = true;
         later(() => {
-          if (quiz === q) reveal();
+          if (quiz === q) reveal(true);
         }, 700);
       }
     }
@@ -726,13 +832,26 @@ const WorldExplorerApp = () => {
     on(quizBtn, 'click', () => (quiz ? exitQuiz() : startQuiz()));
 
     on(qb, 'click', (e) => {
-      const a = e.target.dataset.q;
-      if (!a || quiz.lock) return;
+      const loc = e.target.closest('[data-locate]');
+      if (loc) return locateCountry(loc.dataset.locate);
+      const btn = e.target.closest('[data-q]');
+      if (!btn || !quiz || quiz.lock) return;
+      const a = btn.dataset.q;
       if (a === 'hint') {
         quiz.hint = true;
         qrender();
       } else if (a === 'skip') reveal();
-      else if (a === 'again') startQuiz();
+      else if (a === 'continue') {
+        const q = quiz;
+        const rows = q.weakRows || [];
+        if (!rows.length) return;
+        startQuiz({
+          pool: rows,
+          round: q.round + 1,
+          incoming: rows.map((r) => r.id),
+          sessionId: q.sessionId,
+        });
+      } else if (a === 'new' || a === 'again') startQuiz();
       else exitQuiz();
     });
 
