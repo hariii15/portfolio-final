@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiArrowUpRight } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -145,6 +145,36 @@ const AdminDashboard = () => {
             </Card>
           ))}
         </div>
+
+        <Card className="mt-5 p-5">
+          <div>
+            <SectionLabel>Playground</SectionLabel>
+            <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+              Private tools available after sign-in.
+            </p>
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              { to: '/admin/tools/world-explorer', icon: <FiGlobe size={17} />, title: 'World Explorer', sub: 'Interactive country map, facts, and quiz' },
+              { to: '/admin/tools/dumb-types', icon: <FiType size={17} />, title: 'Dumb Types', sub: 'Typing speed and accuracy test' },
+            ].map((tool) => (
+              <button
+                key={tool.to}
+                onClick={() => navigate(tool.to)}
+                className="group flex items-center gap-3 rounded-apple border border-[#E9E9E6] bg-[#F7F7F5] p-4 text-left transition-colors hover:border-[#D9D9D3] hover:bg-[#EFEFEA] dark:border-[#232323] dark:bg-[#0A0A0A] dark:hover:border-[#2E2E2E] dark:hover:bg-[#161616]"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
+                  {tool.icon}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[14px] font-semibold">{tool.title}</span>
+                  <span className="mt-0.5 block text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">{tool.sub}</span>
+                </span>
+                <FiArrowUpRight size={16} className="shrink-0 text-[#9B9A93] transition-colors group-hover:text-[#EC4899] dark:text-[#6E6E6E]" />
+              </button>
+            ))}
+          </div>
+        </Card>
 
         <Card className="mt-5 overflow-hidden">
           <div className="border-b border-[#E9E9E6] p-5 dark:border-[#232323]">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Welcome from './components/welcome';
 import Hero from './components/hero';
@@ -13,6 +13,9 @@ import AdminLogin from './components/adminLogin';
 import AdminDashboard from './components/adminDashboard';
 import AdminEditor from './components/adminEditor';
 import { ThemeProvider } from './theme/ThemeContext';
+
+const WorldExplorer = React.lazy(() => import('./components/tools/WorldExplorer'));
+const DumbTypes = React.lazy(() => import('./components/tools/DumbTypes'));
 
 // Flat, static loader — no glow, no blur, no gradient.
 const Loader = ({ label }) => (
@@ -69,22 +72,26 @@ const AppRouter = () => {
         {loading && <Loader label="Hariharpradeep" />}
         <Router>
           <NavigationLoader>
-            <Routes>
-              <Route path="/" element={<Welcome />} />
-              <Route path="/admin" element={<AdminLogin />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/create" element={<AdminEditor />} />
-              <Route path="/admin/edit/:id" element={<AdminEditor />} />
-              <Route element={<Layout />}>
-                <Route path="/hero" element={<Hero />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/acheivements" element={<Acheivements />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogDetail />} />
-              </Route>
-            </Routes>
+            <Suspense fallback={<Loader label="Loading" />}>
+              <Routes>
+                <Route path="/" element={<Welcome />} />
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/create" element={<AdminEditor />} />
+                <Route path="/admin/edit/:id" element={<AdminEditor />} />
+                <Route path="/admin/tools/world-explorer" element={<WorldExplorer />} />
+                <Route path="/admin/tools/dumb-types" element={<DumbTypes />} />
+                <Route element={<Layout />}>
+                  <Route path="/hero" element={<Hero />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/acheivements" element={<Acheivements />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogDetail />} />
+                </Route>
+              </Routes>
+            </Suspense>
           </NavigationLoader>
         </Router>
       </div>
