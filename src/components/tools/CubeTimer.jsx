@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiRotateCcw } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
+import Dropdown from '../dropdown';
 import './cube-timer.css';
 
 const INSPECTION = 15;
@@ -155,19 +156,16 @@ const CubeTimerApp = () => {
         <h1 className="cube-title">Cube Timer</h1>
 
         <div className="cube-controls">
-          <select
-            className="cube-select"
+          <Dropdown
+            className="w-[132px]"
+            size="sm"
+            tone="dark"
             value={method}
-            onChange={(e) => setMethod(e.target.value)}
+            onChange={setMethod}
             disabled={busy}
-            aria-label="Solving method"
-          >
-            {METHODS.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
+            ariaLabel="Solving method"
+            options={METHODS.map((m) => ({ value: m, label: m }))}
+          />
 
           <button className="cube-reset" onClick={reset} title="Reset timer" aria-label="Reset timer">
             <FiRotateCcw size={15} />

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { SectionLabel } from './ui';
+import Dropdown from './dropdown';
 
 const APPS = [
   { value: 'all', label: 'All apps' },
@@ -103,18 +104,13 @@ const ActivityHeatmap = ({ activities = [] }) => {
             {model.activeDays === 1 ? '' : 's'} in the last year.
           </p>
         </div>
-        <select
+        <Dropdown
           value={app}
-          onChange={(e) => setApp(e.target.value)}
-          aria-label="Filter participation by application"
-          className="rounded-apple border border-[#E9E9E6] bg-white px-3.5 py-2.5 text-[13.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]"
-        >
-          {APPS.map((a) => (
-            <option key={a.value} value={a.value}>
-              {a.label}
-            </option>
-          ))}
-        </select>
+          onChange={setApp}
+          options={APPS}
+          ariaLabel="Filter participation by application"
+          className="w-full sm:w-[170px]"
+        />
       </div>
 
       <div className="mt-6 overflow-x-auto pb-2">

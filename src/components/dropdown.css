@@ -1,0 +1,124 @@
+/* Shared dropdown — one native select style for the whole app */
+
+.dd-root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.dd-root .dd-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #e9e9e6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  background-image: none;
+  color: #111111;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dd-root.dd-sm .dd-select {
+  padding: 8px 34px 8px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.dd-root.dd-md .dd-select {
+  padding: 10px 38px 10px 14px;
+  font-size: 13.5px;
+}
+
+.dd-root .dd-select:hover {
+  border-color: #d9d9d3;
+}
+
+.dd-root .dd-select:focus-visible {
+  border-color: #111111;
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+}
+
+.dd-root .dd-select:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.dd-root .dd-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  color: #9b9a93;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: color 0.15s ease;
+}
+
+.dd-root.dd-sm .dd-chevron {
+  right: 11px;
+}
+
+/* Native option menus */
+.dd-root .dd-select option {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+/* Dark theme */
+.dark .dd-root .dd-select {
+  border-color: #2e2e2e;
+  background-color: #0a0a0a;
+  color: #ededed;
+}
+
+.dark .dd-root .dd-select:hover {
+  border-color: #3a3a3a;
+}
+
+.dark .dd-root .dd-select:focus-visible {
+  border-color: #ededed;
+}
+
+.dark .dd-root .dd-chevron {
+  color: #6e6e6e;
+}
+
+.dark .dd-root .dd-select option {
+  background-color: #111111;
+  color: #ededed;
+}
+
+/* Always-dark tone (e.g. cube timer) */
+.dd-root .dd-select.dd-dark {
+  border-color: #2a2a2a;
+  background-color: #111111;
+  color: #ededed;
+}
+
+.dd-root .dd-select.dd-dark:hover {
+  border-color: #3a3a3a;
+}
+
+.dd-root .dd-select.dd-dark:focus-visible {
+  border-color: #ec4899;
+}
+
+.dd-root .dd-select.dd-dark:disabled {
+  opacity: 0.5;
+}
+
+.dd-root .dd-select.dd-dark option {
+  background-color: #111111;
+  color: #ededed;
+}
+
+.dd-root .dd-select.dd-dark + .dd-chevron {
+  color: #a1a1a1;
+}

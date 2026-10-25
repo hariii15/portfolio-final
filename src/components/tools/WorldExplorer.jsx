@@ -5,6 +5,7 @@ import { feature } from 'topojson-client';
 import { FiArrowLeft } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
+import Dropdown from '../dropdown';
 import { TOPO, DATA } from './worldExplorerData';
 import './world-explorer.css';
 
@@ -58,8 +59,8 @@ const WorldExplorerApp = () => {
     const toastEl = $('.we-toast');
     const listEl = $('.we-list');
     const legEl = $('.we-leg');
-    const filterEl = $('.we-filter');
-    const sortEl = $('.we-sort');
+    const filterEl = $('[data-we-filter]');
+    const sortEl = $('[data-we-sort]');
     const searchEl = $('.we-search');
     const namesEl = $('.we-names');
     const quizBtn = $('.we-quiz-btn');
@@ -101,12 +102,8 @@ const WorldExplorerApp = () => {
       r.rk = i + 1;
     });
 
-    const paths = g
-      .selectAll('path')
-      .data(feats)
-      .join('path')
-      .attr('d', path)
-      .style('vector-effect', 'non-scaling-stroke');
+    const paths = g.selectAll('path').data(feats).join('path').attr('d', path);
+    g.attr('stroke-width', 0.6);
 
     const labelLayer = svg.append('g').attr('class', 'labels-layer').style('pointer-events', 'none');
     const labels = labelLayer
@@ -152,6 +149,7 @@ const WorldExplorerApp = () => {
       r._a = path.area(f);
     });
 
+    let svgScale = 1;
     let labelRaf = null;
     const scheduleLabels = () => {
       if (labelRaf == null)
@@ -166,6 +164,8 @@ const WorldExplorerApp = () => {
       const cw = b.width || W;
       const ch = b.height || H;
       const s = Math.min(cw / W, ch / H) || 1;
+      svgScale = s;
+      g.attr('stroke-width', 0.6 / (d3.zoomTransform(svg.node()).k || 1) / s);
       const fs = FONT_PX / s;
       labels.style('font-size', fs + 'px');
       feats.forEach((f) => {
@@ -284,6 +284,7 @@ const WorldExplorerApp = () => {
       ])
       .on('zoom', (e) => {
         g.attr('transform', e.transform);
+        g.attr('stroke-width', 0.6 / e.transform.k / (svgScale || 1));
         scheduleLabels();
       });
 
@@ -794,21 +795,29 @@ const WorldExplorerApp = () => {
           <button data-view="list">Countries</button>
         </div>
 
-        <div className="we-filter-wrap">
-          <select className="we-filter" defaultValue="All" aria-label="Filter by region">
-            <option value="All">All regions</option>
-            {CONTS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Dropdown
+          data-we-filter="true"
+          className="we-filter-wrap"
+          size="sm"
+          defaultValue="All"
+          ariaLabel="Filter by region"
+          options={[
+            { value: 'All', label: 'All regions' },
+            ...CONTS.map((c) => ({ value: c, label: c })),
+          ]}
+        />
 
-        <select className="we-sort" defaultValue="az" aria-label="Sort order">
-          <option value="az">A–Z</option>
-          <option value="geo">Nearby (geographic)</option>
-        </select>
+        <Dropdown
+          data-we-sort="true"
+          className="w-[190px] shrink-0"
+          size="sm"
+          defaultValue="az"
+          ariaLabel="Sort order"
+          options={[
+            { value: 'az', label: 'A–Z' },
+            { value: 'geo', label: 'Nearby (geographic)' },
+          ]}
+        />
 
         <input className="we-search" list="we-names" placeholder="Search country…" />
         <datalist className="we-names" id="we-names" />

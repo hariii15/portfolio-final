@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ActivityHeatmap from './activityHeatmap';
 import MetricLineChart from './metricLineChart';
+import Dropdown from './dropdown';
 
 const CONTINENTS = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
 
@@ -22,19 +23,6 @@ const CUBE_OPTIONS = [
   { value: 'Beginner', label: 'Beginner' },
   { value: 'Roux', label: 'Roux' },
 ];
-
-const selectCls =
-  'rounded-apple border border-[#E9E9E6] bg-white px-3.5 py-2.5 text-[13.5px] font-medium text-[#111111] outline-none transition-colors focus:border-[#111111] dark:border-[#2E2E2E] dark:bg-[#0A0A0A] dark:text-[#EDEDED] dark:focus:border-[#EDEDED]';
-
-const Select = ({ value, onChange, options, label }) => (
-  <select value={value} onChange={(e) => onChange(e.target.value)} aria-label={label} className={selectCls}>
-    {options.map((o) => (
-      <option key={o.value} value={o.value}>
-        {o.label}
-      </option>
-    ))}
-  </select>
-);
 
 const formatCube = (v) =>
   v >= 60
@@ -93,11 +81,12 @@ const ActivityInsights = ({ activities = [] }) => {
         formatValue={(v) => Math.round(v)}
         emptyText="Complete a typing test to see the trend."
         filter={
-          <Select
+          <Dropdown
             value={wpmFilter}
             onChange={setWpmFilter}
             options={WPM_OPTIONS}
-            label="Filter typing tests"
+            ariaLabel="Filter typing tests"
+            className="w-full sm:w-[190px]"
           />
         }
       />
@@ -111,11 +100,12 @@ const ActivityInsights = ({ activities = [] }) => {
         yMax={100}
         emptyText="Finish a quiz to see the trend."
         filter={
-          <Select
+          <Dropdown
             value={quizFilter}
             onChange={setQuizFilter}
             options={QUIZ_OPTIONS}
-            label="Filter quizzes by region"
+            ariaLabel="Filter quizzes by region"
+            className="w-full sm:w-[190px]"
           />
         }
       />
@@ -127,11 +117,12 @@ const ActivityInsights = ({ activities = [] }) => {
         formatValue={formatCube}
         emptyText="Finish a cube solve to see the trend."
         filter={
-          <Select
+          <Dropdown
             value={cubeFilter}
             onChange={setCubeFilter}
             options={CUBE_OPTIONS}
-            label="Filter cube solves by method"
+            ariaLabel="Filter cube solves by method"
+            className="w-full sm:w-[190px]"
           />
         }
       />
