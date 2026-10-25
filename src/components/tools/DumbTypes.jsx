@@ -8,6 +8,7 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
+import logActivity from './activity';
 import './dumb-types.css';
 
 const BASE_WORDS = (
@@ -100,6 +101,7 @@ const buildState = (mode, value, punctuation, numbers) => {
     totalKeys: 0,
     errorKeys: 0,
     elapsed: 0,
+    samples: [],
     result: null,
   };
 };
@@ -116,6 +118,12 @@ const finishState = (s, now) => {
     ? Math.round(((s.totalKeys - s.errorKeys) / s.totalKeys) * 100)
     : 100;
 
+  const samples = s.samples.slice();
+  const last = samples[samples.length - 1];
+  if (!last || elapsed - last.t > 0.05) {
+    samples.push({ t: Math.round(elapsed * 10) / 10, wpm, raw, errors: stats.incorrect });
+  }
+
   return {
     ...s,
     running: false,
@@ -128,6 +136,10 @@ const finishState = (s, now) => {
       chars: `${stats.correct}/${stats.incorrect}/${stats.extra}/${stats.missed}`,
       time: formatTime(elapsed),
       mode: modeLabel(s.mode, s.value),
+      modeName: s.mode,
+      value: s.value,
+      durationSec: Math.round(elapsed * 10) / 10,
+      samples,
     },
   };
 };
@@ -216,12 +228,102 @@ const reducer = (state, action) => {
       if (state.mode === 'time' && state.value - elapsed <= 0) {
         return finishState(state, action.now);
       }
-      return { ...state, elapsed };
+
+      let samples = state.samples;
+      const second = Math.floor(elapsed);
+      if (second > Math.floor(state.elapsed)) {
+        const stats = computeStats(state);
+        const spaces = Math.min(state.wordIndex, state.words.length - 1);
+        const minutes = Math.max(elapsed / 60, 1 / 6000);
+        samples = [
+          ...samples,
+          {
+            t: second,
+            wpm: Math.round((stats.correct + spaces) / 5 / minutes),
+            raw: Math.round(state.totalKeys / 5 / minutes),
+            errors: stats.incorrect,
+          },
+        ];
+      }
+      return { ...state, elapsed, samples };
     }
 
     default:
       return state;
   }
+};
+
+const TypingChart = ({ samples = [] }) => {
+  const points = [];
+  const source = [{ t: 0, wpm: 0, raw: 0 }, ...samples];
+  source.forEach((p) => {
+    if (!Number.isFinite(p.t)) return;
+    if (points.length && p.t <= points[points.length - 1].t) return;
+    points.push(p);
+  });
+  if (points.length < 2) return null;
+
+  const W = 760;
+  const H = 220;
+  const padL = 36;
+  const padR = 12;
+  const padT = 14;
+  const padB = 26;
+  const maxT = Math.max(1, points[points.length - 1].t);
+  const maxY = Math.max(20, ...points.map((p) => Math.max(p.wpm, p.raw))) * 1.12;
+  const x = (t) => padL + (t / maxT) * (W - padL - padR);
+  const y = (v) => H - padB - (v / maxY) * (H - padT - padB);
+  const line = (key) =>
+    points.map((p, i) => `${i ? 'L' : 'M'}${x(p.t).toFixed(1)} ${y(p[key]).toFixed(1)}`).join(' ');
+  const area = `${line('wpm')} L ${x(maxT).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(
+    1
+  )} ${y(0).toFixed(1)} Z`;
+
+  return (
+    <div className="dt-chart">
+      <div className="dt-chart-head">
+        <span className="dt-chart-title">last result</span>
+        <div className="dt-chart-legend">
+          <span>
+            <i className="wpm" /> wpm
+          </span>
+          <span>
+            <i className="raw" /> raw
+          </span>
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Words per minute over time">
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+          <g key={f}>
+            <line x1={padL} x2={W - padR} y1={y(maxY * f)} y2={y(maxY * f)} className="dt-grid" />
+            <text x={padL - 8} y={y(maxY * f) + 3} textAnchor="end" className="dt-axis">
+              {Math.round(maxY * f)}
+            </text>
+          </g>
+        ))}
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+          <text
+            key={`x-${f}`}
+            x={x(maxT * f)}
+            y={H - 8}
+            textAnchor={f === 0 ? 'start' : f === 1 ? 'end' : 'middle'}
+            className="dt-axis"
+          >
+            {Math.round(maxT * f)}s
+          </text>
+        ))}
+        <path d={area} className="dt-area-wpm" />
+        <path d={line('raw')} className="dt-line-raw" />
+        <path d={line('wpm')} className="dt-line-wpm" />
+        <circle
+          cx={x(points[points.length - 1].t)}
+          cy={y(points[points.length - 1].wpm)}
+          r="3"
+          className="dt-dot-wpm"
+        />
+      </svg>
+    </div>
+  );
 };
 
 const Loader = () => (
@@ -247,6 +349,7 @@ const DumbTypesApp = () => {
   const wordsRef = useRef(null);
   const caretRef = useRef(null);
   const wordElsRef = useRef([]);
+  const reportedRef = useRef(false);
 
   const restart = useCallback(() => dispatch({ type: 'RESTART' }), []);
 
@@ -273,6 +376,28 @@ const DumbTypesApp = () => {
     }, 100);
     return () => clearInterval(id);
   }, [state.running, state.finished]);
+
+  useEffect(() => {
+    if (!state.finished || !state.result) {
+      reportedRef.current = false;
+      return;
+    }
+    if (reportedRef.current) return;
+    reportedRef.current = true;
+
+    const r = state.result;
+    logActivity('typing', {
+      wpm: r.wpm,
+      raw: r.raw,
+      acc: r.acc,
+      chars: r.chars,
+      time: r.time,
+      mode: r.modeName,
+      value: r.value,
+      durationSec: r.durationSec,
+      samples: r.samples,
+    });
+  }, [state.finished, state.result]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -392,7 +517,6 @@ const DumbTypesApp = () => {
         </button>
 
         <div className="dt-brand">
-          <span className="dt-logo">d</span>
           <span className="dt-brand-name">Dumb Types</span>
         </div>
 
@@ -456,13 +580,16 @@ const DumbTypesApp = () => {
           <section className="dt-test">
             <div className="dt-meta">
               <div className="dt-meta-left">
-                <span className="dt-dot" />
-                <span>{mode}</span>
-                {!state.running && (
-                  <span className="dt-hint">
-                    <span className="dt-sep">/</span> start typing to begin
-                  </span>
-                )}
+                <div className="dt-timer">{timerText}</div>
+                <div className="dt-mode">
+                  <span className="dt-dot" />
+                  <span>{mode}</span>
+                  {!state.running && (
+                    <span className="dt-hint">
+                      <span className="dt-sep">/</span> start typing to begin
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="dt-meta-right">
                 <div className="dt-live">
@@ -473,7 +600,6 @@ const DumbTypesApp = () => {
                   <span className="dt-num">{liveAcc}%</span>
                   <span className="dt-unit">acc</span>
                 </div>
-                <div className="dt-timer">{timerText}</div>
               </div>
             </div>
 
@@ -539,6 +665,8 @@ const DumbTypesApp = () => {
                 <span className="dt-result-label">accuracy</span>
               </div>
             </div>
+
+            <TypingChart samples={state.result?.samples} />
 
             <div className="dt-results-grid">
               <div className="dt-grid-cell">

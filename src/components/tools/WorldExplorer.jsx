@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import { FiArrowLeft } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
+import logActivity from './activity';
 import { TOPO, DATA } from './worldExplorerData';
 import './world-explorer.css';
 
@@ -536,6 +537,9 @@ const WorldExplorerApp = () => {
         lock: false,
         state: {},
         flash: null,
+        startedAt: Date.now(),
+        recorded: false,
+        missedNames: [],
       };
       sel = null;
       dock.classList.remove('open');
@@ -561,6 +565,20 @@ const WorldExplorerApp = () => {
       const q = quiz;
       const t = q.pool[q.i];
       if (!t) {
+        if (!q.recorded) {
+          q.recorded = true;
+          const total = q.pool.length;
+          logActivity('quiz', {
+            region: cont,
+            total,
+            firstTry: q.first,
+            missed: q.miss,
+            wrongClicks: q.wrong,
+            accuracy: total ? Math.round((q.first / total) * 100) : 0,
+            missedCountries: q.missedNames,
+            durationSec: Math.round((Date.now() - q.startedAt) / 1000),
+          });
+        }
         qb.innerHTML = `<div class="we-qt"><b>Finished!</b></div><div class="we-qs">First try: ${q.first}/${q.pool.length} · Missed: ${q.miss} · Wrong clicks: ${q.wrong}</div><button data-q="again">Play again</button><button data-q="exit">Exit</button>`;
         return;
       }
@@ -572,6 +590,7 @@ const WorldExplorerApp = () => {
     }
 
     function advance() {
+      if (!quiz) return;
       quiz.i++;
       quiz.tries = 0;
       quiz.hint = false;
@@ -583,14 +602,17 @@ const WorldExplorerApp = () => {
 
     function reveal() {
       const q = quiz;
+      if (!q || q.lock || !q.pool[q.i]) return;
       const t = q.pool[q.i];
       q.lock = true;
       q.miss++;
       q.state[t.id] = 'miss';
+      q.missedNames.push(t.n);
       paint();
       toast(`It was ${t.n}`);
       fly(mainB(feats.find((x) => idOf(x) === t.id)), 12);
       later(() => {
+        if (quiz !== q) return;
         flyCont();
         advance();
       }, 1900);
@@ -625,7 +647,11 @@ const WorldExplorerApp = () => {
         }
       }, 700);
       qrender();
-      if (q.tries >= 3) later(reveal, 700);
+      if (q.tries >= 3) {
+        later(() => {
+          if (quiz === q) reveal();
+        }, 700);
+      }
     }
 
     /* ---------- events ---------- */
@@ -759,7 +785,7 @@ const WorldExplorerApp = () => {
         >
           <FiArrowLeft size={16} />
         </button>
-        <div className="we-brand">World Explorer</div>
+        <h1 className="sr-only">World Explorer</h1>
 
         <div className="we-views">
           <button data-view="map" className="on">

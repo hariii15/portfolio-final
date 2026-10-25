@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiArrowUpRight } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiArrowUpRight } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
+import ActivityChart from './activityChart';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
+  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -23,19 +25,33 @@ const AdminDashboard = () => {
       }
       try {
         const token = await user.getIdToken();
-        const res = await fetch(`${API_URL}/blogs`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) {
-          if (res.status === 401 || res.status === 403) {
+        const authHeaders = { Authorization: `Bearer ${token}` };
+        const [blogsRes, activityRes] = await Promise.all([
+          fetch(`${API_URL}/blogs`, { headers: authHeaders }),
+          fetch(`${API_URL}/activity`, { headers: authHeaders }),
+        ]);
+
+        if (!blogsRes.ok) {
+          if (blogsRes.status === 401 || blogsRes.status === 403) {
             await signOut(auth);
             if (active) navigate('/admin');
           } else throw new Error('Failed to retrieve dashboard data.');
           return;
         }
-        const data = await res.json();
+
+        const blogsData = await blogsRes.json();
+        let activityData = [];
+        if (activityRes.ok) {
+          try {
+            activityData = await activityRes.json();
+          } catch {
+            activityData = [];
+          }
+        }
+
         if (active) {
-          setBlogs(data);
+          setBlogs(blogsData);
+          setActivities(Array.isArray(activityData) ? activityData : []);
           setLoading(false);
         }
       } catch (err) {
@@ -146,6 +162,10 @@ const AdminDashboard = () => {
           ))}
         </div>
 
+        <Card className="mt-5 p-6">
+          <ActivityChart activities={activities} />
+        </Card>
+
         <Card className="mt-5 p-5">
           <div>
             <SectionLabel>Playground</SectionLabel>
@@ -153,8 +173,9 @@ const AdminDashboard = () => {
               Private tools available after sign-in.
             </p>
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
+              { to: '/admin/create', icon: <FiEdit3 size={17} />, title: 'Blog Writing', sub: 'Draft, edit, and publish articles' },
               { to: '/admin/tools/world-explorer', icon: <FiGlobe size={17} />, title: 'World Explorer', sub: 'Interactive country map, facts, and quiz' },
               { to: '/admin/tools/dumb-types', icon: <FiType size={17} />, title: 'Dumb Types', sub: 'Typing speed and accuracy test' },
             ].map((tool) => (

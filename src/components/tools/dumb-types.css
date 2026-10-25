@@ -87,20 +87,6 @@
   padding-right: 6px;
 }
 
-.dt-logo {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: var(--dt-accent);
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1;
-}
-
 .dt-brand-name {
   font-family: 'Inter Tight', 'Inter', sans-serif;
   font-size: 15px;
@@ -240,21 +226,26 @@
 
 .dt-meta {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  min-height: 30px;
 }
 
 .dt-meta-left {
   display: flex;
-  align-items: center;
-  gap: 9px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
   font-size: 12.5px;
   color: var(--dt-dim);
   letter-spacing: 0.01em;
+}
+
+.dt-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .dt-dot {
@@ -304,12 +295,13 @@
 .dt-timer {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: 26px;
+  font-size: clamp(36px, 5vw, 48px);
   font-weight: 600;
-  line-height: 1;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
   color: var(--dt-accent);
-  min-width: 1.25em;
-  text-align: right;
+  min-width: 0;
+  text-align: left;
 }
 
 /* ---------- words ---------- */
@@ -388,6 +380,105 @@
   display: flex;
   justify-content: center;
   padding-top: 2px;
+}
+
+/* ---------- results graph ---------- */
+
+.dt-chart {
+  border: 1px solid var(--dt-border);
+  background: var(--dt-panel);
+  border-radius: 14px;
+  padding: 14px 16px 8px;
+}
+
+.dt-chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.dt-chart-title {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dt-dim);
+}
+
+.dt-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--dt-dim);
+}
+
+.dt-chart-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dt-chart-legend i {
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.dt-chart-legend i.wpm {
+  background: var(--dt-accent);
+}
+
+.dt-chart-legend i.raw {
+  background: var(--dt-faint);
+}
+
+.dt-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.dt-grid {
+  stroke: var(--dt-border);
+  stroke-width: 1;
+}
+
+.dt-axis {
+  fill: var(--dt-faint);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9px;
+}
+
+.dt-line-wpm {
+  fill: none;
+  stroke: var(--dt-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dt-line-raw {
+  fill: none;
+  stroke: var(--dt-faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dt-area-wpm {
+  fill: var(--dt-accent);
+  opacity: 0.07;
+}
+
+.dt-dot-wpm {
+  fill: var(--dt-accent);
 }
 
 /* ---------- results ---------- */
@@ -578,14 +669,15 @@
   }
 
   .dt-meta {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .dt-meta-right {
-    width: 100%;
-    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .dt-chart {
+    padding: 12px 12px 6px;
   }
 
   .dt-results-head {
