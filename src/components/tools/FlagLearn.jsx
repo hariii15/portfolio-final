@@ -22,7 +22,6 @@ const FlagLearnApp = () => {
   const [wrong, setWrong] = useState(0);
   const [missedNames, setMissedNames] = useState([]);
   const [startedAt, setStartedAt] = useState(0);
-  const [recorded, setRecorded] = useState(false);
   const [result, setResult] = useState(null);
 
   const poolRef = useRef(pool);
@@ -30,8 +29,7 @@ const FlagLearnApp = () => {
   const okRef = useRef(ok);
   const wrongRef = useRef(wrong);
   const missedRef = useRef(missedNames);
-  const resultRef = useRef(result);
-  const recordedRef = useRef(recorded);
+  const recordedRef = useRef(false);
   const startedRef = useRef(startedAt);
   const readyRef = useRef(false);
 
@@ -63,41 +61,59 @@ const FlagLearnApp = () => {
   }, [missedNames]);
 
   useEffect(() => {
-    resultRef.current = result;
-  }, [result]);
-
-  useEffect(() => {
-    recordedRef.current = recorded;
-  }, [recorded]);
-
-  useEffect(() => {
     startedRef.current = startedAt;
   }, [startedAt]);
 
   const pickPool = useCallback(() => {
     const items = SHUFFLED_BY_REGION[region] || [];
     let chosen = items;
-    if (region.value !== 'All') {
+    if (region !== 'All') {
       const shuffled = [...items].sort(() => Math.random() - 0.5);
       chosen = shuffled.slice(0, Math.min(20, shuffled.length));
     }
     setPool(chosen);
+    setIndex(0);
+    setOk(0);
+    setWrong(0);
+    setMissedNames([]);
+    setResult(null);
+    recordedRef.current = false;
+    setStartedAt(Date.now());
   }, [region]);
 
   useEffect(() => {
     if (mode === 'quiz') pickPool();
   }, [mode, region, pickPool]);
 
+  const finish = useCallback((overrides = {}) => {
+    const started = startedRef.current || Date.now();
+    const durationSec = Math.round((Date.now() - started) / 1000);
+    const total = poolRef.current.length || 0;
+    const finalOk = overrides.ok ?? okRef.current;
+
+    setResult({
+      region,
+      ok: finalOk,
+      wrong: wrongRef.current,
+      missedNames: overrides.missedNames ?? missedRef.current,
+      durationSec,
+      total,
+      accuracy: total ? Math.round((finalOk / total) * 100) : 0,
+    });
+    indexRef.current = total;
+    setIndex(total);
+  }, [region]);
+
   useEffect(() => {
     if (!result || recordedRef.current) return;
     recordedRef.current = true;
 
-    const r = resultRef.current;
+    const r = result;
     const total = poolRef.current.length || 0;
     const accuracy = total ? Math.round((r.ok / total) * 100) : 0;
 
     logActivity('flag', {
-      region: region.value,
+      region: r.region,
       total,
       ok: r.ok,
       wrong: r.wrong,
@@ -105,19 +121,23 @@ const FlagLearnApp = () => {
       missedNames: r.missedNames,
       durationSec: r.durationSec,
     });
-  }, [result, region.value]);
+  }, [result]);
 
   const current = pool[index];
 
   const startQuiz = useCallback(() => {
     recordedRef.current = false;
+    indexRef.current = 0;
+    okRef.current = 0;
+    wrongRef.current = 0;
+    missedRef.current = [];
+    startedRef.current = Date.now();
     setResult(null);
     setIndex(0);
     setOk(0);
     setWrong(0);
     setMissedNames([]);
     setStartedAt(Date.now());
-    setRecorded(false);
   }, []);
 
   const handleGuess = useCallback(
@@ -125,45 +145,37 @@ const FlagLearnApp = () => {
       const currentItem = poolRef.current[indexRef.current];
       if (!currentItem) return;
       if (code === currentItem.code) {
-        setOk((o) => o + 1);
+        const nextOk = okRef.current + 1;
+        okRef.current = nextOk;
+        setOk(nextOk);
         if (indexRef.current + 1 >= poolRef.current.length) {
-          finish();
+          finish({ ok: nextOk });
         } else {
+          indexRef.current += 1;
           setIndex((i) => i + 1);
         }
         return;
       }
-      setWrong((w) => w + 1);
+      const nextWrong = wrongRef.current + 1;
+      wrongRef.current = nextWrong;
+      setWrong(nextWrong);
     },
     [finish]
   );
 
-  const finish = useCallback(() => {
-    const started = startedRef.current || Date.now();
-    const durationSec = Math.round((Date.now() - started) / 1000);
-    setResult({
-      ok: okRef.current,
-      wrong: wrongRef.current,
-      missedNames: missedRef.current,
-      durationSec,
-      total: poolRef.current.length || 0,
-      accuracy: poolRef.current.length
-        ? Math.round((okRef.current / poolRef.current.length) * 100)
-        : 0,
-    });
-    setRecorded(true);
-  }, []);
-
   const skip = useCallback(() => {
     const currentItem = poolRef.current[indexRef.current];
     if (!currentItem) return;
-    setMissedNames((prev) => [...prev, currentItem.name]);
+    const nextMissed = [...missedRef.current, currentItem.name];
+    missedRef.current = nextMissed;
+    setMissedNames(nextMissed);
     if (indexRef.current + 1 >= poolRef.current.length) {
-      finish();
+      finish({ missedNames: nextMissed });
     } else {
+      indexRef.current += 1;
       setIndex((i) => i + 1);
     }
-  }, []);
+  }, [finish]);
 
   const poolSize = pool.length;
   const progress = poolSize ? Math.round((index / poolSize) * 100) : 0;
@@ -195,13 +207,13 @@ const FlagLearnApp = () => {
       }
       setRecent(next);
     },
-    [recentRuns, region.value]
+    []
   );
 
   useEffect(() => {
     if (!result) return;
     saveRecent({
-      region: region.value,
+      region: result.region,
       total: result.total,
       ok: result.ok,
       wrong: result.wrong,
