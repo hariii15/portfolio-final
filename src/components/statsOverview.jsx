@@ -178,46 +178,46 @@ const StatsOverview = ({ activities = [] }) => {
   ];
 
   const W = 560;
-  const H = 250;
-  const padL = 30;
+  const H = 280;
+  const padL = 32;
   const padR = 8;
-  const padT = 22;
-  const padB = 30;
+  const padT = 24;
+  const padB = 34;
   const slot = (W - padL - padR) / weeks.length;
-  const barW = Math.min(30, slot * 0.48);
+  const barW = Math.min(34, slot * 0.5);
   const max = Math.max(2, ...weeks.map((week) => week.total));
   const y = (value) => H - padB - (value / max) * (H - padT - padB);
   const ticks = [0, 0.5, 1];
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="p-4 sm:p-5">
+          <Card key={kpi.label} className="p-5 sm:p-6">
             <SectionLabel>{kpi.label}</SectionLabel>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="font-display text-[26px] font-bold leading-none tracking-tight tabular-nums sm:text-[30px]">
+            <div className="mt-2.5 flex items-baseline gap-1.5">
+              <span className="font-display text-[32px] font-bold leading-none tracking-tight tabular-nums sm:text-[40px]">
                 {kpi.value}
               </span>
               {kpi.unit && (
-                <span className="text-[11.5px] font-medium text-[#6F6E69] dark:text-[#A1A1A1]">
+                <span className="text-[12.5px] font-medium text-[#6F6E69] dark:text-[#A1A1A1]">
                   {kpi.unit}
                 </span>
               )}
             </div>
-            <p className="mt-2 text-[11.5px] leading-snug text-[#9B9A93] dark:text-[#6E6E6E]">
+            <p className="mt-2.5 text-[12.5px] leading-snug text-[#9B9A93] dark:text-[#6E6E6E]">
               {kpi.sub}
             </p>
           </Card>
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card className="p-5 sm:p-6">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <Card className="p-6 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <SectionLabel>Practice mix</SectionLabel>
-              <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
+              <p className="mt-1.5 text-[14.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
                 Where your sessions went.
               </p>
             </div>
@@ -226,10 +226,10 @@ const StatsOverview = ({ activities = [] }) => {
             </span>
           </div>
 
-          <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row">
+          <div className="mt-7 flex flex-col items-center gap-8 sm:flex-row">
             <svg
               viewBox="0 0 140 140"
-              className="h-[164px] w-[164px] shrink-0"
+              className="h-[190px] w-[190px] shrink-0"
               role="img"
               aria-label="Sessions by app"
             >
@@ -268,7 +268,7 @@ const StatsOverview = ({ activities = [] }) => {
                 className="text-[#111111] dark:text-[#EDEDED]"
                 style={{
                   fontFamily: "'Inter Tight', 'Inter', sans-serif",
-                  fontSize: 30,
+                  fontSize: 32,
                   fontWeight: 700,
                 }}
               >
@@ -286,17 +286,17 @@ const StatsOverview = ({ activities = [] }) => {
               </text>
             </svg>
 
-            <ul className="w-full flex-1 space-y-2.5">
+            <ul className="w-full flex-1 space-y-3">
               {mixSegments.map((segment) => (
                 <li
                   key={segment.key}
-                  className="flex items-center justify-between gap-3 border-b border-[#E9E9E6] pb-2.5 last:border-0 last:pb-0 dark:border-[#232323]"
+                  className="flex items-center justify-between gap-3 border-b border-[#E9E9E6] pb-3 last:border-0 last:pb-0 dark:border-[#232323]"
                 >
-                  <span className="flex items-center gap-2 text-[12.5px] text-[#37352F] dark:text-[#C9C9C9]">
-                    <span className={`h-2 w-2 rounded-full ${segment.dot}`} />
+                  <span className="flex items-center gap-2 text-[13px] text-[#37352F] dark:text-[#C9C9C9]">
+                    <span className={`h-2.5 w-2.5 rounded-full ${segment.dot}`} />
                     {segment.label}
                   </span>
-                  <span className="mono text-[12px] tabular-nums text-[#6F6E69] dark:text-[#A1A1A1]">
+                  <span className="mono text-[13px] tabular-nums text-[#6F6E69] dark:text-[#A1A1A1]">
                     {segment.value}{' '}
                     <span className="text-[#9B9A93] dark:text-[#6E6E6E]">
                       {Math.round(segment.fraction * 100)}%
@@ -308,11 +308,11 @@ const StatsOverview = ({ activities = [] }) => {
           </div>
         </Card>
 
-        <Card className="p-5 sm:p-6">
+        <Card className="p-6 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <SectionLabel>Weekly volume</SectionLabel>
-              <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
+              <p className="mt-1.5 text-[14.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
                 Sessions per week, stacked by app.
               </p>
             </div>
@@ -344,7 +344,7 @@ const StatsOverview = ({ activities = [] }) => {
                   textAnchor="end"
                   fill="currentColor"
                   className="text-[#9B9A93] dark:text-[#6E6E6E]"
-                  fontSize="9.5"
+                  fontSize="10.5"
                 >
                   {Math.round(max * f)}
                 </text>
@@ -386,7 +386,7 @@ const StatsOverview = ({ activities = [] }) => {
                       textAnchor="middle"
                       fill="currentColor"
                       className="text-[#9B9A93] dark:text-[#6E6E6E]"
-                      fontSize="9.5"
+                      fontSize="10.5"
                     >
                       {week.total}
                     </text>
@@ -402,7 +402,7 @@ const StatsOverview = ({ activities = [] }) => {
                         ? 'text-[#111111] dark:text-[#EDEDED]'
                         : 'text-[#9B9A93] dark:text-[#6E6E6E]'
                     }
-                    fontSize="9"
+                    fontSize="10"
                   >
                     {`${week.start.getMonth() + 1}/${week.start.getDate()}`}
                   </text>
@@ -411,10 +411,10 @@ const StatsOverview = ({ activities = [] }) => {
             })}
           </svg>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10.5px] text-[#9B9A93] dark:text-[#6E6E6E]">
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11.5px] text-[#9B9A93] dark:text-[#6E6E6E]">
             {mixSegments.map((segment) => (
               <span key={segment.key} className="flex items-center gap-1.5">
-                <span className={`h-1.5 w-1.5 rounded-full ${segment.dot}`} />
+                <span className={`h-2 w-2 rounded-full ${segment.dot}`} />
                 {segment.label}
               </span>
             ))}

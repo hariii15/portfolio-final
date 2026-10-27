@@ -7,6 +7,7 @@ import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
 import StatsOverview from './statsOverview';
+import XpPanel from './xpPanel';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -166,8 +167,8 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F7F5] dark:bg-[#0A0A0A]">
-      <div className="mx-auto flex w-full max-w-7xl gap-8 px-5 pb-28 pt-10 sm:px-8 lg:pb-12">
-        <aside className="hidden w-52 shrink-0 lg:block">
+      <div className="mx-auto flex w-full max-w-[1440px] gap-10 px-5 pb-28 pt-10 sm:px-8 xl:px-10 lg:pb-14">
+        <aside className="hidden w-56 shrink-0 lg:block">
           <div className="sticky top-10">
             <p className="mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9B9A93] dark:text-[#6E6E6E]">
               Admin
@@ -198,7 +199,8 @@ const AdminDashboard = () => {
               </p>
               <nav className="mt-3 space-y-1.5">
                 {[
-                  { href: '#stats', label: 'Stats maxing' },
+                  { href: '#overview', label: 'Overview' },
+                  { href: '#records', label: 'Records' },
                   { href: '#playground', label: 'Playground' },
                   { href: '#articles', label: 'Articles' },
                 ].map((item) => (
@@ -216,11 +218,14 @@ const AdminDashboard = () => {
         </aside>
 
         <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-4 border-b border-[#E9E9E6] pb-6 dark:border-[#232323] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-5 border-b border-[#E9E9E6] pb-8 dark:border-[#232323] sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">Admin</p>
-            <h1 className="font-display mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Dashboard</h1>
-            <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">Logged in as portfolio administrator</p>
+            <h1 className="font-display mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Stats maxing</h1>
+            <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
+              Every session banks XP, daily check-ins pay streak bonuses, and every new personal
+              record adds 100 XP.
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <PrimaryButton onClick={() => navigate('/admin/create')}>
@@ -238,45 +243,24 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {[
-            { label: 'Total articles', val: blogs.length },
-            { label: 'Published', val: blogs.filter((b) => b.published).length },
-            { label: 'Drafts', val: blogs.filter((b) => !b.published).length },
-          ].map((s) => (
-            <Card key={s.label} className="p-5">
-              <SectionLabel>{s.label}</SectionLabel>
-              <div className="font-display mt-1 text-3xl font-bold tracking-tight">{s.val}</div>
-            </Card>
-          ))}
+        <div id="overview" className="mt-8 scroll-mt-8">
+          <XpPanel activities={activities} />
         </div>
 
-        <div id="stats" className="mt-14 scroll-mt-8 border-b border-[#E9E9E6] pb-5 dark:border-[#232323]">
-          <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
-            Progress
-          </p>
-          <h2 className="font-display mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-            Stats maxing
-          </h2>
-          <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Everything you have logged from the playground, in one place.
-          </p>
-        </div>
-
-        <div className="mt-8 space-y-16">
+        <div className="mt-12 space-y-20">
           <StatsOverview activities={activities} />
           <ActivityChart activities={activities} />
           <ActivityInsights activities={activities} />
         </div>
 
-        <Card id="playground" className="mt-16 scroll-mt-8 p-5">
+        <Card id="playground" className="mt-20 scroll-mt-8 p-6 sm:p-7">
           <div>
             <SectionLabel>Playground</SectionLabel>
             <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
               Private tools available after sign-in.
             </p>
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {TOOLS.map((tool) => {
               const Icon = tool.icon;
               return (
@@ -299,9 +283,9 @@ const AdminDashboard = () => {
           </div>
         </Card>
 
-        <Card id="articles" className="mt-10 scroll-mt-8 overflow-hidden">
-          <div className="border-b border-[#E9E9E6] p-5 dark:border-[#232323]">
-            <h2 className="text-[15px] font-bold">Articles</h2>
+        <Card id="articles" className="mt-12 scroll-mt-8 overflow-hidden">
+          <div className="border-b border-[#E9E9E6] p-6 dark:border-[#232323]">
+            <h2 className="text-[16px] font-bold">Articles</h2>
           </div>
           {blogs.length === 0 ? (
             <div className="p-14 text-center">
