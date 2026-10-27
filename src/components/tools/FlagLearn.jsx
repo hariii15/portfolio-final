@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiRefreshCw, FiFlag, FiTrendingUp, FiTarget } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
@@ -7,22 +7,34 @@ import Dropdown from '../dropdown';
 import { REGIONS, FLAGS } from './flagData';
 import './FlagLearn.css';
 
+const UNIQUE_FLAGS = Array.from(new Map(FLAGS.map((flag) => [flag.code, flag])).values());
+
 const SHUFFLED_BY_REGION = Object.fromEntries(
-  REGIONS.map((region) => [region.value, [...FLAGS].filter((f) => region.value === 'All' || f.region === region.value)])
+  REGIONS.map((region) => [
+    region.value,
+    UNIQUE_FLAGS.filter((flag) => region.value === 'All' || flag.region === region.value),
+  ])
 );
+
+const makePool = (region) => {
+  const items = SHUFFLED_BY_REGION[region] || [];
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  return region === 'All' ? shuffled : shuffled.slice(0, Math.min(20, shuffled.length));
+};
 
 
 const FlagLearnApp = () => {
   const navigate = useNavigate();
   const [region, setRegion] = useState('All');
   const [mode, setMode] = useState('quiz');
-  const [pool, setPool] = useState([]);
+  const [pool, setPool] = useState(() => makePool('All'));
   const [index, setIndex] = useState(0);
   const [ok, setOk] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [missedNames, setMissedNames] = useState([]);
-  const [startedAt, setStartedAt] = useState(0);
+  const [startedAt, setStartedAt] = useState(() => Date.now());
   const [result, setResult] = useState(null);
+  const [wrongPicks, setWrongPicks] = useState([]);
 
   const poolRef = useRef(pool);
   const indexRef = useRef(index);
@@ -32,6 +44,7 @@ const FlagLearnApp = () => {
   const recordedRef = useRef(false);
   const startedRef = useRef(startedAt);
   const readyRef = useRef(false);
+  const didMountRef = useRef(false);
 
   useEffect(() => {
     readyRef.current = true;
@@ -65,23 +78,28 @@ const FlagLearnApp = () => {
   }, [startedAt]);
 
   const pickPool = useCallback(() => {
-    const items = SHUFFLED_BY_REGION[region] || [];
-    let chosen = items;
-    if (region !== 'All') {
-      const shuffled = [...items].sort(() => Math.random() - 0.5);
-      chosen = shuffled.slice(0, Math.min(20, shuffled.length));
-    }
-    setPool(chosen);
+    const now = Date.now();
+    setPool(makePool(region));
     setIndex(0);
     setOk(0);
     setWrong(0);
     setMissedNames([]);
     setResult(null);
+    setWrongPicks([]);
+    indexRef.current = 0;
+    okRef.current = 0;
+    wrongRef.current = 0;
+    missedRef.current = [];
+    startedRef.current = now;
     recordedRef.current = false;
-    setStartedAt(Date.now());
+    setStartedAt(now);
   }, [region]);
 
   useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
     if (mode === 'quiz') pickPool();
   }, [mode, region, pickPool]);
 
@@ -125,19 +143,31 @@ const FlagLearnApp = () => {
 
   const current = pool[index];
 
+  const options = useMemo(() => {
+    if (!current) return [];
+
+    const distractors = UNIQUE_FLAGS.filter((flag) => flag.code !== current.code)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
+    return [...distractors, current].sort(() => Math.random() - 0.5);
+  }, [current]);
+
   const startQuiz = useCallback(() => {
+    const now = Date.now();
     recordedRef.current = false;
     indexRef.current = 0;
     okRef.current = 0;
     wrongRef.current = 0;
     missedRef.current = [];
-    startedRef.current = Date.now();
+    startedRef.current = now;
     setResult(null);
     setIndex(0);
     setOk(0);
     setWrong(0);
     setMissedNames([]);
-    setStartedAt(Date.now());
+    setWrongPicks([]);
+    setStartedAt(now);
   }, []);
 
   const handleGuess = useCallback(
@@ -148,6 +178,7 @@ const FlagLearnApp = () => {
         const nextOk = okRef.current + 1;
         okRef.current = nextOk;
         setOk(nextOk);
+        setWrongPicks([]);
         if (indexRef.current + 1 >= poolRef.current.length) {
           finish({ ok: nextOk });
         } else {
@@ -159,6 +190,7 @@ const FlagLearnApp = () => {
       const nextWrong = wrongRef.current + 1;
       wrongRef.current = nextWrong;
       setWrong(nextWrong);
+      setWrongPicks((prev) => (prev.includes(code) ? prev : [...prev, code]));
     },
     [finish]
   );
@@ -169,6 +201,7 @@ const FlagLearnApp = () => {
     const nextMissed = [...missedRef.current, currentItem.name];
     missedRef.current = nextMissed;
     setMissedNames(nextMissed);
+    setWrongPicks([]);
     if (indexRef.current + 1 >= poolRef.current.length) {
       finish({ missedNames: nextMissed });
     } else {
@@ -332,35 +365,41 @@ const FlagLearnApp = () => {
                 alt={`${current.name} flag`}
                 loading="lazy"
               />
-              <p className="fl-hint">Find: <strong>{current.name}</strong></p>
+              <p className="fl-hint">Which country is this?</p>
+
+              <div className="fl-options" role="group" aria-label="Choose the country">
+                {options.map((option) => (
+                  <button
+                    key={option.code}
+                    type="button"
+                    className={`fl-option ${wrongPicks.includes(option.code) ? 'fl-wrong' : ''}`}
+                    onClick={() => handleGuess(option.code)}
+                    disabled={wrongPicks.includes(option.code)}
+                  >
+                    {option.name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
-          <footer className="fl-footer">
-            <div className="fl-foot-btns">
-              <button className="fl-btn" onClick={skip}>
-                Skip
-              </button>
-              <button
-                className="fl-btn"
-                onClick={() => {
-                  const next = [...FLAGS].sort(() => Math.random() - 0.5);
-                  const sample = next.slice(0, 5);
-                  sample.forEach(({ code }) => handleGuess(code));
-                }}
-              >
-                Cheat
-              </button>
-            </div>
-            <div className="fl-foot-btns">
-              <button className="fl-btn fl-ghost" onClick={() => setMode('stats')}>
-                Stats
-              </button>
-              <button className="fl-btn fl-quiz" onClick={startQuiz}>
-                {index === 0 && ok === 0 && wrong === 0 && !result ? 'Start quiz' : 'Restart'}
-              </button>
-            </div>
-          </footer>
+          {current && (
+            <footer className="fl-footer">
+              <div className="fl-foot-btns">
+                <button className="fl-btn" onClick={skip}>
+                  Skip
+                </button>
+              </div>
+              <div className="fl-foot-btns">
+                <button className="fl-btn fl-ghost" onClick={() => setMode('stats')}>
+                  Stats
+                </button>
+                <button className="fl-btn fl-quiz" onClick={startQuiz}>
+                  Restart
+                </button>
+              </div>
+            </footer>
+          )}
         </main>
       ) : (
         <main className="fl-stats">
