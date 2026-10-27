@@ -263,14 +263,20 @@ const TypingChart = ({ samples = [] }) => {
   });
   if (points.length < 2) return null;
 
-  const W = 760;
-  const H = 220;
-  const padL = 36;
-  const padR = 12;
-  const padT = 14;
-  const padB = 26;
-  const maxT = Math.max(1, points[points.length - 1].t);
-  const maxY = Math.max(20, ...points.map((p) => Math.max(p.wpm, p.raw))) * 1.12;
+  const W = 900;
+  const H = 320;
+  const padL = 52;
+  const padR = 26;
+  const padT = 28;
+  const padB = 46;
+  const last = points[points.length - 1];
+  const maxT = Math.max(1, last.t);
+  const maxY = Math.max(20, ...points.map((p) => Math.max(p.wpm, p.raw))) * 1.18;
+  const wpmPoints = points.filter((p) => p.t > 0 && p.wpm > 0);
+  const avg = wpmPoints.length
+    ? Math.round(wpmPoints.reduce((sum, p) => sum + p.wpm, 0) / wpmPoints.length)
+    : 0;
+  const peak = wpmPoints.length ? Math.max(...wpmPoints.map((p) => p.wpm)) : 0;
   const x = (t) => padL + (t / maxT) * (W - padL - padR);
   const y = (v) => H - padB - (v / maxY) * (H - padT - padB);
   const line = (key) =>
@@ -278,11 +284,17 @@ const TypingChart = ({ samples = [] }) => {
   const area = `${line('wpm')} L ${x(maxT).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(
     1
   )} ${y(0).toFixed(1)} Z`;
+  const ticks = [0, 0.25, 0.5, 0.75, 1];
 
   return (
     <div className="dt-chart">
       <div className="dt-chart-head">
-        <span className="dt-chart-title">last result</span>
+        <div>
+          <span className="dt-chart-title">Speed curve</span>
+          <p className="dt-chart-sub">
+            Words per minute through the run. Raw counts every keystroke.
+          </p>
+        </div>
         <div className="dt-chart-legend">
           <span>
             <i className="wpm" /> wpm
@@ -290,38 +302,63 @@ const TypingChart = ({ samples = [] }) => {
           <span>
             <i className="raw" /> raw
           </span>
+          <span>
+            <i className="avg" /> avg
+          </span>
         </div>
       </div>
+
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Words per minute over time">
-        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+        {ticks.map((f) => (
           <g key={f}>
             <line x1={padL} x2={W - padR} y1={y(maxY * f)} y2={y(maxY * f)} className="dt-grid" />
-            <text x={padL - 8} y={y(maxY * f) + 3} textAnchor="end" className="dt-axis">
+            <text x={padL - 10} y={y(maxY * f) + 4} textAnchor="end" className="dt-axis">
               {Math.round(maxY * f)}
             </text>
           </g>
         ))}
-        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+
+        {ticks.map((f) => (
           <text
             key={`x-${f}`}
             x={x(maxT * f)}
-            y={H - 8}
+            y={H - 14}
             textAnchor={f === 0 ? 'start' : f === 1 ? 'end' : 'middle'}
             className="dt-axis"
           >
             {Math.round(maxT * f)}s
           </text>
         ))}
+
         <path d={area} className="dt-area-wpm" />
+
+        <line x1={padL} x2={W - padR} y1={y(avg)} y2={y(avg)} className="dt-line-avg" />
+        <text x={W - padR} y={y(avg) - 7} textAnchor="end" className="dt-axis dt-axis-avg">
+          avg {avg}
+        </text>
+
         <path d={line('raw')} className="dt-line-raw" />
         <path d={line('wpm')} className="dt-line-wpm" />
-        <circle
-          cx={x(points[points.length - 1].t)}
-          cy={y(points[points.length - 1].wpm)}
-          r="3"
-          className="dt-dot-wpm"
-        />
+
+        <circle cx={x(last.t)} cy={y(last.wpm)} r="4" className="dt-dot-wpm">
+          <title>{`${last.wpm} wpm at ${Math.round(last.t)}s`}</title>
+        </circle>
+        <circle cx={x(last.t)} cy={y(last.raw)} r="3" className="dt-dot-raw">
+          <title>{`${last.raw} raw at ${Math.round(last.t)}s`}</title>
+        </circle>
       </svg>
+
+      <div className="dt-chart-foot">
+        <span>
+          <b>{peak}</b> peak wpm
+        </span>
+        <span>
+          <b>{avg}</b> average wpm
+        </span>
+        <span>
+          <b>{last.raw}</b> raw wpm
+        </span>
+      </div>
     </div>
   );
 };
@@ -408,17 +445,12 @@ const DumbTypesApp = () => {
         restart();
         return;
       }
+      // On the results graph, leave the result on screen until Tab is pressed.
+      if (stateRef.current.finished) return;
+
       if (e.key === 'Escape') {
         e.preventDefault();
         restart();
-        return;
-      }
-
-      if (stateRef.current.finished) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          restart();
-        }
         return;
       }
 
@@ -501,6 +533,32 @@ const DumbTypesApp = () => {
       : '0';
 
   const mode = modeLabel(state.mode, state.value);
+
+  const sampleWpms = (state.result?.samples || [])
+    .map((p) => Number(p.wpm))
+    .filter((v) => Number.isFinite(v) && v > 0);
+  const peakWpm = Math.max(state.result?.wpm || 0, ...sampleWpms);
+  const avgSampleWpm = sampleWpms.length
+    ? sampleWpms.reduce((sum, v) => sum + v, 0) / sampleWpms.length
+    : 0;
+  const consistency =
+    sampleWpms.length > 1 && avgSampleWpm > 0
+      ? Math.round(
+          Math.max(
+            0,
+            Math.min(
+              100,
+              100 -
+                (Math.sqrt(
+                  sampleWpms.reduce((sum, v) => sum + (v - avgSampleWpm) ** 2, 0) /
+                    sampleWpms.length
+                ) /
+                  avgSampleWpm) *
+                  100
+            )
+          )
+        )
+      : null;
 
   const pillCls = (active) => `dt-pill${active ? ' active' : ''}`;
 
@@ -655,14 +713,24 @@ const DumbTypesApp = () => {
           </section>
         ) : (
           <section className="dt-results" aria-live="polite">
-            <div className="dt-results-head">
-              <div className="dt-result-block accent">
-                <span className="dt-result-value">{state.result?.wpm ?? 0}</span>
-                <span className="dt-result-label">wpm</span>
+            <div className="dt-results-top">
+              <div>
+                <span className="dt-eyebrow">last run</span>
+                <h2 className="dt-results-title">Typing result</h2>
+                <p className="dt-results-sub">
+                  {state.result?.mode ?? mode} · {state.result?.acc ?? 100}% accuracy
+                </p>
               </div>
-              <div className="dt-result-block">
-                <span className="dt-result-value">{state.result?.acc ?? 100}%</span>
-                <span className="dt-result-label">accuracy</span>
+
+              <div className="dt-results-scores">
+                <div className="dt-result-block accent">
+                  <span className="dt-result-value">{state.result?.wpm ?? 0}</span>
+                  <span className="dt-result-label">words per minute</span>
+                </div>
+                <div className="dt-result-block">
+                  <span className="dt-result-value">{state.result?.acc ?? 100}%</span>
+                  <span className="dt-result-label">accuracy</span>
+                </div>
               </div>
             </div>
 
@@ -670,12 +738,21 @@ const DumbTypesApp = () => {
 
             <div className="dt-results-grid">
               <div className="dt-grid-cell">
-                <span className="k">raw</span>
+                <span className="k">raw wpm</span>
                 <span className="v">{state.result?.raw ?? 0}</span>
+              </div>
+              <div className="dt-grid-cell">
+                <span className="k">peak wpm</span>
+                <span className="v">{peakWpm}</span>
+              </div>
+              <div className="dt-grid-cell">
+                <span className="k">consistency</span>
+                <span className="v">{consistency == null ? '—' : `${consistency}%`}</span>
               </div>
               <div className="dt-grid-cell">
                 <span className="k">characters</span>
                 <span className="v chars">{state.result?.chars ?? '0/0/0/0'}</span>
+                <span className="dt-cell-sub">correct / incorrect / extra / missed</span>
               </div>
               <div className="dt-grid-cell">
                 <span className="k">time</span>

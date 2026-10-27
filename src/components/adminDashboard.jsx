@@ -6,8 +6,47 @@ import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiCloc
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
+import StatsOverview from './statsOverview';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const TOOLS = [
+  {
+    to: '/admin/create',
+    icon: FiEdit3,
+    title: 'Blog Writing',
+    short: 'Write',
+    sub: 'Draft, edit, and publish articles',
+  },
+  {
+    to: '/admin/tools/world-explorer',
+    icon: FiGlobe,
+    title: 'World Explorer',
+    short: 'World',
+    sub: 'Interactive country map, facts, and quiz',
+  },
+  {
+    to: '/admin/tools/dumb-types',
+    icon: FiType,
+    title: 'Dumb Types',
+    short: 'Types',
+    sub: 'Typing speed and accuracy test',
+  },
+  {
+    to: '/admin/tools/cube-timer',
+    icon: FiBox,
+    title: 'Cube Timer',
+    short: 'Cube',
+    sub: 'Inspection countdown and solve timer',
+  },
+  {
+    to: '/admin/tools/periodic-table',
+    icon: FiGrid,
+    title: 'Periodic Table',
+    short: 'Elements',
+    sub: 'Explore all 118 elements and quiz yourself',
+  },
+];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -127,7 +166,56 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F7F5] dark:bg-[#0A0A0A]">
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
+      <div className="mx-auto flex w-full max-w-7xl gap-8 px-5 pb-28 pt-10 sm:px-8 lg:pb-12">
+        <aside className="hidden w-52 shrink-0 lg:block">
+          <div className="sticky top-10">
+            <p className="mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9B9A93] dark:text-[#6E6E6E]">
+              Admin
+            </p>
+            <p className="font-display mt-1 text-[15px] font-bold tracking-tight">Playground</p>
+
+            <nav aria-label="Apps" className="mt-4 space-y-1">
+              {TOOLS.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <button
+                    key={tool.to}
+                    onClick={() => navigate(tool.to)}
+                    className="group flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-left text-[13px] font-medium text-[#6F6E69] transition-colors hover:bg-[#EFEFEA] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
+                      <Icon size={15} />
+                    </span>
+                    <span className="truncate">{tool.title}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="mt-6 border-t border-[#E9E9E6] pt-5 dark:border-[#232323]">
+              <p className="mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
+                On this page
+              </p>
+              <nav className="mt-3 space-y-1.5">
+                {[
+                  { href: '#stats', label: 'Stats maxing' },
+                  { href: '#playground', label: 'Playground' },
+                  { href: '#articles', label: 'Articles' },
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="block rounded-[8px] px-2.5 py-1.5 text-[12.5px] text-[#6F6E69] transition-colors hover:bg-[#EFEFEA] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+        <div className="min-w-0 flex-1">
         <div className="flex flex-col gap-4 border-b border-[#E9E9E6] pb-6 dark:border-[#232323] sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">Admin</p>
@@ -163,7 +251,7 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <div className="mt-14 border-b border-[#E9E9E6] pb-5 dark:border-[#232323]">
+        <div id="stats" className="mt-14 scroll-mt-8 border-b border-[#E9E9E6] pb-5 dark:border-[#232323]">
           <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
             Progress
           </p>
@@ -176,11 +264,12 @@ const AdminDashboard = () => {
         </div>
 
         <div className="mt-8 space-y-16">
+          <StatsOverview activities={activities} />
           <ActivityChart activities={activities} />
           <ActivityInsights activities={activities} />
         </div>
 
-        <Card className="mt-16 p-5">
+        <Card id="playground" className="mt-16 scroll-mt-8 p-5">
           <div>
             <SectionLabel>Playground</SectionLabel>
             <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
@@ -188,32 +277,29 @@ const AdminDashboard = () => {
             </p>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { to: '/admin/create', icon: <FiEdit3 size={17} />, title: 'Blog Writing', sub: 'Draft, edit, and publish articles' },
-              { to: '/admin/tools/world-explorer', icon: <FiGlobe size={17} />, title: 'World Explorer', sub: 'Interactive country map, facts, and quiz' },
-              { to: '/admin/tools/dumb-types', icon: <FiType size={17} />, title: 'Dumb Types', sub: 'Typing speed and accuracy test' },
-              { to: '/admin/tools/cube-timer', icon: <FiBox size={17} />, title: 'Cube Timer', sub: 'Inspection countdown and solve timer' },
-              { to: '/admin/tools/periodic-table', icon: <FiGrid size={17} />, title: 'Periodic Table', sub: 'Explore all 118 elements and quiz yourself' },
-            ].map((tool) => (
-              <button
-                key={tool.to}
-                onClick={() => navigate(tool.to)}
-                className="group flex items-center gap-3 rounded-apple border border-[#E9E9E6] bg-[#F7F7F5] p-4 text-left transition-colors hover:border-[#D9D9D3] hover:bg-[#EFEFEA] dark:border-[#232323] dark:bg-[#0A0A0A] dark:hover:border-[#2E2E2E] dark:hover:bg-[#161616]"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
-                  {tool.icon}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[14px] font-semibold">{tool.title}</span>
-                  <span className="mt-0.5 block text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">{tool.sub}</span>
-                </span>
-                <FiArrowUpRight size={16} className="shrink-0 text-[#9B9A93] transition-colors group-hover:text-[#EC4899] dark:text-[#6E6E6E]" />
-              </button>
-            ))}
+            {TOOLS.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <button
+                  key={tool.to}
+                  onClick={() => navigate(tool.to)}
+                  className="group flex items-center gap-3 rounded-apple border border-[#E9E9E6] bg-[#F7F7F5] p-4 text-left transition-colors hover:border-[#D9D9D3] hover:bg-[#EFEFEA] dark:border-[#232323] dark:bg-[#0A0A0A] dark:hover:border-[#2E2E2E] dark:hover:bg-[#161616]"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
+                    <Icon size={17} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[14px] font-semibold">{tool.title}</span>
+                    <span className="mt-0.5 block text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">{tool.sub}</span>
+                  </span>
+                  <FiArrowUpRight size={16} className="shrink-0 text-[#9B9A93] transition-colors group-hover:text-[#EC4899] dark:text-[#6E6E6E]" />
+                </button>
+              );
+            })}
           </div>
         </Card>
 
-        <Card className="mt-10 overflow-hidden">
+        <Card id="articles" className="mt-10 scroll-mt-8 overflow-hidden">
           <div className="border-b border-[#E9E9E6] p-5 dark:border-[#232323]">
             <h2 className="text-[15px] font-bold">Articles</h2>
           </div>
@@ -267,7 +353,29 @@ const AdminDashboard = () => {
             </div>
           )}
         </Card>
+        </div>
       </div>
+
+      <nav
+        aria-label="Apps"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E9E9E6] bg-white px-2 pb-2.5 pt-2 dark:border-[#232323] dark:bg-[#0A0A0A] lg:hidden"
+      >
+        <div className="mx-auto flex max-w-lg items-stretch justify-between gap-1">
+          {TOOLS.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <button
+                key={tool.to}
+                onClick={() => navigate(tool.to)}
+                className="flex flex-1 flex-col items-center gap-1 rounded-[10px] px-1 py-1.5 text-[#6F6E69] transition-colors hover:bg-[#F7F7F5] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
+              >
+                <Icon size={17} />
+                <span className="text-[9.5px] font-medium leading-none">{tool.short}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 };

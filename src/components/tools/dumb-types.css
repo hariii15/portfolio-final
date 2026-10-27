@@ -13,7 +13,7 @@
   --dt-accent-hover: #db2777;
   --dt-error: #dc2626;
   --dt-extra: #f472b6;
-  --dt-type-size: 30px;
+  --dt-type-size: 46px;
 
   min-height: 100vh;
   min-height: 100dvh;
@@ -189,25 +189,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 44px 24px 24px;
+  padding: 40px 24px 28px;
   width: 100%;
 }
 
 .dt-test,
 .dt-results {
-  width: min(1000px, 100%);
+  width: min(1120px, 100%);
 }
 
 .dt-test {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .dt-results {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 30px;
   animation: dt-rise 0.18s ease;
 }
 
@@ -235,8 +235,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 5px;
-  font-size: 12.5px;
+  gap: 6px;
+  font-size: 13px;
   color: var(--dt-dim);
   letter-spacing: 0.01em;
 }
@@ -280,14 +280,14 @@
 .dt-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: 17px;
+  font-size: 21px;
   font-weight: 600;
   color: var(--dt-text);
   letter-spacing: -0.02em;
 }
 
 .dt-unit {
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--dt-dim);
 }
@@ -295,7 +295,7 @@
 .dt-timer {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: clamp(36px, 5vw, 48px);
+  font-size: clamp(44px, 6vw, 62px);
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: -0.03em;
@@ -307,7 +307,7 @@
 /* ---------- words ---------- */
 
 .dt-viewport {
-  height: calc(var(--dt-type-size) * 4.8);
+  height: calc(var(--dt-type-size) * 5);
   overflow: hidden;
   position: relative;
 }
@@ -352,7 +352,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 2px;
+  width: 2.5px;
   background: var(--dt-accent);
   border-radius: 1px;
   transition: transform 0.07s ease;
@@ -387,44 +387,54 @@
 .dt-chart {
   border: 1px solid var(--dt-border);
   background: var(--dt-panel);
-  border-radius: 14px;
-  padding: 14px 16px 8px;
+  border-radius: 16px;
+  padding: 20px 22px 16px;
 }
 
 .dt-chart-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
 }
 
 .dt-chart-title {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dt-dim);
 }
 
+.dt-chart-sub {
+  margin: 7px 0 0;
+  max-width: 430px;
+  color: var(--dt-dim);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .dt-chart-legend {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 11px;
+  gap: 16px;
+  font-size: 11.5px;
   color: var(--dt-dim);
+  white-space: nowrap;
 }
 
 .dt-chart-legend span {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .dt-chart-legend i {
   display: inline-block;
-  width: 12px;
+  width: 14px;
   height: 2px;
   border-radius: 1px;
 }
@@ -437,10 +447,16 @@
   background: var(--dt-faint);
 }
 
+.dt-chart-legend i.avg {
+  background: var(--dt-faint);
+  opacity: 0.55;
+}
+
 .dt-chart svg {
   display: block;
   width: 100%;
   height: auto;
+  margin-top: 10px;
   overflow: visible;
 }
 
@@ -452,13 +468,18 @@
 .dt-axis {
   fill: var(--dt-faint);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 9px;
+  font-size: 10.5px;
+}
+
+.dt-axis-avg {
+  font-size: 10px;
+  letter-spacing: 0.02em;
 }
 
 .dt-line-wpm {
   fill: none;
   stroke: var(--dt-accent);
-  stroke-width: 2;
+  stroke-width: 2.6;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -466,40 +487,103 @@
 .dt-line-raw {
   fill: none;
   stroke: var(--dt-faint);
-  stroke-width: 1.5;
-  stroke-dasharray: 3 3;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+.dt-line-avg {
+  stroke: var(--dt-faint);
+  stroke-width: 1.2;
+  stroke-dasharray: 2 5;
+  opacity: 0.65;
+}
+
 .dt-area-wpm {
   fill: var(--dt-accent);
-  opacity: 0.07;
+  opacity: 0.08;
 }
 
 .dt-dot-wpm {
   fill: var(--dt-accent);
 }
 
+.dt-dot-raw {
+  fill: var(--dt-faint);
+}
+
+.dt-chart-foot {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--dt-border);
+  font-size: 11.5px;
+  color: var(--dt-dim);
+}
+
+.dt-chart-foot b {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dt-text);
+}
+
 /* ---------- results ---------- */
 
-.dt-results-head {
+.dt-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dt-faint);
+}
+
+.dt-results-top {
   display: flex;
-  align-items: flex-start;
-  gap: 56px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.dt-results-title {
+  margin: 8px 0 0;
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--dt-text);
+}
+
+.dt-results-sub {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  color: var(--dt-dim);
+}
+
+.dt-results-scores {
+  display: flex;
+  align-items: flex-end;
+  gap: 48px;
   flex-wrap: wrap;
 }
 
 .dt-result-block {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .dt-result-value {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: 46px;
+  font-size: 54px;
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: -0.04em;
@@ -508,18 +592,18 @@
 
 .dt-result-block.accent .dt-result-value {
   color: var(--dt-accent);
-  font-size: 58px;
+  font-size: 78px;
 }
 
 .dt-result-label {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--dt-dim);
   letter-spacing: 0.02em;
 }
 
 .dt-results-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: var(--dt-border);
   border: 1px solid var(--dt-border);
@@ -529,7 +613,7 @@
 
 .dt-grid-cell {
   background: var(--dt-panel);
-  padding: 15px 18px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -537,7 +621,7 @@
 }
 
 .dt-grid-cell .k {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--dt-dim);
   letter-spacing: 0.02em;
 }
@@ -545,7 +629,7 @@
 .dt-grid-cell .v {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: 21px;
+  font-size: 24px;
   color: var(--dt-text);
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -554,7 +638,12 @@
 }
 
 .dt-grid-cell .v.chars {
-  font-size: 18px;
+  font-size: 20px;
+}
+
+.dt-cell-sub {
+  font-size: 10.5px;
+  color: var(--dt-faint);
 }
 
 .dt-results-actions {
@@ -625,7 +714,17 @@
 
 /* ---------- responsive ---------- */
 
+@media (max-width: 1200px) {
+  .dt-root {
+    --dt-type-size: 40px;
+  }
+}
+
 @media (max-width: 980px) {
+  .dt-root {
+    --dt-type-size: 34px;
+  }
+
   .dt-topbar {
     padding: 12px 18px;
     gap: 12px;
@@ -642,7 +741,7 @@
   }
 
   .dt-main {
-    padding: 9vh 18px 16px;
+    padding: 32px 18px 24px;
     align-items: flex-start;
   }
 
@@ -657,7 +756,7 @@
 
 @media (max-width: 620px) {
   .dt-root {
-    --dt-type-size: 22px;
+    --dt-type-size: 27px;
   }
 
   .dt-brand-name {
@@ -665,7 +764,7 @@
   }
 
   .dt-main {
-    padding: 7vh 18px 16px;
+    padding: 24px 18px 20px;
   }
 
   .dt-meta {
@@ -676,24 +775,44 @@
     gap: 12px;
   }
 
-  .dt-chart {
-    padding: 12px 12px 6px;
+  .dt-timer {
+    font-size: 42px;
   }
 
-  .dt-results-head {
-    gap: 28px;
+  .dt-chart {
+    padding: 15px 14px 12px;
+  }
+
+  .dt-chart-legend {
+    gap: 12px;
+  }
+
+  .dt-results {
+    gap: 24px;
+  }
+
+  .dt-results-scores {
+    gap: 26px;
+  }
+
+  .dt-results-title {
+    font-size: 28px;
   }
 
   .dt-result-value {
-    font-size: 38px;
+    font-size: 42px;
   }
 
   .dt-result-block.accent .dt-result-value {
-    font-size: 46px;
+    font-size: 58px;
   }
 
   .dt-grid-cell {
-    padding: 13px 14px;
+    padding: 14px 15px;
+  }
+
+  .dt-chart-foot {
+    gap: 16px;
   }
 
   .dt-footer {
