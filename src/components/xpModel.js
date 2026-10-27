@@ -92,13 +92,6 @@ export const computeProgress = (activities = []) => {
     periodic: { key: 'periodic', value: null, at: null, count: 0 },
   };
 
-  const byApp = {
-    typing: { sessions: 0, sessionsXp: 0, prXp: 0, total: 0 },
-    quiz: { sessions: 0, sessionsXp: 0, prXp: 0, total: 0 },
-    periodic: { sessions: 0, sessionsXp: 0, prXp: 0, total: 0 },
-    cube: { sessions: 0, sessionsXp: 0, prXp: 0, total: 0 },
-  };
-
   const activeDays = new Set();
   let totalXp = 0;
   let sessionsXp = 0;
@@ -125,7 +118,6 @@ export const computeProgress = (activities = []) => {
     record.count += 1;
     prXp += PR_BONUS;
     totalXp += PR_BONUS;
-    if (byApp[key]) byApp[key].prXp += PR_BONUS;
     addToToday(PR_BONUS, dayKey(startOfDay(activity.createdAt)));
   };
 
@@ -137,10 +129,6 @@ export const computeProgress = (activities = []) => {
     const sessionGain = activityXp(activity);
     sessionsXp += sessionGain;
     totalXp += sessionGain;
-    if (byApp[activity.type]) {
-      byApp[activity.type].sessions += 1;
-      byApp[activity.type].sessionsXp += sessionGain;
-    }
     addToToday(sessionGain, key);
 
     if (key !== (lastDay ? dayKey(lastDay) : null)) {
@@ -168,10 +156,6 @@ export const computeProgress = (activities = []) => {
         registerPr(activity.type, accuracy, false, activity);
       }
     }
-  });
-
-  Object.values(byApp).forEach((app) => {
-    app.total = app.sessionsXp + app.prXp;
   });
 
   let currentStreak = 0;
@@ -212,7 +196,6 @@ export const computeProgress = (activities = []) => {
     currentStreak,
     checkInDays: activeDays.size,
     totalSessions: sessionCount,
-    byApp,
     prs: records,
   };
 };

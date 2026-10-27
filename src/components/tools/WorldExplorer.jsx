@@ -5,8 +5,6 @@ import { feature } from 'topojson-client';
 import { FiArrowLeft } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
-import usePrToast from './usePrToast';
-import PrToast from './PrToast';
 import Dropdown from '../dropdown';
 import { TOPO, DATA } from './worldExplorerData';
 import './world-explorer.css';
@@ -43,9 +41,6 @@ const Loader = () => (
 
 const WorldExplorerApp = () => {
   const navigate = useNavigate();
-  const { toast: prToast, celebrate, dismiss } = usePrToast();
-  const celebrateRef = useRef(celebrate);
-  celebrateRef.current = celebrate;
   const rootRef = useRef(null);
   const svgRef = useRef(null);
 
@@ -623,14 +618,13 @@ const WorldExplorerApp = () => {
 
       if (!q.recorded) {
         q.recorded = true;
-        const accuracy = total ? Math.round((q.first / total) * 100) : 0;
         logActivity('quiz', {
           region: cont,
           total,
           firstTry: q.first,
           missed: q.miss,
           wrongClicks: q.wrong,
-          accuracy,
+          accuracy: total ? Math.round((q.first / total) * 100) : 0,
           missedCountries: missed.map((r) => r.n),
           wrongThenRightCountries: wrongThenRight.map((r) => r.n),
           reviewCountries: weak.map((r) => r.n),
@@ -644,7 +638,6 @@ const WorldExplorerApp = () => {
           sessionId: q.sessionId,
           durationSec: Math.round((Date.now() - q.startedAt) / 1000),
         });
-        celebrateRef.current('quiz', accuracy);
       }
 
       const chip = (r, cls) => {
@@ -972,8 +965,6 @@ const WorldExplorerApp = () => {
       </div>
 
       <div className="we-list" />
-
-      <PrToast toast={prToast} onClose={dismiss} />
     </div>
   );
 };

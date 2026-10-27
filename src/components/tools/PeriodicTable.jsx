@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiSearch, FiX } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
-import usePrToast from './usePrToast';
-import PrToast from './PrToast';
 import Dropdown from '../dropdown';
 import {
   ELEMENTS,
@@ -41,7 +39,6 @@ const Loader = () => (
 
 const PeriodicTableApp = () => {
   const navigate = useNavigate();
-  const { toast: prToast, celebrate, dismiss } = usePrToast();
   const [mode, setMode] = useState('table');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -66,8 +63,7 @@ const PeriodicTableApp = () => {
       mode: result.mode === 'symbol' ? 'symbols' : 'names',
       category: result.category,
     });
-    celebrate('periodic', result.accuracy);
-  }, [result, celebrate]);
+  }, [result]);
 
   const startQuiz = () => {
     const pool =
@@ -494,8 +490,6 @@ const PeriodicTableApp = () => {
           </div>
         )}
       </main>
-
-      <PrToast toast={prToast} onClose={dismiss} />
     </div>
   );
 };

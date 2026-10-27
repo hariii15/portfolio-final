@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiChevronDown } from 'react-icons/fi';
 
 /* Shared flat primitives — Notion light / Jev dark, Apple radius, no gradients/glow/glass */
 
@@ -99,53 +98,6 @@ export const SectionLabel = ({ children }) => (
 export const Divider = () => (
   <div className="border-t border-[#E9E9E6] dark:border-[#232323]" />
 );
-
-export const Disclosure = ({
-  title,
-  summary,
-  children,
-  defaultOpen = false,
-  className = '',
-}) => {
-  const [open, setOpen] = useState(defaultOpen);
-  const panelId = React.useId();
-
-  return (
-    <section className={`border-t border-[#E9E9E6] dark:border-[#232323] ${className}`}>
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        className="group flex w-full items-center gap-4 py-5 text-left"
-      >
-        <span className="min-w-0 flex-1">
-          <span className="font-display block text-[17px] font-semibold tracking-tight">
-            {title}
-          </span>
-          {summary && (
-            <span className="mt-0.5 block text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
-              {summary}
-            </span>
-          )}
-        </span>
-        <FiChevronDown
-          size={17}
-          aria-hidden="true"
-          className={`shrink-0 text-[#9B9A93] transition-transform duration-200 group-hover:text-[#111111] dark:text-[#6E6E6E] dark:group-hover:text-[#EDEDED] ${
-            open ? 'rotate-180' : ''
-          }`}
-        />
-      </button>
-
-      {open && (
-        <div id={panelId} className="pb-9">
-          {children}
-        </div>
-      )}
-    </section>
-  );
-};
 
 export const CodeBlock = ({ title, children }) => (
   <div className="codeblock">
