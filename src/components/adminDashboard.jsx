@@ -8,6 +8,7 @@ import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
 import StatsOverview from './statsOverview';
 import XpPanel from './xpPanel';
+import { computeProgress } from './xpModel';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -165,6 +166,14 @@ const AdminDashboard = () => {
   const iconBtn =
     'flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#E9E9E6] text-[#6F6E69] transition-colors hover:bg-[#F7F7F5] hover:text-[#111111] dark:border-[#2E2E2E] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]';
 
+  const progress = computeProgress(activities);
+
+  const rankStyle = {
+    borderColor: `${progress.rank.color}66`,
+    backgroundColor: `${progress.rank.color}14`,
+    color: progress.rank.color,
+  };
+
   return (
     <div className="min-h-screen bg-[#F7F7F5] dark:bg-[#0A0A0A]">
       <div className="mx-auto flex w-full max-w-[1440px] gap-10 px-5 pb-28 pt-10 sm:px-8 xl:px-10 lg:pb-14">
@@ -175,7 +184,36 @@ const AdminDashboard = () => {
             </p>
             <p className="font-display mt-1 text-[15px] font-bold tracking-tight">Playground</p>
 
-            <nav aria-label="Apps" className="mt-4 space-y-1">
+            <div className="mt-4 rounded-[12px] border border-[#E9E9E6] bg-white p-3 dark:border-[#232323] dark:bg-[#111111]">
+              <div className="flex items-center gap-3">
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[9px] border font-display text-[17px] font-bold"
+                  style={rankStyle}
+                >
+                  {progress.level}
+                </span>
+                <div className="min-w-0">
+                  <p className="mono text-[9px] uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
+                    Level {progress.level} · Rank
+                  </p>
+                  <p className="truncate text-[13px] font-semibold">{progress.rank.name}</p>
+                  <p className="text-[10.5px] text-[#9B9A93] dark:text-[#6E6E6E]">
+                    {progress.totalXp.toLocaleString()} XP
+                  </p>
+                </div>
+              </div>
+              <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#EFEFEA] dark:bg-[#1A1A1A]">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${progress.levelProgress}%`,
+                    backgroundColor: progress.rank.color,
+                  }}
+                />
+              </div>
+            </div>
+
+            <nav aria-label="Apps" className="mt-5 space-y-1">
               {TOOLS.map((tool) => {
                 const Icon = tool.icon;
                 return (
@@ -344,7 +382,30 @@ const AdminDashboard = () => {
         aria-label="Apps"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E9E9E6] bg-white px-2 pb-2.5 pt-2 dark:border-[#232323] dark:bg-[#0A0A0A] lg:hidden"
       >
-        <div className="mx-auto flex max-w-lg items-stretch justify-between gap-1">
+        <div className="mx-auto max-w-lg">
+          <div className="mb-2 flex items-center gap-2 px-1">
+            <span
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border font-display text-[11px] font-bold"
+              style={rankStyle}
+            >
+              {progress.level}
+            </span>
+            <span className="text-[11px] font-semibold">{progress.rank.name}</span>
+            <span className="mono text-[9.5px] uppercase tracking-[0.1em] text-[#9B9A93] dark:text-[#6E6E6E]">
+              {progress.totalXp.toLocaleString()} XP
+            </span>
+            <div className="ml-auto h-1.5 w-20 overflow-hidden rounded-full bg-[#EFEFEA] dark:bg-[#1A1A1A]">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${progress.levelProgress}%`,
+                  backgroundColor: progress.rank.color,
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-stretch justify-between gap-1">
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
             return (
@@ -358,6 +419,7 @@ const AdminDashboard = () => {
               </button>
             );
           })}
+          </div>
         </div>
       </nav>
     </div>
