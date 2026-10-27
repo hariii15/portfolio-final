@@ -18,6 +18,8 @@ const WorldExplorer = React.lazy(() => import('./components/tools/WorldExplorer'
 const DumbTypes = React.lazy(() => import('./components/tools/DumbTypes'));
 const CubeTimer = React.lazy(() => import('./components/tools/CubeTimer'));
 const PeriodicTable = React.lazy(() => import('./components/tools/PeriodicTable'));
+const FlagLearn = React.lazy(() => import('./components/tools/FlagLearn'));
+const RunLog = React.lazy(() => import('./components/tools/RunLog'));
 
 // Flat, static loader — no glow, no blur, no gradient.
 const Loader = ({ label }) => (
@@ -85,6 +87,8 @@ const AppRouter = () => {
                 <Route path="/admin/tools/dumb-types" element={<DumbTypes />} />
                 <Route path="/admin/tools/cube-timer" element={<CubeTimer />} />
                 <Route path="/admin/tools/periodic-table" element={<PeriodicTable />} />
+                <Route path="/admin/tools/flag-learn" element={<FlagLearn />} />
+                <Route path="/admin/tools/run-log" element={<RunLog />} />
                 <Route element={<Layout />}>
                   <Route path="/hero" element={<Hero />} />
                   <Route path="/about" element={<About />} />

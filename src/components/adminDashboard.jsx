@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight, FiFlag, FiTrendingUp } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
@@ -46,6 +46,20 @@ const TOOLS = [
     title: 'Periodic Table',
     short: 'Elements',
     sub: 'Explore all 118 elements and quiz yourself',
+  },
+  {
+    to: '/admin/tools/flag-learn',
+    icon: FiFlag,
+    title: 'Flag Learn',
+    short: 'Flags',
+    sub: 'Learn country flags by region',
+  },
+  {
+    to: '/admin/tools/run-log',
+    icon: FiTrendingUp,
+    title: 'Run Log',
+    short: 'Runs',
+    sub: 'Log runs, distance, elevation, pace',
   },
 ];
 

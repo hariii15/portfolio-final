@@ -1,0 +1,745 @@
+/* Flag Learn — light app page, flag images from flagcdn, quiz footer chips */
+
+.fl-root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #f7f7f5;
+  color: #111111;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.fl-root *,
+.fl-root *::before,
+.fl-root *::after {
+  box-sizing: border-box;
+}
+
+.fl-root button,
+.fl-root select {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- header ---------- */
+
+.fl-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e9e9e6;
+  flex-wrap: wrap;
+}
+
+.fl-back,
+.fl-reset {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid #e9e9e6;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #6f6e69;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fl-back:hover,
+.fl-reset:hover {
+  color: #111111;
+  border-color: #d9d9d3;
+  background: #f7f7f5;
+}
+
+.fl-header-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ---------- stage ---------- */
+
+.fl-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  padding: 28px 24px;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  outline: none;
+}
+
+.fl-phrase {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9b9a93;
+}
+
+.fl-flag {
+  width: min(220px, 48vw);
+  height: min(146px, 32vw);
+  border: 1px solid #e9e9e6;
+  border-radius: 10px;
+  background: #ffffff;
+  object-fit: cover;
+  display: block;
+  image-rendering: crisp-edges;
+}
+
+.fl-flag.inspection {
+  border-color: #ec4899;
+}
+
+.fl-hint {
+  font-size: 13px;
+  color: #6f6e69;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.fl-hint strong {
+  font-weight: 600;
+  color: #111111;
+}
+
+.fl-qstats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: #6f6e69;
+}
+
+.fl-qstats b {
+  font-weight: 600;
+  color: #111111;
+}
+
+/* ---------- footer ---------- */
+
+.fl-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid #e9e9e6;
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9b9a93;
+}
+
+.fl-foot-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #e9e9e6;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 12px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fl-btn:hover {
+  border-color: #d9d9d3;
+  background: #f7f7f5;
+}
+
+.fl-btn.fl-ghost {
+  background: transparent;
+  color: #6f6e69;
+}
+
+.fl-btn.fl-ghost:hover {
+  background: #f7f7f5;
+  color: #111111;
+}
+
+.fl-btn.fl-accent {
+  background: #ec4899;
+  border-color: #ec4899;
+  color: #ffffff;
+}
+
+.fl-btn.fl-accent:hover {
+  background: #d63d89;
+  border-color: #d63d89;
+}
+
+.fl-btn.fl-active {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.fl-btn.fl-active:hover {
+  background: #2b2b2b;
+  border-color: #2b2b2b;
+}
+
+.fl-btn.fl-quiz {
+  background: #111111;
+  border-color: #111111;
+  color: #ffffff;
+}
+
+.fl-btn.fl-quiz:hover {
+  background: #2b2b2b;
+}
+
+.fl-btn.fl-quiz.fl-active {
+  background: #ec4899;
+  border-color: #ec4899;
+}
+
+.fl-btn.fl-quiz.fl-active:hover {
+  background: #d63d89;
+}
+
+/* ---------- quiz finish ---------- */
+
+.fl-qt {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #111111;
+}
+
+.fl-qs {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  color: #6f6e69;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.fl-qs b {
+  font-weight: 600;
+  color: #111111;
+}
+
+.fl-review {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.fl-review-h {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9b9a93;
+}
+
+.fl-review-h span {
+  margin-left: 6px;
+  color: #6f6e69;
+}
+
+.fl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e9e9e6;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 5px 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #111111;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fl-chip:hover {
+  border-color: #d9d9d3;
+  background: #f7f7f5;
+}
+
+.fl-chip.fl-good {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: #f0fdf4;
+}
+
+.fl-chip.fl-miss {
+  border-color: #ec4899;
+  color: #ec4899;
+  background: #fdf2f8;
+}
+
+.fl-chip img {
+  width: 16px;
+  height: 11px;
+  border: 0;
+  border-radius: 2px;
+  display: block;
+}
+
+.fl-empty {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 13px;
+  color: #9b9a93;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* ---------- stats pane ---------- */
+
+.fl-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.fl-stats-h {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9b9a93;
+}
+
+.fl-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.fl-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid #e9e9e6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.fl-stat-label {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9b9a93;
+}
+
+.fl-stat-value {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111111;
+  line-height: 1;
+}
+
+.fl-stat-sub {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  color: #6f6e69;
+}
+
+.fl-region-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fl-region-pill {
+  border: 1px solid #e9e9e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fl-region-pill:hover {
+  border-color: #d9d9d3;
+  background: #f7f7f5;
+}
+
+.fl-region-pill.fl-active {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.fl-region-pill.fl-active:hover {
+  background: #2b2b2b;
+}
+
+.fl-bar-track {
+  width: 100%;
+  height: 6px;
+  border: 1px solid #e9e9e6;
+  border-radius: 999px;
+  background: #f7f7f5;
+  overflow: hidden;
+}
+
+.fl-bar-fill {
+  height: 100%;
+  background: #ec4899;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.fl-stat-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.fl-accuracy-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.fl-band-chip {
+  border: 1px solid #e9e9e6;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 8px;
+  color: #111111;
+}
+
+.fl-band-chip.fl-hot {
+  border-color: #ec4899;
+  background: #fdf2f8;
+  color: #ec4899;
+}
+
+.fl-band-chip.fl-warm {
+  border-color: #ca8a04;
+  background: #fefce8;
+  color: #ca8a04;
+}
+
+.fl-band-chip.fl-cold {
+  border-color: #9b9a93;
+  background: #f7f7f5;
+  color: #6f6e69;
+}
+
+/* ---------- graphs ---------- */
+
+.fl-graph-wrap {
+  width: 100%;
+  overflow: visible;
+}
+
+.fl-graph-title {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #6f6e69;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.fl-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #9b9a93;
+}
+
+.fl-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fl-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.fl-empty-state {
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-size: 13px;
+  color: #9b9a93;
+  text-align: center;
+  padding: 18px 0;
+  line-height: 1.5;
+}
+
+/* ---------- dark mode alternates ---------- */
+
+.dark .fl-root {
+  background: #0a0a0a;
+  color: #ededed;
+}
+
+.dark .fl-header {
+  border-color: #232323;
+}
+
+.dark .fl-back,
+.dark .fl-reset {
+  border-color: #2e2e2e;
+  background: #111111;
+  color: #a1a1a1;
+}
+
+.dark .fl-back:hover,
+.dark .fl-reset:hover {
+  color: #ededed;
+  border-color: #3a3a3a;
+  background: #161616;
+}
+
+.dark .fl-stage {
+  color: #ededed;
+}
+
+.dark .fl-flag {
+  border-color: #2e2e2e;
+  background: #111111;
+}
+
+.dark .fl-flag.inspection {
+  border-color: #ec4899;
+}
+
+.dark .fl-hint {
+  color: #a1a1a1;
+}
+
+.dark .fl-hint strong {
+  color: #ededed;
+}
+
+.dark .fl-qstats {
+  color: #a1a1a1;
+}
+
+.dark .fl-qstats b {
+  color: #ededed;
+}
+
+.dark .fl-footer {
+  border-color: #232323;
+  color: #6e6e6e;
+}
+
+.dark .fl-btn {
+  border-color: #2e2e2e;
+  background: #161616;
+  color: #ededed;
+}
+
+.dark .fl-btn:hover {
+  border-color: #3a3a3a;
+  background: #111111;
+}
+
+.dark .fl-btn.fl-ghost {
+  background: transparent;
+  color: #a1a1a1;
+}
+
+.dark .fl-btn.fl-ghost:hover {
+  background: #161616;
+  color: #ededed;
+}
+
+.dark .fl-btn.fl-accent {
+  background: #ec4899;
+  border-color: #ec4899;
+  color: #ffffff;
+}
+
+.dark .fl-btn.fl-accent:hover {
+  background: #d63d89;
+  border-color: #d63d89;
+}
+
+.dark .fl-btn.fl-active {
+  border-color: #ededed;
+  background: #ededed;
+  color: #0a0a0a;
+}
+
+.dark .fl-btn.fl-active.fl-quiz {
+  background: #ec4899;
+  border-color: #ec4899;
+}
+
+.dark .fl-btn.fl-active.fl-quiz:hover {
+  background: #d63d89;
+  border-color: #d63d89;
+}
+
+.dark .fl-qt {
+  color: #ededed;
+}
+
+.dark .fl-qs {
+  color: #a1a1a1;
+}
+
+.dark .fl-qs b {
+  color: #ededed;
+}
+
+.dark .fl-review-h,
+.dark .fl-stats-h {
+  color: #6e6e6e;
+}
+
+.dark .fl-chip {
+  border-color: #2e2e2e;
+  background: #161616;
+  color: #ededed;
+}
+
+.dark .fl-chip:hover {
+  border-color: #3a3a3a;
+  background: #111111;
+}
+
+.dark .fl-chip.fl-good {
+  border-color: #16a34a;
+  background: #06261b;
+  color: #86efac;
+}
+
+.dark .fl-chip.fl-miss {
+  border-color: #ec4899;
+  background: #2a1420;
+  color: #f9a8d4;
+}
+
+.dark .fl-empty {
+  color: #6e6e6e;
+}
+
+.dark .fl-stat {
+  border-color: #2e2e2e;
+  background: #111111;
+}
+
+.dark .fl-stat-label {
+  color: #6e6e6e;
+}
+
+.dark .fl-stat-value {
+  color: #ededed;
+}
+
+.dark .fl-stat-sub {
+  color: #a1a1a1;
+}
+
+.dark .fl-region-pill {
+  border-color: #2e2e2e;
+  background: #161616;
+  color: #ededed;
+}
+
+.dark .fl-region-pill:hover {
+  border-color: #3a3a3a;
+  background: #111111;
+}
+
+.dark .fl-region-pill.fl-active {
+  border-color: #ededed;
+  background: #ededed;
+  color: #0a0a0a;
+}
+
+.dark .fl-region-pill.fl-active:hover {
+  background: #ffffff;
+}
+
+.dark .fl-bar-track {
+  border-color: #2e2e2e;
+  background: #161616;
+}
+
+.dark .fl-band-chip {
+  border-color: #2e2e2e;
+  background: #161616;
+  color: #ededed;
+}
+
+.dark .fl-band-chip.fl-hot {
+  border-color: #ec4899;
+  background: #2a1420;
+  color: #f9a8d4;
+}
+
+.dark .fl-band-chip.fl-warm {
+  border-color: #ca8a04;
+  background: #2a2312;
+  color: #fde68a;
+}
+
+.dark .fl-band-chip.fl-cold {
+  border-color: #2e2e2e;
+  background: #111111;
+  color: #a1a1a1;
+}
+
+.dark .fl-empty-state {
+  color: #6e6e6e;
+}
