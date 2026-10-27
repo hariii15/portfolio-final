@@ -13,6 +13,7 @@ const ActivityChart = ({ activities = [] }) => {
   const typing = activities.filter((a) => a.type === 'typing');
   const quizzes = activities.filter((a) => a.type === 'quiz');
   const cubes = activities.filter((a) => a.type === 'cube');
+  const periodic = activities.filter((a) => a.type === 'periodic');
 
   const bestWpm = typing.reduce((max, a) => Math.max(max, Number(a.data?.wpm) || 0), 0);
   const typingAcc = typing.length
@@ -25,6 +26,10 @@ const ActivityChart = ({ activities = [] }) => {
     const v = Number(a.data?.durationSec);
     return Number.isFinite(v) && v > 0 ? Math.min(best, v) : best;
   }, Infinity);
+  const bestElementScore = periodic.reduce(
+    (best, a) => Math.max(best, Number(a.data?.accuracy) || 0),
+    0
+  );
 
   const total = activities.length;
   const days = 14;
@@ -34,6 +39,7 @@ const ActivityChart = ({ activities = [] }) => {
     typing: 0,
     quiz: 0,
     cube: 0,
+    periodic: 0,
   }));
   const index = new Map(buckets.map((b, i) => [b.date.getTime(), i]));
 
@@ -45,9 +51,13 @@ const ActivityChart = ({ activities = [] }) => {
     if (a.type === 'typing') buckets[i].typing += 1;
     else if (a.type === 'quiz') buckets[i].quiz += 1;
     else if (a.type === 'cube') buckets[i].cube += 1;
+    else if (a.type === 'periodic') buckets[i].periodic += 1;
   });
 
-  const max = Math.max(2, ...buckets.map((b) => b.typing + b.quiz + b.cube));
+  const max = Math.max(
+    2,
+    ...buckets.map((b) => b.typing + b.quiz + b.cube + b.periodic)
+  );
 
   const W = 900;
   const H = 240;
@@ -68,6 +78,8 @@ const ActivityChart = ({ activities = [] }) => {
     { label: 'typing acc', value: `${typingAcc}%` },
     { label: 'quiz acc', value: `${quizAcc}%` },
     { label: 'best solve', value: Number.isFinite(bestSolve) ? `${bestSolve.toFixed(2)}s` : '—' },
+    { label: 'element quizzes', value: periodic.length },
+    { label: 'best elem score', value: `${bestElementScore}%` },
   ];
 
   return (
@@ -76,10 +88,10 @@ const ActivityChart = ({ activities = [] }) => {
         <div>
           <SectionLabel>Activity</SectionLabel>
           <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Every completed quiz, typing test, and cube solve.
+            Every completed quiz, typing test, cube solve, and element quiz.
           </p>
         </div>
-        <div className="hidden items-center gap-5 pt-1.5 text-[12px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">
+        <div className="hidden flex-wrap items-center justify-end gap-x-5 gap-y-2 pt-1.5 text-[12px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">
           <span className="flex items-center gap-2">
             <i className="inline-block h-0.5 w-4 rounded-full bg-[#EC4899]" /> typing
           </span>
@@ -89,6 +101,9 @@ const ActivityChart = ({ activities = [] }) => {
           <span className="flex items-center gap-2">
             <i className="inline-block h-0.5 w-4 rounded-full bg-[#9B9A93] dark:bg-[#6E6E6E]" /> cube
           </span>
+          <span className="flex items-center gap-2">
+            <i className="inline-block h-0.5 w-4 rounded-full bg-[#16A34A]" /> element quiz
+          </span>
         </div>
       </div>
 
@@ -97,7 +112,7 @@ const ActivityChart = ({ activities = [] }) => {
           <FiActivity size={26} className="text-[#9B9A93] dark:text-[#6E6E6E]" />
           <p className="mt-4 text-[15px] font-semibold">No activity yet</p>
           <p className="mt-1.5 text-[13.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Finish a quiz, typing test, or cube solve to start the graph.
+            Finish a quiz, typing test, cube solve, or element quiz to start the graph.
           </p>
         </div>
       ) : (
@@ -136,9 +151,10 @@ const ActivityChart = ({ activities = [] }) => {
               const tH = (b.typing / max) * (H - padT - padB);
               const qH = (b.quiz / max) * (H - padT - padB);
               const cH = (b.cube / max) * (H - padT - padB);
+              const pH = (b.periodic / max) * (H - padT - padB);
               return (
                 <g key={b.date.toISOString()}>
-                  <title>{`${b.date.toLocaleDateString()} · ${b.typing} typing · ${b.quiz} quiz · ${b.cube} cube`}</title>
+                  <title>{`${b.date.toLocaleDateString()} · ${b.typing} typing · ${b.quiz} quiz · ${b.cube} cube · ${b.periodic} element`}</title>
                   {b.typing > 0 && (
                     <rect x={x} y={y(b.typing)} width={barW} height={tH} rx="1.5" fill="#EC4899" />
                   )}
@@ -162,6 +178,16 @@ const ActivityChart = ({ activities = [] }) => {
                       rx="1.5"
                       fill="currentColor"
                       className="text-[#9B9A93] dark:text-[#6E6E6E]"
+                    />
+                  )}
+                  {b.periodic > 0 && (
+                    <rect
+                      x={x}
+                      y={y(b.typing + b.quiz + b.cube + b.periodic)}
+                      width={barW}
+                      height={pH}
+                      rx="1.5"
+                      fill="#16A34A"
                     />
                   )}
                   {i % 2 === 0 && (

@@ -24,6 +24,12 @@ const CUBE_OPTIONS = [
   { value: 'Roux', label: 'Roux' },
 ];
 
+const PERIODIC_OPTIONS = [
+  { value: 'any', label: 'All quiz modes' },
+  { value: 'symbols', label: 'Name → symbol' },
+  { value: 'names', label: 'Symbol → name' },
+];
+
 const formatCube = (v) =>
   v >= 60
     ? `${Math.floor(v / 60)}:${(v % 60).toFixed(1).padStart(4, '0')}`
@@ -34,10 +40,12 @@ const ActivityInsights = ({ activities = [] }) => {
   const [quizFilter, setQuizFilter] = useState('any');
   const [retryFilter, setRetryFilter] = useState('any');
   const [cubeFilter, setCubeFilter] = useState('any');
+  const [periodicFilter, setPeriodicFilter] = useState('any');
 
   const typing = activities.filter((a) => a.type === 'typing');
   const quizzes = activities.filter((a) => a.type === 'quiz');
   const cubes = activities.filter((a) => a.type === 'cube');
+  const periodic = activities.filter((a) => a.type === 'periodic');
 
   const wpmFiltered = typing.filter((a) => {
     if (wpmFilter === 'any') return true;
@@ -55,6 +63,10 @@ const ActivityInsights = ({ activities = [] }) => {
 
   const cubeFiltered = cubes.filter(
     (a) => cubeFilter === 'any' || a.data?.method === cubeFilter
+  );
+
+  const periodicFiltered = periodic.filter(
+    (a) => periodicFilter === 'any' || a.data?.mode === periodicFilter
   );
 
   const wpmPoints = wpmFiltered.map((a) => ({
@@ -88,6 +100,14 @@ const ActivityInsights = ({ activities = [] }) => {
     t: a.createdAt,
     value: Number(a.data?.durationSec) || 0,
     label: `${Number(a.data?.durationSec || 0).toFixed(2)}s · ${a.data?.method ?? ''}`,
+  }));
+
+  const periodicPoints = periodicFiltered.map((a) => ({
+    t: a.createdAt,
+    value: Number(a.data?.accuracy) || 0,
+    label: `${a.data?.accuracy ?? 0}% · ${a.data?.correct ?? 0}/${a.data?.total ?? 0} · ${
+      a.data?.mode ?? ''
+    }`,
   }));
 
   return (
@@ -145,6 +165,26 @@ const ActivityInsights = ({ activities = [] }) => {
             onChange={setRetryFilter}
             options={QUIZ_OPTIONS}
             ariaLabel="Filter retries by region"
+            className="w-full sm:w-[190px]"
+          />
+        }
+      />
+
+      <MetricLineChart
+        title="Element quiz score"
+        subtitle="Accuracy on completed periodic table quizzes."
+        points={periodicPoints}
+        color="#16A34A"
+        formatValue={(v) => `${Math.round(v)}%`}
+        yMin={0}
+        yMax={100}
+        emptyText="Finish a periodic table quiz to see the trend."
+        filter={
+          <Dropdown
+            value={periodicFilter}
+            onChange={setPeriodicFilter}
+            options={PERIODIC_OPTIONS}
+            ariaLabel="Filter periodic table quizzes by mode"
             className="w-full sm:w-[190px]"
           />
         }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiArrowUpRight } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
@@ -163,7 +163,19 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <div className="mt-10 space-y-16">
+        <div className="mt-14 border-b border-[#E9E9E6] pb-5 dark:border-[#232323]">
+          <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
+            Progress
+          </p>
+          <h2 className="font-display mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+            Stats maxing
+          </h2>
+          <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+            Everything you have logged from the playground, in one place.
+          </p>
+        </div>
+
+        <div className="mt-8 space-y-16">
           <ActivityChart activities={activities} />
           <ActivityInsights activities={activities} />
         </div>
@@ -181,6 +193,7 @@ const AdminDashboard = () => {
               { to: '/admin/tools/world-explorer', icon: <FiGlobe size={17} />, title: 'World Explorer', sub: 'Interactive country map, facts, and quiz' },
               { to: '/admin/tools/dumb-types', icon: <FiType size={17} />, title: 'Dumb Types', sub: 'Typing speed and accuracy test' },
               { to: '/admin/tools/cube-timer', icon: <FiBox size={17} />, title: 'Cube Timer', sub: 'Inspection countdown and solve timer' },
+              { to: '/admin/tools/periodic-table', icon: <FiGrid size={17} />, title: 'Periodic Table', sub: 'Explore all 118 elements and quiz yourself' },
             ].map((tool) => (
               <button
                 key={tool.to}

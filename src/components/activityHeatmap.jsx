@@ -7,6 +7,7 @@ const APPS = [
   { value: 'typing', label: 'Typing' },
   { value: 'quiz', label: 'Quiz' },
   { value: 'cube', label: 'Cube timer' },
+  { value: 'periodic', label: 'Element quiz' },
 ];
 
 const startOfDay = (value) => {
@@ -22,6 +23,7 @@ const sessionLabel = (app, n) => {
   if (app === 'all') return `${n} session${n === 1 ? '' : 's'}`;
   if (app === 'typing') return `${n} typing test${n === 1 ? '' : 's'}`;
   if (app === 'quiz') return `${n} ${n === 1 ? 'quiz' : 'quizzes'}`;
+  if (app === 'periodic') return `${n} element quiz${n === 1 ? '' : 'zes'}`;
   return `${n} cube solve${n === 1 ? '' : 's'}`;
 };
 
