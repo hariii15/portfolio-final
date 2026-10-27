@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
+import usePrToast from './usePrToast';
+import PrToast from './PrToast';
 import './dumb-types.css';
 
 const BASE_WORDS = (
@@ -374,6 +376,7 @@ const Loader = () => (
 
 const DumbTypesApp = () => {
   const navigate = useNavigate();
+  const { toast: prToast, celebrate, dismiss } = usePrToast();
   const [state, dispatch] = useReducer(
     reducer,
     undefined,
@@ -434,7 +437,8 @@ const DumbTypesApp = () => {
       durationSec: r.durationSec,
       samples: r.samples,
     });
-  }, [state.finished, state.result]);
+    celebrate('typing', r.wpm);
+  }, [state.finished, state.result, celebrate]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -790,6 +794,8 @@ const DumbTypesApp = () => {
         </div>
         <span className="dt-foot-brand">english</span>
       </footer>
+
+      <PrToast toast={prToast} onClose={dismiss} />
     </div>
   );
 };

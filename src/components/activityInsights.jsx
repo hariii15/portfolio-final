@@ -111,7 +111,7 @@ const ActivityInsights = ({ activities = [] }) => {
   }));
 
   return (
-    <div className="space-y-20">
+    <div className="space-y-12">
       <ActivityHeatmap activities={activities} />
 
       <MetricLineChart

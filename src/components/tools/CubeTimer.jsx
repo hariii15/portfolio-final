@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiRotateCcw } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
+import usePrToast from './usePrToast';
+import PrToast from './PrToast';
 import Dropdown from '../dropdown';
 import './cube-timer.css';
 
@@ -30,6 +32,7 @@ const Loader = () => (
 
 const CubeTimerApp = () => {
   const navigate = useNavigate();
+  const { toast: prToast, celebrate, dismiss } = usePrToast();
   const [method, setMethod] = useState('CFOP');
   const [phase, setPhase] = useState('idle');
   const [display, setDisplay] = useState(INSPECTION);
@@ -110,7 +113,8 @@ const CubeTimerApp = () => {
       durationSec: Number(result.toFixed(2)),
       inspectionSec: INSPECTION,
     });
-  }, [phase, result, resultMethod]);
+    celebrate('cube', Number(result.toFixed(2)), true);
+  }, [phase, result, resultMethod, celebrate]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -200,6 +204,8 @@ const CubeTimerApp = () => {
         <span>space / tap: {phase === 'solving' ? 'stop' : phase === 'stopped' ? 'next' : 'start'}</span>
         <span>{method}</span>
       </footer>
+
+      <PrToast toast={prToast} onClose={dismiss} />
     </div>
   );
 };

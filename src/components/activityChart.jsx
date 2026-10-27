@@ -86,9 +86,9 @@ const ActivityChart = ({ activities = [] }) => {
     <div>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <SectionLabel>Activity</SectionLabel>
-          <p className="mt-1.5 text-[14px] text-[#6F6E69] dark:text-[#A1A1A1]">
-            Every completed quiz, typing test, cube solve, and element quiz.
+          <SectionLabel>Last 14 days</SectionLabel>
+          <p className="mt-1.5 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+            Completed sessions by day.
           </p>
         </div>
         <div className="hidden flex-wrap items-center justify-end gap-x-5 gap-y-2 pt-1.5 text-[12px] text-[#6F6E69] dark:text-[#A1A1A1] sm:flex">

@@ -2,12 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight } from 'react-icons/fi';
-import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
+import {
+  FiLogOut,
+  FiPlus,
+  FiEdit2,
+  FiEdit3,
+  FiTrash2,
+  FiEye,
+  FiCalendar,
+  FiClock,
+  FiFileText,
+  FiGlobe,
+  FiType,
+  FiBox,
+  FiGrid,
+  FiArrowUpRight,
+} from 'react-icons/fi';
+import { SectionLabel, PrimaryButton, SecondaryButton, Disclosure } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
 import StatsOverview from './statsOverview';
-import XpPanel from './xpPanel';
+import { XpSummary, XpBreakdown, PersonalRecords } from './xpPanel';
+import { computeProgress } from './xpModel';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -16,35 +32,30 @@ const TOOLS = [
     to: '/admin/create',
     icon: FiEdit3,
     title: 'Blog Writing',
-    short: 'Write',
     sub: 'Draft, edit, and publish articles',
   },
   {
     to: '/admin/tools/world-explorer',
     icon: FiGlobe,
     title: 'World Explorer',
-    short: 'World',
     sub: 'Interactive country map, facts, and quiz',
   },
   {
     to: '/admin/tools/dumb-types',
     icon: FiType,
     title: 'Dumb Types',
-    short: 'Types',
     sub: 'Typing speed and accuracy test',
   },
   {
     to: '/admin/tools/cube-timer',
     icon: FiBox,
     title: 'Cube Timer',
-    short: 'Cube',
     sub: 'Inspection countdown and solve timer',
   },
   {
     to: '/admin/tools/periodic-table',
     icon: FiGrid,
     title: 'Periodic Table',
-    short: 'Elements',
     sub: 'Explore all 118 elements and quiz yourself',
   },
 ];
@@ -157,7 +168,9 @@ const AdminDashboard = () => {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-[#0A0A0A]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#E9E9E6] border-t-[#111111] dark:border-[#232323] dark:border-t-[#EDEDED]" />
-        <p className="mono mt-3 text-[11px] uppercase tracking-[0.2em] text-[#9B9A93] dark:text-[#6E6E6E]">Loading dashboard</p>
+        <p className="mono mt-3 text-[11px] uppercase tracking-[0.2em] text-[#9B9A93] dark:text-[#6E6E6E]">
+          Loading dashboard
+        </p>
       </div>
     );
   }
@@ -165,67 +178,22 @@ const AdminDashboard = () => {
   const iconBtn =
     'flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#E9E9E6] text-[#6F6E69] transition-colors hover:bg-[#F7F7F5] hover:text-[#111111] dark:border-[#2E2E2E] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]';
 
+  const progress = computeProgress(activities);
+  const recordCount = Object.values(progress.prs).filter((r) => r.value != null).length;
+  const attributedXp = Object.values(progress.byApp).reduce((sum, app) => sum + app.total, 0);
+  const publishedCount = blogs.filter((b) => b.published).length;
+
   return (
     <div className="min-h-screen bg-[#F7F7F5] dark:bg-[#0A0A0A]">
-      <div className="mx-auto flex w-full max-w-[1440px] gap-10 px-5 pb-28 pt-10 sm:px-8 xl:px-10 lg:pb-14">
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <div className="sticky top-10">
-            <p className="mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9B9A93] dark:text-[#6E6E6E]">
+      <div className="mx-auto w-full max-w-5xl px-5 pb-24 pt-10 sm:px-8">
+        <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
               Admin
             </p>
-            <p className="font-display mt-1 text-[15px] font-bold tracking-tight">Playground</p>
-
-            <nav aria-label="Apps" className="mt-4 space-y-1">
-              {TOOLS.map((tool) => {
-                const Icon = tool.icon;
-                return (
-                  <button
-                    key={tool.to}
-                    onClick={() => navigate(tool.to)}
-                    className="group flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-left text-[13px] font-medium text-[#6F6E69] transition-colors hover:bg-[#EFEFEA] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
-                      <Icon size={15} />
-                    </span>
-                    <span className="truncate">{tool.title}</span>
-                  </button>
-                );
-              })}
-            </nav>
-
-            <div className="mt-6 border-t border-[#E9E9E6] pt-5 dark:border-[#232323]">
-              <p className="mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">
-                On this page
-              </p>
-              <nav className="mt-3 space-y-1.5">
-                {[
-                  { href: '#overview', label: 'Overview' },
-                  { href: '#records', label: 'Records' },
-                  { href: '#playground', label: 'Playground' },
-                  { href: '#articles', label: 'Articles' },
-                ].map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="block rounded-[8px] px-2.5 py-1.5 text-[12.5px] text-[#6F6E69] transition-colors hover:bg-[#EFEFEA] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </aside>
-
-        <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-5 border-b border-[#E9E9E6] pb-8 dark:border-[#232323] sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9B9A93] dark:text-[#6E6E6E]">Admin</p>
-            <h1 className="font-display mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Stats maxing</h1>
-            <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[#6F6E69] dark:text-[#A1A1A1]">
-              Every session banks XP, daily check-ins pay streak bonuses, and every new personal
-              record adds 100 XP.
-            </p>
+            <h1 className="font-display mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+              Dashboard
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <PrimaryButton onClick={() => navigate('/admin/create')}>
@@ -235,7 +203,7 @@ const AdminDashboard = () => {
               <FiLogOut size={15} /> Log out
             </SecondaryButton>
           </div>
-        </div>
+        </header>
 
         {error && (
           <div className="mt-6 rounded-apple border border-[#EC4899]/30 bg-[#EC4899]/5 p-4 text-sm text-[#EC4899]">
@@ -243,123 +211,162 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div id="overview" className="mt-8 scroll-mt-8">
-          <XpPanel activities={activities} />
-        </div>
+        <section className="mt-12">
+          <XpSummary progress={progress} />
+        </section>
 
-        <div className="mt-12 space-y-20">
-          <StatsOverview activities={activities} />
-          <ActivityChart activities={activities} />
-          <ActivityInsights activities={activities} />
-        </div>
+        <div className="mt-14">
+          <SectionLabel>Details</SectionLabel>
+          <div className="mt-3">
+            <Disclosure
+              title="Personal records"
+              summary={
+                recordCount
+                  ? `${recordCount} recorded · +${progress.prXp.toLocaleString()} XP`
+                  : 'No records logged yet'
+              }
+            >
+              <PersonalRecords progress={progress} />
+            </Disclosure>
 
-        <Card id="playground" className="mt-20 scroll-mt-8 p-6 sm:p-7">
-          <div>
-            <SectionLabel>Playground</SectionLabel>
-            <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
-              Private tools available after sign-in.
-            </p>
-          </div>
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TOOLS.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <button
-                  key={tool.to}
-                  onClick={() => navigate(tool.to)}
-                  className="group flex items-center gap-3 rounded-apple border border-[#E9E9E6] bg-[#F7F7F5] p-4 text-left transition-colors hover:border-[#D9D9D3] hover:bg-[#EFEFEA] dark:border-[#232323] dark:bg-[#0A0A0A] dark:hover:border-[#2E2E2E] dark:hover:bg-[#161616]"
-                >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
-                    <Icon size={17} />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[14px] font-semibold">{tool.title}</span>
-                    <span className="mt-0.5 block text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">{tool.sub}</span>
-                  </span>
-                  <FiArrowUpRight size={16} className="shrink-0 text-[#9B9A93] transition-colors group-hover:text-[#EC4899] dark:text-[#6E6E6E]" />
-                </button>
-              );
-            })}
-          </div>
-        </Card>
+            <Disclosure
+              title="XP breakdown"
+              summary={`${attributedXp.toLocaleString()} XP across ${Object.keys(progress.byApp).length} tools`}
+            >
+              <XpBreakdown progress={progress} />
+            </Disclosure>
 
-        <Card id="articles" className="mt-12 scroll-mt-8 overflow-hidden">
-          <div className="border-b border-[#E9E9E6] p-6 dark:border-[#232323]">
-            <h2 className="text-[16px] font-bold">Articles</h2>
-          </div>
-          {blogs.length === 0 ? (
-            <div className="p-14 text-center">
-              <FiFileText size={28} className="mx-auto text-[#9B9A93] dark:text-[#6E6E6E]" />
-              <p className="mt-3 text-sm font-semibold">No articles yet</p>
-              <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">Click “New article” to write your first post.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-[#E9E9E6] dark:divide-[#232323]">
-              {blogs.map((blog) => (
-                <div key={blog.id} className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`mono rounded-md border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
-                        blog.published
-                          ? 'border-[#16a34a]/30 bg-[#16a34a]/10 text-[#16a34a]'
-                          : 'border-[#E9E9E6] bg-[#F7F7F5] text-[#6F6E69] dark:border-[#2E2E2E] dark:bg-[#161616] dark:text-[#A1A1A1]'
-                      }`}>
-                        {blog.published ? 'Published' : 'Draft'}
+            <Disclosure
+              title="Activity"
+              summary={`${progress.totalSessions} session${
+                progress.totalSessions === 1 ? '' : 's'
+              } · ${progress.checkInDays} active day${progress.checkInDays === 1 ? '' : 's'}`}
+            >
+              <ActivityChart activities={activities} />
+              <div className="mt-12">
+                <StatsOverview activities={activities} />
+              </div>
+            </Disclosure>
+
+            <Disclosure title="Trends" summary="Participation heatmap and per-tool trends">
+              <ActivityInsights activities={activities} />
+            </Disclosure>
+
+            <Disclosure title="Playground" summary={`${TOOLS.length} tools`}>
+              <div className="divide-y divide-[#E9E9E6] border-y border-[#E9E9E6] dark:divide-[#232323] dark:border-[#232323]">
+                {TOOLS.map((tool) => {
+                  const Icon = tool.icon;
+                  return (
+                    <button
+                      key={tool.to}
+                      onClick={() => navigate(tool.to)}
+                      className="group flex w-full items-center gap-3 py-3.5 text-left"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] border border-[#E9E9E6] bg-white text-[#111111] dark:border-[#2E2E2E] dark:bg-[#111111] dark:text-[#EDEDED]">
+                        <Icon size={16} />
                       </span>
-                      <span className="mono flex items-center gap-1 text-[11px] text-[#9B9A93] dark:text-[#6E6E6E]">
-                        <FiCalendar size={12} /> {formatDate(blog.createdAt)}
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[14px] font-medium">{tool.title}</span>
+                        <span className="mt-0.5 block text-[12.5px] text-[#6F6E69] dark:text-[#A1A1A1]">
+                          {tool.sub}
+                        </span>
                       </span>
-                      <span className="mono flex items-center gap-1 text-[11px] text-[#9B9A93] dark:text-[#6E6E6E]">
-                        <FiClock size={12} /> {blog.readingTime}
-                      </span>
-                    </div>
-                    <h3 className="mt-1.5 truncate text-[16px] font-bold">{blog.title}</h3>
-                    <p className="truncate text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
-                      {blog.excerpt || 'No excerpt provided.'}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => handleTogglePublish(blog)} disabled={actionLoading === blog.id} title="Toggle publish" className={iconBtn}>
-                      {blog.published ? '✓' : '○'}
+                      <FiArrowUpRight
+                        size={16}
+                        className="shrink-0 text-[#9B9A93] transition-colors group-hover:text-[#EC4899] dark:text-[#6E6E6E]"
+                      />
                     </button>
-                    <button onClick={() => navigate(`/blog/${blog.slug}`)} title="Preview" className={iconBtn}>
-                      <FiEye size={15} />
-                    </button>
-                    <button onClick={() => navigate(`/admin/edit/${blog.id}`)} title="Edit" className={iconBtn}>
-                      <FiEdit2 size={15} />
-                    </button>
-                    <button onClick={() => handleDelete(blog.id)} disabled={actionLoading === blog.id} title="Delete" className={iconBtn}>
-                      <FiTrash2 size={15} />
-                    </button>
-                  </div>
+                  );
+                })}
+              </div>
+            </Disclosure>
+
+            <Disclosure
+              title="Articles"
+              summary={
+                blogs.length
+                  ? `${blogs.length} article${blogs.length === 1 ? '' : 's'} · ${publishedCount} published`
+                  : 'No articles yet'
+              }
+            >
+              {blogs.length === 0 ? (
+                <div className="py-12 text-center">
+                  <FiFileText size={26} className="mx-auto text-[#9B9A93] dark:text-[#6E6E6E]" />
+                  <p className="mt-3 text-sm font-semibold">No articles yet</p>
+                  <p className="mt-1 text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+                    Click “New article” to write your first post.
+                  </p>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
+              ) : (
+                <div className="divide-y divide-[#E9E9E6] border-y border-[#E9E9E6] dark:divide-[#232323] dark:border-[#232323]">
+                  {blogs.map((blog) => (
+                    <div
+                      key={blog.id}
+                      className="flex flex-col gap-3 py-4 md:flex-row md:items-center md:justify-between"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`mono rounded-md border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
+                              blog.published
+                                ? 'border-[#16a34a]/30 bg-[#16a34a]/10 text-[#16a34a]'
+                                : 'border-[#E9E9E6] bg-[#F7F7F5] text-[#6F6E69] dark:border-[#2E2E2E] dark:bg-[#161616] dark:text-[#A1A1A1]'
+                            }`}
+                          >
+                            {blog.published ? 'Published' : 'Draft'}
+                          </span>
+                          <span className="mono flex items-center gap-1 text-[11px] text-[#9B9A93] dark:text-[#6E6E6E]">
+                            <FiCalendar size={12} /> {formatDate(blog.createdAt)}
+                          </span>
+                          <span className="mono flex items-center gap-1 text-[11px] text-[#9B9A93] dark:text-[#6E6E6E]">
+                            <FiClock size={12} /> {blog.readingTime}
+                          </span>
+                        </div>
+                        <h3 className="mt-1.5 truncate text-[15.5px] font-semibold">{blog.title}</h3>
+                        <p className="truncate text-[13px] text-[#6F6E69] dark:text-[#A1A1A1]">
+                          {blog.excerpt || 'No excerpt provided.'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleTogglePublish(blog)}
+                          disabled={actionLoading === blog.id}
+                          title="Toggle publish"
+                          className={iconBtn}
+                        >
+                          {blog.published ? '✓' : '○'}
+                        </button>
+                        <button
+                          onClick={() => navigate(`/blog/${blog.slug}`)}
+                          title="Preview"
+                          className={iconBtn}
+                        >
+                          <FiEye size={15} />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/admin/edit/${blog.id}`)}
+                          title="Edit"
+                          className={iconBtn}
+                        >
+                          <FiEdit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(blog.id)}
+                          disabled={actionLoading === blog.id}
+                          title="Delete"
+                          className={iconBtn}
+                        >
+                          <FiTrash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Disclosure>
+          </div>
         </div>
       </div>
-
-      <nav
-        aria-label="Apps"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E9E9E6] bg-white px-2 pb-2.5 pt-2 dark:border-[#232323] dark:bg-[#0A0A0A] lg:hidden"
-      >
-        <div className="mx-auto flex max-w-lg items-stretch justify-between gap-1">
-          {TOOLS.map((tool) => {
-            const Icon = tool.icon;
-            return (
-              <button
-                key={tool.to}
-                onClick={() => navigate(tool.to)}
-                className="flex flex-1 flex-col items-center gap-1 rounded-[10px] px-1 py-1.5 text-[#6F6E69] transition-colors hover:bg-[#F7F7F5] hover:text-[#111111] dark:text-[#A1A1A1] dark:hover:bg-[#161616] dark:hover:text-[#EDEDED]"
-              >
-                <Icon size={17} />
-                <span className="text-[9.5px] font-medium leading-none">{tool.short}</span>
-              </button>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 };
