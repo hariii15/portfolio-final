@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiRefreshCw, FiFlag, FiTrendingUp, FiTarget, FiTrophy } from 'react-icons/fi';
+import { FiArrowLeft, FiRefreshCw, FiFlag, FiTrendingUp, FiTarget } from 'react-icons/fi';
 import useAdminAuth from './useAdminAuth';
 import logActivity from './activity';
 import Dropdown from '../dropdown';
@@ -427,14 +427,14 @@ const FlagLearnApp = () => {
                       strokeWidth="1"
                     />
                     {recent.map((run, i) => {
-                      const x = 40 + (i / Math.max(1, recent.length - 1)) * 400;
-                      const y = 100 - (run.accuracy / 100) * 80;
+                      const cx = 40 + (i / Math.max(1, recent.length - 1)) * 400;
+                      const cy = 100 - (run.accuracy / 100) * 80;
                       return (
                         <g key={i}>
-                          <circle cx={x} cy={y} r="5" fill="#ec4899" />
+                          <circle cx={cx} cy={cy} r="5" fill="#ec4899" />
                           <text
-                            x={x}
-                            y={y - 10}
+                            x={cx}
+                            y={cy - 10}
                             textAnchor="middle"
                             fontSize="10"
                             fill="#6f6e69"
