@@ -56,19 +56,34 @@ export const activityXp = (activity) => {
 
 export const xpForLevel = (level) => {
   const n = Math.max(1, Math.floor(level));
-  return 150 * (n - 1) * n;
+  return 502 * (n - 1) * n;
 };
 
+// 22 ranks. The original eight keep their old levels, with extra milestones
+// slotted between them so the long climb to 65 always has a nearby reward.
 export const RANKS = [
-  { name: 'Novice', min: 1, color: '#9B9A93' },
-  { name: 'Bronze', min: 4, color: '#C2703D' },
-  { name: 'Silver', min: 8, color: '#8A94A6' },
-  { name: 'Gold', min: 13, color: '#CA8A04' },
-  { name: 'Platinum', min: 20, color: '#0E7490' },
-  { name: 'Diamond', min: 28, color: '#2563EB' },
-  { name: 'Master', min: 38, color: '#7C3AED' },
-  { name: 'Legend', min: 50, color: '#DB2777' },
-  { name: 'Mythic', min: 65, color: '#EA580C' },
+  { name: 'Nimwit', min: 1, color: '#9B9A93' },
+  { name: 'Numbskull', min: 2, color: '#78716C' },
+  { name: 'Dipshit', min: 4, color: '#C2703D' },
+  { name: 'Dork', min: 6, color: '#B45309' },
+  { name: 'Lessgo', min: 8, color: '#8A94A6' },
+  { name: 'Tryhard', min: 10, color: '#64748B' },
+  { name: 'Logs Now', min: 13, color: '#CA8A04' },
+  { name: 'Getting There', min: 16, color: '#A16207' },
+  { name: 'Boat Now', min: 20, color: '#0E7490' },
+  { name: 'In The Zone', min: 24, color: '#0891B2' },
+  { name: 'Almost There', min: 28, color: '#2563EB' },
+  { name: 'Locked In', min: 33, color: '#4F46E5' },
+  { name: 'You Are Here', min: 38, color: '#7C3AED' },
+  { name: 'Cooking', min: 41, color: '#9333EA' },
+  { name: 'Built Different', min: 44, color: '#7E22CE' },
+  { name: 'Certified Menace', min: 47, color: '#A21CAF' },
+  { name: 'Unhinged', min: 50, color: '#C026D3' },
+  { name: 'No Days Off', min: 53, color: '#BE185D' },
+  { name: 'Final Stretch', min: 56, color: '#BE123C' },
+  { name: 'One More', min: 59, color: '#C2410C' },
+  { name: 'So Close', min: 62, color: '#D97706' },
+  { name: 'Old Fart', min: 65, color: '#B91C1C' },
 ];
 
 export const rankForLevel = (level) =>
