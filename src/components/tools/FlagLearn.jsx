@@ -16,10 +16,46 @@ const FLAGS_BY_REGION = Object.fromEntries(
   ])
 );
 
-const makePool = (region) => {
-  const items = FLAGS_BY_REGION[region] || [];
-  const shuffled = [...items].sort(() => Math.random() - 0.5);
-  return region === 'All' ? shuffled : shuffled.slice(0, Math.min(20, shuffled.length));
+const shuffle = (items) => {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
+const DEFAULT_LENGTH = '20';
+
+const makePool = (region, length = DEFAULT_LENGTH) => {
+  const shuffled = shuffle(FLAGS_BY_REGION[region] || []);
+  if (length === 'all') return shuffled;
+  const size = Number(length) || Number(DEFAULT_LENGTH);
+  return shuffled.slice(0, Math.min(size, shuffled.length));
+};
+
+// Pick distractors from the same region first (then same continent), so options
+// are plausible lookalikes instead of obviously unrelated countries.
+const pickDistractors = (current, count = 3) => {
+  const others = UNIQUE_FLAGS.filter((flag) => flag.code !== current.code);
+  const tiers = [
+    others.filter((flag) => flag.region === current.region),
+    others.filter((flag) => flag.cont === current.cont),
+    others,
+  ];
+
+  const picked = [];
+  const seen = new Set();
+  for (const tier of tiers) {
+    for (const flag of shuffle(tier)) {
+      if (picked.length >= count) break;
+      if (seen.has(flag.code)) continue;
+      seen.add(flag.code);
+      picked.push(flag);
+    }
+    if (picked.length >= count) break;
+  }
+  return picked;
 };
 
 const MODES = [
@@ -32,7 +68,8 @@ const FlagLearnApp = () => {
   const navigate = useNavigate();
   const [region, setRegion] = useState('All');
   const [mode, setMode] = useState('learn');
-  const [pool, setPool] = useState(() => makePool('All'));
+  const [length, setLength] = useState(DEFAULT_LENGTH);
+  const [pool, setPool] = useState(() => makePool('All', DEFAULT_LENGTH));
   const [index, setIndex] = useState(0);
   const [ok, setOk] = useState(0);
   const [wrong, setWrong] = useState(0);
@@ -87,7 +124,9 @@ const FlagLearnApp = () => {
 
   const pickPool = useCallback(() => {
     const now = Date.now();
-    setPool(makePool(region));
+    const nextPool = makePool(region, length);
+    poolRef.current = nextPool;
+    setPool(nextPool);
     setIndex(0);
     setOk(0);
     setWrong(0);
@@ -102,7 +141,7 @@ const FlagLearnApp = () => {
     startedRef.current = now;
     recordedRef.current = false;
     setStartedAt(now);
-  }, [region]);
+  }, [region, length]);
 
   useEffect(() => {
     if (!didMountRef.current) {
@@ -110,7 +149,7 @@ const FlagLearnApp = () => {
       return;
     }
     if (mode === 'quiz') pickPool();
-  }, [mode, region, pickPool]);
+  }, [mode, pickPool]);
 
   const finish = useCallback((overrides = {}) => {
     const started = startedRef.current || Date.now();
@@ -155,30 +194,14 @@ const FlagLearnApp = () => {
   const options = useMemo(() => {
     if (!current) return [];
 
-    const distractors = UNIQUE_FLAGS.filter((flag) => flag.code !== current.code)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
+    const distractors = pickDistractors(current);
 
-    return [...distractors, current].sort(() => Math.random() - 0.5);
+    return shuffle([...distractors, current]);
   }, [current]);
 
   const startQuiz = useCallback(() => {
-    const now = Date.now();
-    recordedRef.current = false;
-    indexRef.current = 0;
-    okRef.current = 0;
-    wrongRef.current = 0;
-    missedRef.current = [];
-    startedRef.current = now;
-    setResult(null);
-    setIndex(0);
-    setOk(0);
-    setWrong(0);
-    setWrongNames([]);
-    setMissedNames([]);
-    setWrongPicks([]);
-    setStartedAt(now);
-  }, []);
+    pickPool();
+  }, [pickPool]);
 
   const handleGuess = useCallback(
     (code) => {
@@ -275,6 +298,16 @@ const FlagLearnApp = () => {
 
   const regionLabel = region === 'All' ? 'All flags' : region;
 
+  const regionTotal = (FLAGS_BY_REGION[region] || []).length;
+  const lengthChoices = useMemo(
+    () => [
+      { value: '10', label: '10', title: '10 flags this round' },
+      { value: '20', label: '20', title: '20 flags this round' },
+      { value: 'all', label: `All ${regionTotal}`, title: `All ${regionTotal} flags this round` },
+    ],
+    [regionTotal]
+  );
+
   const reviewNames = useMemo(
     () => Array.from(new Set([...wrongNames, ...missedNames])),
     [wrongNames, missedNames]
@@ -325,6 +358,23 @@ const FlagLearnApp = () => {
           </div>
 
           <div className="fl-header-region">
+            {mode === 'quiz' && (
+              <div className="fl-length" role="group" aria-label="Flags per round">
+                <span className="fl-length-label">Flags</span>
+                {lengthChoices.map((choice) => (
+                  <button
+                    key={choice.value}
+                    type="button"
+                    title={choice.title}
+                    className={`fl-length-btn ${length === choice.value ? 'is-active' : ''}`}
+                    onClick={() => setLength(choice.value)}
+                    aria-pressed={length === choice.value}
+                  >
+                    {choice.label}
+                  </button>
+                ))}
+              </div>
+            )}
             <Dropdown
               options={REGIONS}
               value={region}
