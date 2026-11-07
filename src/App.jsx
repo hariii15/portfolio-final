@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Welcome from './components/welcome';
 import Hero from './components/hero';
 import Layout from './components/Layout';
@@ -101,17 +101,24 @@ const AppRouter = () => {
                 <Route path="/admin/tools/periodic-table" element={<PeriodicTable />} />
                 <Route path="/admin/tools/flag-learn" element={<FlagLearn />} />
                 <Route path="/admin/tools/run-log" element={<RunLog />} />
-                <Route path="/buiness" element={<BusinessHub />} />
                 <Route path="/business" element={<BusinessHub />} />
-                <Route path="/buiness/ember-oak" element={<EmberOak />} />
-                <Route path="/buiness/lumina-care" element={<LuminaCare />} />
-                <Route path="/buiness/northline" element={<NorthlineDashboard />} />
-                <Route path="/buiness/sora-table" element={<SoraTable />} />
-                <Route path="/buiness/fieldnote" element={<FieldnoteStore />} />
-                <Route path="/buiness/asterline" element={<AsterlineStore />} />
-                <Route path="/buiness/meher-house" element={<MeherHouse />} />
-                <Route path="/buiness/contact" element={<BusinessContact />} />
+                <Route path="/business/ember-oak" element={<EmberOak />} />
+                <Route path="/business/lumina-care" element={<LuminaCare />} />
+                <Route path="/business/northline" element={<NorthlineDashboard />} />
+                <Route path="/business/sora-table" element={<SoraTable />} />
+                <Route path="/business/fieldnote" element={<FieldnoteStore />} />
+                <Route path="/business/asterline" element={<AsterlineStore />} />
+                <Route path="/business/meher-house" element={<MeherHouse />} />
                 <Route path="/business/contact" element={<BusinessContact />} />
+                <Route path="/buiness" element={<Navigate to="/business" replace />} />
+                <Route path="/buiness/ember-oak" element={<Navigate to="/business/ember-oak" replace />} />
+                <Route path="/buiness/lumina-care" element={<Navigate to="/business/lumina-care" replace />} />
+                <Route path="/buiness/northline" element={<Navigate to="/business/northline" replace />} />
+                <Route path="/buiness/sora-table" element={<Navigate to="/business/sora-table" replace />} />
+                <Route path="/buiness/fieldnote" element={<Navigate to="/business/fieldnote" replace />} />
+                <Route path="/buiness/asterline" element={<Navigate to="/business/asterline" replace />} />
+                <Route path="/buiness/meher-house" element={<Navigate to="/business/meher-house" replace />} />
+                <Route path="/buiness/contact" element={<Navigate to="/business/contact" replace />} />
                 <Route element={<Layout />}>
                   <Route path="/hero" element={<Hero />} />
                   <Route path="/about" element={<About />} />

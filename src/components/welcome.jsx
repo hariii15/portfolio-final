@@ -56,7 +56,7 @@ const Welcome = () => {
             <FiArrowUpRight size={16} />
           </button>
           <button
-            onClick={() => navigate('/buiness')}
+            onClick={() => navigate('/business')}
             className="inline-flex items-center gap-2 rounded-[12px] border border-[#D9D9D3] bg-transparent px-6 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white dark:border-[#2E2E2E] dark:text-[#EDEDED] dark:hover:bg-[#161616]"
           >
             For business

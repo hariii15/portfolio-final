@@ -33,7 +33,7 @@ const demos = [
     title: 'Ember & Oak',
     type: 'Appointment booking',
     description: 'A welcoming service site that turns browsing into a confirmed appointment in under a minute.',
-    path: '/buiness/ember-oak',
+    path: '/business/ember-oak',
     className: 'biz-work-card--ember',
     meta: 'Salon / Studio',
     bestFor: 'Salons, barbers, spas, trainers and other appointment-based businesses.',
@@ -44,7 +44,7 @@ const demos = [
     title: 'Lumina Care',
     type: 'Healthcare booking',
     description: 'A calm, trustworthy appointment experience that makes choosing care feel straightforward.',
-    path: '/buiness/lumina-care',
+    path: '/business/lumina-care',
     className: 'biz-work-card--lumina',
     meta: 'Clinic / Wellness',
     bestFor: 'Clinics, dentists, therapists, wellness centres and consultants.',
@@ -55,7 +55,7 @@ const demos = [
     title: 'Northline',
     type: 'Business intelligence',
     description: 'One operational view for revenue, customers, channel performance, and decisions that need attention.',
-    path: '/buiness/northline',
+    path: '/business/northline',
     className: 'biz-work-card--northline',
     meta: 'Analytics / Operations',
     bestFor: 'Owners who want to understand sales, customers and daily business performance.',
@@ -66,7 +66,7 @@ const demos = [
     title: 'Sora Table',
     type: 'Restaurant presence',
     description: 'A story-rich dining website that balances atmosphere, menu discovery, and reservation intent.',
-    path: '/buiness/sora-table',
+    path: '/business/sora-table',
     className: 'biz-work-card--sora',
     meta: 'Restaurant / Hospitality',
     bestFor: 'Restaurants, cafés, cloud kitchens, caterers and small hospitality businesses.',
@@ -77,7 +77,7 @@ const demos = [
     title: 'Fieldnote',
     type: 'Curated storefront',
     description: 'A considered commerce experience for a small maker, with products given room to feel valuable.',
-    path: '/buiness/fieldnote',
+    path: '/business/fieldnote',
     className: 'biz-work-card--fieldnote',
     meta: 'Retail / E-commerce',
     bestFor: 'Local makers, home businesses, gift shops and small product brands.',
@@ -88,7 +88,7 @@ const demos = [
     title: 'Asterline',
     type: 'Fashion ordering',
     description: 'An editorial clothing store with collection discovery, size selection, and a focused ordering flow.',
-    path: '/buiness/asterline',
+    path: '/business/asterline',
     className: 'biz-work-card--asterline',
     meta: 'Fashion / Direct-to-consumer',
     bestFor: 'Clothing brands, boutiques, tailors and made-to-order fashion businesses.',
@@ -99,7 +99,7 @@ const demos = [
     title: 'Meher House',
     type: 'Bridal services',
     description: 'A warm, image-led website that helps brides explore makeup, photography and complete wedding packages.',
-    path: '/buiness/meher-house',
+    path: '/business/meher-house',
     className: 'biz-work-card--meher',
     meta: 'Bridal / Creative services',
     bestFor: 'Makeup artists, wedding photographers, planners, decorators and bridal studios.',
@@ -112,7 +112,7 @@ const DemoBadge = ({ dark = false }) => (
 );
 
 const DemoBack = ({ light = false }) => (
-  <Link className={`demo-back${light ? ' demo-back--light' : ''}`} to="/buiness">
+  <Link className={`demo-back${light ? ' demo-back--light' : ''}`} to="/business">
     <FiArrowLeft /> Business portfolio
   </Link>
 );
@@ -139,7 +139,7 @@ export const BusinessHub = () => {
           <a href="#work" onClick={scrollToSection('work')}>Examples</a>
           <a href="#capabilities" onClick={scrollToSection('capabilities')}>Services</a>
           <a href="#process" onClick={scrollToSection('process')}>How we work</a>
-          <Link className="biz-nav-cta" to="/buiness/contact">Start a project <FiArrowUpRight /></Link>
+          <Link className="biz-nav-cta" to="/business/contact">Start a project <FiArrowUpRight /></Link>
         </nav>
       </header>
 
@@ -154,7 +154,7 @@ export const BusinessHub = () => {
           <p className="biz-hero-note">I build the website and the tools behind it. You stay involved, see the progress and approve every important step.</p>
           <div className="biz-hero-actions">
             <a href="#work" onClick={scrollToSection('work')} className="biz-button biz-button--dark">See what I can build <FiArrowRight /></a>
-            <Link to="/buiness/contact" className="biz-text-link">Talk about your business <FiArrowUpRight /></Link>
+            <Link to="/business/contact" className="biz-text-link">Talk about your business <FiArrowUpRight /></Link>
           </div>
         </div>
         <div className="biz-hero-composition" aria-label="A preview of business products">
@@ -273,7 +273,7 @@ export const BusinessHub = () => {
         </div>
         <div className="biz-closing-action">
           <p>You do not need to prepare a technical document. Tell me what you sell, how customers reach you today, and what you want to improve.</p>
-          <Link to="/buiness/contact">Talk about your idea <FiArrowUpRight /></Link>
+          <Link to="/business/contact">Talk about your idea <FiArrowUpRight /></Link>
         </div>
       </section>
 
@@ -303,7 +303,7 @@ export const EmberOak = () => {
     <main className="ember-site">
       <div className="demo-utility"><DemoBack /><DemoBadge /></div>
       <header className="ember-nav">
-        <Link to="/buiness/ember-oak" className="ember-logo">Ember <i>&</i> Oak</Link>
+        <Link to="/business/ember-oak" className="ember-logo">Ember <i>&</i> Oak</Link>
         <nav><a href="#story">Our approach</a><a href="#services">Services</a><a href="#book">Book a seat</a></nav>
         <a href="#book" className="ember-nav-book">Book now <FiArrowUpRight /></a>
       </header>
@@ -358,7 +358,7 @@ export const LuminaCare = () => {
     <main className="lumina-site">
       <div className="demo-utility demo-utility--blue"><DemoBack /><DemoBadge /></div>
       <header className="lumina-nav">
-        <Link className="lumina-logo" to="/buiness/lumina-care"><span><FiPlus /></span>Lumina Care</Link>
+        <Link className="lumina-logo" to="/business/lumina-care"><span><FiPlus /></span>Lumina Care</Link>
         <nav><a href="#care">Our care</a><a href="#team">Clinicians</a><a href="#appointment">Appointments</a></nav>
         <a href="#appointment" className="lumina-cta">Book an appointment</a>
       </header>
@@ -456,7 +456,7 @@ export const SoraTable = () => {
   return (
     <main className="sora-site">
       <div className="demo-utility demo-utility--sora"><DemoBack light /><DemoBadge dark /></div>
-      <header className="sora-nav"><Link to="/buiness/sora-table" className="sora-logo">SORA<span>空</span></Link><nav><a href="#story">Story</a><a href="#menu">Menu</a><a href="#visit">Visit</a></nav><a href="#visit">Reserve a table</a></header>
+      <header className="sora-nav"><Link to="/business/sora-table" className="sora-logo">SORA<span>空</span></Link><nav><a href="#story">Story</a><a href="#menu">Menu</a><a href="#visit">Visit</a></nav><a href="#visit">Reserve a table</a></header>
       <section className="sora-hero">
         <div className="sora-hero-text"><span>Seasonal Japanese dining · Bengaluru</span><h1>Quiet food.<br /><em>Bold memory.</em></h1><p>A neighbourhood table shaped by the seasons, charcoal, and the patience to let ingredients speak.</p><a href="#menu">Discover the menu <FiArrowRight /></a></div>
         <div className="sora-hero-art"><div className="sora-plate"><span /><i /></div><p>秋<br /><span>autumn menu</span></p></div>
@@ -488,7 +488,7 @@ export const FieldnoteStore = () => {
   return (
     <main className="field-site">
       <div className="demo-utility demo-utility--field"><DemoBack /><DemoBadge /></div>
-      <header className="field-nav"><button><FiMenu /></button><Link className="field-logo" to="/buiness/fieldnote">FIELDNOTE<small>objects for unhurried homes</small></Link><button className="field-bag"><FiShoppingBag /><span>{cart}</span></button></header>
+      <header className="field-nav"><button><FiMenu /></button><Link className="field-logo" to="/business/fieldnote">FIELDNOTE<small>objects for unhurried homes</small></Link><button className="field-bag"><FiShoppingBag /><span>{cart}</span></button></header>
       <section className="field-hero"><div className="field-hero-copy"><span>Collection 04 / Earth & water</span><h1>Made slowly.<br /><em>Kept for years.</em></h1><p>Functional ceramics shaped by hand in small batches, for the rituals that make a home yours.</p><a href="#shop">Shop the collection <FiArrowRight /></a></div><div className="field-hero-object"><span className="field-vessel"/><i>Each form carries<br />the mark of its maker.</i></div><div className="field-edition">04<small>/ 24</small></div></section>
       <section className="field-manifesto"><span>Our approach</span><p>We make fewer things, <em>more carefully.</em> Every object begins with local clay and ends in the hands of one maker.</p><div><span>Hand thrown</span><span>Small batch</span><span>Natural materials</span></div></section>
       <section className="field-shop" id="shop"><div className="field-shop-head"><div><span>The current collection</span><h2>Objects with a quiet presence.</h2></div><div>{['All pieces','Tableware','Drinkware','Objects'].map((item) => <button className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} key={item}>{item}</button>)}</div></div><div className="field-products">{filtered.map((product) => <article key={product.name}><div className={`field-product-art ${product.className}`}><span/><button onClick={() => setCart(cart + 1)} aria-label={`Add ${product.name} to bag`}><FiPlus /></button></div><div><span>{product.category}</span><h3>{product.name}</h3><p>₹{product.price.toLocaleString('en-IN')}</p></div></article>)}</div></section>
@@ -532,7 +532,7 @@ export const AsterlineStore = () => {
       <div className="demo-utility demo-utility--aster"><DemoBack light /><DemoBadge dark /></div>
       <header className="aster-nav">
         <button className="aster-menu" aria-label="Open menu"><FiMenu /></button>
-        <Link className="aster-logo" to="/buiness/asterline">ASTERLINE<span>Designed for repeat wear</span></Link>
+        <Link className="aster-logo" to="/business/asterline">ASTERLINE<span>Designed for repeat wear</span></Link>
         <nav><a href="#collection">New arrival</a><a href="#collection">Shop</a><a href="#story">Our standard</a></nav>
         <button className="aster-bag" onClick={() => bagCount && document.getElementById('aster-order')?.scrollIntoView({ behavior: 'smooth' })}>Bag <span>{String(bagCount).padStart(2, '0')}</span></button>
       </header>
@@ -586,7 +586,7 @@ export const BusinessContact = () => {
 
   return (
     <main className="biz-contact-page">
-      <header className="biz-contact-nav biz-shell"><Link className="biz-brand" to="/buiness"><span>H</span><span>Hari</span></Link><Link to="/buiness"><FiArrowLeft /> Back to business portfolio</Link></header>
+      <header className="biz-contact-nav biz-shell"><Link className="biz-brand" to="/business"><span>H</span><span>Hari</span></Link><Link to="/business"><FiArrowLeft /> Back to business portfolio</Link></header>
       <section className="biz-contact-hero biz-shell">
         <div className="biz-contact-intro">
           <p className="biz-kicker"><span /> Start with a simple conversation</p>
@@ -595,7 +595,7 @@ export const BusinessContact = () => {
           <div className="biz-contact-details"><article><FiMail /><div><span>Email</span><a href="mailto:hariharpradeepjaybal@gmail.com">hariharpradeepjaybal@gmail.com</a></div></article><article><FiClock /><div><span>What happens next?</span><p>I will read your message and reply with useful questions and a suggested next step.</p></div></article></div>
         </div>
         <div className="biz-contact-form-wrap">
-          {status === 'sent' ? <div className="biz-contact-success" role="status"><span><FiCheck /></span><p>Message sent</p><h2>Thank you for telling me about your business.</h2><small>I will review the details and get back to you soon.</small><Link to="/buiness">Explore the examples <FiArrowRight /></Link></div> : <form onSubmit={handleSubmit} className="biz-contact-form">
+          {status === 'sent' ? <div className="biz-contact-success" role="status"><span><FiCheck /></span><p>Message sent</p><h2>Thank you for telling me about your business.</h2><small>I will review the details and get back to you soon.</small><Link to="/business">Explore the examples <FiArrowRight /></Link></div> : <form onSubmit={handleSubmit} className="biz-contact-form">
             <div className="biz-contact-form-head"><span>Project enquiry</span><p>Fields marked * are required.</p></div>
             <input className="biz-contact-honey" tabIndex="-1" autoComplete="off" aria-hidden="true" name="website" value={formData.website} onChange={updateField} />
             <div className="biz-contact-row"><label>Your name *<input required name="name" value={formData.name} onChange={updateField} placeholder="How should I address you?" /></label><label>Email address *<input required type="email" name="email" value={formData.email} onChange={updateField} placeholder="you@example.com" /></label></div>
@@ -625,7 +625,7 @@ export const MeherHouse = () => {
   return (
     <main className="meher-site">
       <div className="demo-utility demo-utility--meher"><DemoBack /><DemoBadge /></div>
-      <header className="meher-nav"><Link className="meher-logo" to="/buiness/meher-house">MEHER<small>bridal house</small></Link><nav><a href="#services">Services</a><a href="#stories">Our work</a><a href="#enquire">Enquire</a></nav><a href="#enquire">Check your date <FiArrowDown /></a></header>
+      <header className="meher-nav"><Link className="meher-logo" to="/business/meher-house">MEHER<small>bridal house</small></Link><nav><a href="#services">Services</a><a href="#stories">Our work</a><a href="#enquire">Enquire</a></nav><a href="#enquire">Check your date <FiArrowDown /></a></header>
       <section className="meher-hero">
         <div className="meher-hero-copy"><span>Bridal makeup & photography · Bengaluru</span><h1>Feel like yourself.<br /><em>Remember it forever.</em></h1><p>Thoughtful bridal beauty and honest wedding photographs, created by one calm team around your day.</p><a href="#services">Explore the experience <FiArrowRight /></a></div>
         <div className="meher-hero-image"><img src="https://images.unsplash.com/photo-1742891602017-40b3a924f476?auto=format&fit=crop&q=85&w=1500" alt="Indian bridal portrait with detailed makeup and jewellery" /><span>Meher bride / 24</span></div>

@@ -178,3 +178,50 @@
   .meher-enquire form>div { grid-template-columns:1fr; }
   .meher-footer { padding:30px 18px; gap:24px; align-items:flex-start; flex-direction:column; }
 }
+
+/* Shared safeguards for narrow phones and embedded browser views. */
+.ember-site,.lumina-site,.north-site,.sora-site,.field-site,.aster-site,.meher-site,.biz-contact-page {
+  width:100%;
+  max-width:100%;
+  overflow-x:clip;
+}
+
+.ember-site img,.lumina-site img,.sora-site img,.field-site img,.aster-site img,.meher-site img {
+  max-width:100%;
+}
+
+@media (max-width: 580px) {
+  .biz-hero-actions { flex-wrap:wrap; gap:16px 22px; }
+  .biz-work-card { padding:18px; }
+  .biz-work-copy { gap:14px; }
+  .biz-work-copy h3 { font-size:30px; }
+  .biz-round-arrow { width:42px; height:42px; }
+  .biz-contact-details a { overflow-wrap:anywhere; }
+  .demo-utility { gap:10px; }
+  .demo-badge { flex:0 0 auto; white-space:nowrap; }
+  .lumina-hero-copy>div { flex-wrap:wrap; gap:12px 20px; }
+  .ember-book-card,.lumina-appointment-card,.sora-reserve-card,.meher-enquire form { width:100%; box-sizing:border-box; }
+  .aster-add-row { grid-template-columns:1fr; }
+  .aster-add-row>div { min-height:44px; }
+}
+
+@media (max-width: 360px) {
+  .biz-shell { width:calc(100% - 28px); }
+  .biz-hero h1 { font-size:52px; }
+  .biz-hero-intro { font-size:16px; }
+  .biz-button { padding:14px 16px; }
+  .ember-hero h1 { font-size:68px; }
+  .ember-vertical,.sora-side-note { display:none; }
+  .lumina-hero h1 { font-size:44px; }
+  .sora-hero h1 { font-size:62px; }
+  .sora-plate { width:280px; height:280px; }
+  .sora-plate span { left:82px; top:86px; }
+  .sora-plate i { left:65px; top:140px; }
+  .field-logo { font-size:17px; }
+  .field-hero h1 { font-size:58px; }
+  .aster-hero h1 { font-size:58px; }
+  .aster-product-image { height:440px; }
+  .meher-hero h1 { font-size:56px; }
+  .meher-section-head h2,.meher-packages h2,.meher-story-copy h2 { font-size:42px; }
+  .meher-enquire h2 { font-size:50px; }
+}
