@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { sendContact } from '../../lib/sendContact';
 import {
   FiArrowLeft,
   FiArrowDown,
@@ -565,7 +566,7 @@ export const AsterlineStore = () => {
 };
 
 export const BusinessContact = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', business: '', help: '', budget: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', business: '', help: '', budget: '', message: '', website: '' });
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -574,26 +575,12 @@ export const BusinessContact = () => {
     event.preventDefault();
     setStatus('sending');
     setError('');
-    const payload = new FormData(event.currentTarget);
-    payload.append('_subject', `Business website enquiry from ${formData.name}`);
-    payload.append('_captcha', 'false');
-    payload.append('_template', 'table');
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 15000);
     try {
-      const response = await fetch('https://formsubmit.co/ajax/hariharpradeepjaybal@gmail.com', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: payload,
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error('Request failed');
+      await sendContact(formData);
       setStatus('sent');
     } catch {
       setStatus('idle');
       setError('The form could not send right now. You can email me directly instead.');
-    } finally {
-      window.clearTimeout(timeout);
     }
   };
 
@@ -608,8 +595,9 @@ export const BusinessContact = () => {
           <div className="biz-contact-details"><article><FiMail /><div><span>Email</span><a href="mailto:hariharpradeepjaybal@gmail.com">hariharpradeepjaybal@gmail.com</a></div></article><article><FiClock /><div><span>What happens next?</span><p>I will read your message and reply with useful questions and a suggested next step.</p></div></article></div>
         </div>
         <div className="biz-contact-form-wrap">
-          {status === 'sent' ? <div className="biz-contact-success"><span><FiCheck /></span><p>Message sent</p><h2>Thank you for telling me about your business.</h2><small>I will review the details and get back to you soon.</small><Link to="/buiness">Explore the examples <FiArrowRight /></Link></div> : <form onSubmit={handleSubmit} className="biz-contact-form">
+          {status === 'sent' ? <div className="biz-contact-success" role="status"><span><FiCheck /></span><p>Message sent</p><h2>Thank you for telling me about your business.</h2><small>I will review the details and get back to you soon.</small><Link to="/buiness">Explore the examples <FiArrowRight /></Link></div> : <form onSubmit={handleSubmit} className="biz-contact-form">
             <div className="biz-contact-form-head"><span>Project enquiry</span><p>Fields marked * are required.</p></div>
+            <input className="biz-contact-honey" tabIndex="-1" autoComplete="off" aria-hidden="true" name="website" value={formData.website} onChange={updateField} />
             <div className="biz-contact-row"><label>Your name *<input required name="name" value={formData.name} onChange={updateField} placeholder="How should I address you?" /></label><label>Email address *<input required type="email" name="email" value={formData.email} onChange={updateField} placeholder="you@example.com" /></label></div>
             <div className="biz-contact-row"><label>Phone number<input name="phone" value={formData.phone} onChange={updateField} placeholder="Optional" /></label><label>Business name<input name="business" value={formData.business} onChange={updateField} placeholder="Your shop, studio or company" /></label></div>
             <label>What would you like help with? *<select required name="help" value={formData.help} onChange={updateField}><option value="">Choose one</option><option>New business website</option><option>Online booking system</option><option>Online store or ordering</option><option>Dashboard or internal tool</option><option>Improve an existing website</option><option>I am not sure yet</option></select></label>

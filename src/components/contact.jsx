@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiLinkedin, FiGithub, FiMail, FiSend } from 'react-icons/fi';
 import { Page, Eyebrow, PageTitle, PageSubtitle, Card, SectionLabel, Field, inputCls, PrimaryButton } from './ui';
+import { sendContact } from '../lib/sendContact';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -13,40 +14,20 @@ const Contact = () => {
     setFormData((p) => ({ ...p, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
 
-    const formSubmitData = new FormData(e.target);
-    formSubmitData.append('_subject', `Portfolio Contact from ${formData.name}`);
-    formSubmitData.append('_captcha', 'false');
-    formSubmitData.append('_template', 'table');
-
-    fetch('https://formsubmit.co/ajax/hariharpradeepjaybal@gmail.com', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: formSubmitData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          setIsSubmitting(false);
-          setSubmitted(true);
-          setTimeout(() => {
-            setFormData({ name: '', email: '', message: '' });
-            setSubmitted(false);
-          }, 5000);
-        } else {
-          throw new Error('Network response was not ok');
-        }
-      })
-      .catch(() => {
-        setIsSubmitting(false);
-        setError('Could not send message. Opening your email client instead…');
-        const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
-        const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-        window.location.href = `mailto:hariharpradeepjaybal@gmail.com?subject=${subject}&body=${body}`;
-      });
+    try {
+      await sendContact(formData);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', message: '' });
+    } catch {
+      setError('Your message could not be sent right now. Please try again or email me directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const channels = [
@@ -99,7 +80,7 @@ const Contact = () => {
                     placeholder="Your message…" className={`${inputCls} resize-y`}
                   />
                 </Field>
-                {error && <p className="text-[13px] text-[#EC4899]">{error}</p>}
+                {error && <p className="text-[13px] text-[#EC4899]">{error} <a className="underline" href="mailto:hariharpradeepjaybal@gmail.com">Email Hari</a></p>}
                 <PrimaryButton type="submit" className="w-full">
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
