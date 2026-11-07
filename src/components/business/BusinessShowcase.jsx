@@ -578,13 +578,22 @@ export const BusinessContact = () => {
     payload.append('_subject', `Business website enquiry from ${formData.name}`);
     payload.append('_captcha', 'false');
     payload.append('_template', 'table');
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 15000);
     try {
-      const response = await fetch('https://formsubmit.co/hariharpradeepjaybal@gmail.com', { method: 'POST', body: payload });
+      const response = await fetch('https://formsubmit.co/ajax/hariharpradeepjaybal@gmail.com', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: payload,
+        signal: controller.signal,
+      });
       if (!response.ok) throw new Error('Request failed');
       setStatus('sent');
     } catch {
       setStatus('idle');
       setError('The form could not send right now. You can email me directly instead.');
+    } finally {
+      window.clearTimeout(timeout);
     }
   };
 

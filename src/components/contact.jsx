@@ -23,8 +23,9 @@ const Contact = () => {
     formSubmitData.append('_captcha', 'false');
     formSubmitData.append('_template', 'table');
 
-    fetch('https://formsubmit.co/hariharpradeepjaybal@gmail.com', {
+    fetch('https://formsubmit.co/ajax/hariharpradeepjaybal@gmail.com', {
       method: 'POST',
+      headers: { Accept: 'application/json' },
       body: formSubmitData,
     })
       .then((response) => {
