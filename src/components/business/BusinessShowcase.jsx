@@ -36,6 +36,8 @@ const demos = [
     path: '/business/ember-oak',
     className: 'biz-work-card--ember',
     meta: 'Salon / Studio',
+    image: 'https://images.unsplash.com/photo-1703792686658-24e62d626ed2?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center 42%',
     bestFor: 'Salons, barbers, spas, trainers and other appointment-based businesses.',
     features: ['Show services and prices', 'Let customers choose a date and time', 'Confirm bookings online'],
   },
@@ -47,6 +49,8 @@ const demos = [
     path: '/business/lumina-care',
     className: 'biz-work-card--lumina',
     meta: 'Clinic / Wellness',
+    image: 'https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center',
     bestFor: 'Clinics, dentists, therapists, wellness centres and consultants.',
     features: ['Introduce the care team', 'Show available appointments', 'Collect booking details safely'],
   },
@@ -58,6 +62,8 @@ const demos = [
     path: '/business/northline',
     className: 'biz-work-card--northline',
     meta: 'Analytics / Operations',
+    image: 'https://images.unsplash.com/photo-1742836531271-98fd8151d257?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center',
     bestFor: 'Owners who want to understand sales, customers and daily business performance.',
     features: ['See important numbers together', 'Compare sales and customer growth', 'Find what needs attention'],
   },
@@ -69,6 +75,8 @@ const demos = [
     path: '/business/sora-table',
     className: 'biz-work-card--sora',
     meta: 'Restaurant / Hospitality',
+    image: 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center',
     bestFor: 'Restaurants, cafés, cloud kitchens, caterers and small hospitality businesses.',
     features: ['Show the menu and atmosphere', 'Share opening hours and location', 'Accept table reservations'],
   },
@@ -80,6 +88,8 @@ const demos = [
     path: '/business/fieldnote',
     className: 'biz-work-card--fieldnote',
     meta: 'Retail / E-commerce',
+    image: 'https://images.unsplash.com/photo-1422246358533-95dcd3d48961?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center',
     bestFor: 'Local makers, home businesses, gift shops and small product brands.',
     features: ['Display products clearly', 'Filter and explore collections', 'Add products to an order'],
   },
@@ -91,6 +101,8 @@ const demos = [
     path: '/business/asterline',
     className: 'biz-work-card--asterline',
     meta: 'Fashion / Direct-to-consumer',
+    image: 'https://images.unsplash.com/photo-1768825136230-34fb80291f19?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center 32%',
     bestFor: 'Clothing brands, boutiques, tailors and made-to-order fashion businesses.',
     features: ['Show clothing with real photos', 'Choose size and quantity', 'Review an order before checkout'],
   },
@@ -102,6 +114,8 @@ const demos = [
     path: '/business/meher-house',
     className: 'biz-work-card--meher',
     meta: 'Bridal / Creative services',
+    image: 'https://images.unsplash.com/photo-1742891602017-40b3a924f476?auto=format&fit=crop&q=82&w=1600',
+    imagePosition: 'center 28%',
     bestFor: 'Makeup artists, wedding photographers, planners, decorators and bridal studios.',
     features: ['Show real work and packages', 'Explain what each service includes', 'Collect wedding date enquiries'],
   },
@@ -210,13 +224,8 @@ export const BusinessHub = () => {
             <Link to={demo.path} className={`biz-work-card ${demo.className}`} key={demo.path}>
               <div className="biz-work-meta"><span>{demo.number}</span><span>{demo.meta}</span></div>
               <div className="biz-work-visual" aria-hidden="true">
-                {demo.number === '01' && <><span className="ember-portrait" /><span className="ember-book">BOOK<br />A SEAT</span></>}
-                {demo.number === '02' && <><span className="lumina-circle"><FiPlus /></span><span className="lumina-line" /></>}
-                {demo.number === '03' && <><span className="northline-bars"><i /><i /><i /><i /><i /><i /></span><span className="northline-dot" /></>}
-                {demo.number === '04' && <><span className="sora-sun" /><span className="sora-type">空</span></>}
-                {demo.number === '05' && <><span className="fieldnote-vase" /><span className="fieldnote-rule" /></>}
-                {demo.number === '06' && <><span className="asterline-preview" /><span className="asterline-word">NEW / 06</span></>}
-                {demo.number === '07' && <><span className="meher-preview" /><span className="meher-monogram">M</span></>}
+                <img className="biz-work-photo" src={demo.image} style={{ objectPosition: demo.imagePosition }} alt="" loading="lazy" />
+                <span className="biz-work-photo-label">View concept {demo.number}</span>
               </div>
               <div className="biz-work-copy">
                 <div>
@@ -314,7 +323,7 @@ export const EmberOak = () => {
           <p>Considered cuts, honest advice, and a chair that never feels rushed.</p>
           <a href="#book">Find your appointment <FiArrowRight /></a>
         </div>
-        <div className="ember-hero-art"><span className="ember-arch" /><span className="ember-face-line">e&o</span><p>Quiet craft<br />since 2019</p></div>
+        <div className="ember-hero-art"><img src="https://images.unsplash.com/photo-1703792686658-24e62d626ed2?auto=format&fit=crop&q=88&w=1600" alt="Barber carefully cutting a client's hair" /><p>Quiet craft<br />since 2019</p></div>
         <div className="ember-vertical">CUT · CARE · COLOUR</div>
       </section>
       <section className="ember-story" id="story">
@@ -339,7 +348,7 @@ export const EmberOak = () => {
           </> : <div className="ember-success"><span><FiCheck /></span><p>Appointment reserved</p><h3>See you on {days[day][0].toLowerCase()}, the {days[day][1]}th.</h3><small>{salonServices[service].name} · {time}</small><button onClick={() => setBooked(false)}>Change booking</button></div>}
         </div>
       </section>
-      <footer className="ember-footer"><span>Ember & Oak</span><p>Concept website · No real appointment will be created.</p><DemoBack /></footer>
+      <footer className="ember-footer"><span>Ember & Oak</span><p>Concept website · Image courtesy of Unsplash</p><DemoBack /></footer>
     </main>
   );
 };
@@ -371,7 +380,7 @@ export const LuminaCare = () => {
           <small><FiClock /> Most appointments available within 48 hours</small>
         </div>
         <div className="lumina-visual">
-          <div className="lumina-photo"><span className="lumina-smile">◡</span></div>
+          <div className="lumina-photo"><img src="https://images.unsplash.com/photo-1777331903190-341a3dd0441b?auto=format&fit=crop&q=88&w=1600" alt="Dentist speaking with a patient in a modern clinic" /></div>
           <div className="lumina-rating"><span>4.9</span><p>Patient experience<br /><i>Illustrative demo data</i></p></div>
           <div className="lumina-open"><i /> Now welcoming new patients</div>
         </div>
@@ -400,7 +409,7 @@ export const LuminaCare = () => {
           </> : <div className="lumina-success"><span><FiCheck /></span><h3>Your visit is reserved.</h3><p>{doctors[selectedDoctor].name}<br />{doctors[selectedDoctor].next}</p><small>This is a portfolio demo—no appointment was created.</small><button onClick={() => setConfirmed(false)}>Choose another time</button></div>}
         </div>
       </section>
-      <footer className="lumina-footer"><span className="lumina-logo"><i><FiPlus /></i>Lumina Care</span><p>Concept clinic website for portfolio demonstration.</p><DemoBack /></footer>
+      <footer className="lumina-footer"><span className="lumina-logo"><i><FiPlus /></i>Lumina Care</span><p>Concept clinic · Image courtesy of Unsplash</p><DemoBack /></footer>
     </main>
   );
 };
@@ -442,10 +451,10 @@ export const NorthlineDashboard = () => {
             <div className="north-panel-head"><div><span>Revenue performance</span><strong>{currency(35.2)}</strong></div><p><i />Revenue <i />Target</p></div>
             <div className="north-chart"><div className="north-y"><span>12L</span><span>8L</span><span>4L</span><span>0</span></div><div className="north-chart-area"><span className="gridline g1"/><span className="gridline g2"/><span className="gridline g3"/><svg viewBox="0 0 700 210" preserveAspectRatio="none"><defs><linearGradient id="northFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#C8FF45" stopOpacity=".28"/><stop offset="1" stopColor="#C8FF45" stopOpacity="0"/></linearGradient></defs><path d="M0 190 C55 178 80 145 130 152 S210 120 260 134 S345 90 390 106 S475 55 520 75 S610 32 700 20 L700 210 L0 210Z" fill="url(#northFill)"/><path d="M0 190 C55 178 80 145 130 152 S210 120 260 134 S345 90 390 106 S475 55 520 75 S610 32 700 20" fill="none" stroke="#C8FF45" strokeWidth="3"/><path d="M0 165 C100 145 180 150 270 115 S440 100 520 60 S620 52 700 44" fill="none" stroke="#53605c" strokeDasharray="7 7" strokeWidth="2"/></svg><div className="north-x"><span>Nov 01</span><span>Nov 08</span><span>Nov 15</span><span>Nov 22</span><span>Nov 30</span></div></div></div>
           </article>
-          <article className="north-goal-panel"><div className="north-panel-head"><span>Monthly target</span><FiArrowUpRight /></div><div className="north-goal"><span>78<small>%</small></span><div className="north-goal-ring" /></div><strong>{currency(35.2)} <small>of {currency(45.0)}</small></strong><p>At the current pace, you are projected to reach 96% of target.</p></article>
+          <article className="north-goal-panel"><div className="north-panel-head"><span>Monthly target</span><FiArrowUpRight /></div><div className="north-context-image"><img src="https://images.unsplash.com/photo-1742836531271-98fd8151d257?auto=format&fit=crop&q=84&w=1200" alt="Small business owner using a tablet at the checkout" /><span>Store operations</span></div><div className="north-goal"><span>78<small>%</small></span><div className="north-goal-ring" /></div><strong>{currency(35.2)} <small>of {currency(45.0)}</small></strong><p>At the current pace, you are projected to reach 96% of target.</p></article>
         </section>
         <section className="north-table-panel"><div className="north-panel-head"><div><span>Channel performance</span><p>Where revenue is coming from</p></div><button>View report <FiArrowUpRight /></button></div><div className="north-table"><div className="north-tr north-th"><span>Channel</span><span>Visitors</span><span>Conversion</span><span>Revenue</span><span>Change</span></div>{channelRows.map((row) => <div className="north-tr" key={row[0]}>{row.map((cell, i) => <span className={i === 4 && cell.startsWith('-') ? 'negative' : ''} key={cell}>{cell}</span>)}</div>)}</div></section>
-        <p className="north-disclaimer">Illustrative portfolio dashboard · Values are sample data</p>
+        <p className="north-disclaimer">Illustrative portfolio dashboard · Sample data · Image courtesy of Unsplash</p>
       </div>
     </main>
   );
@@ -459,7 +468,7 @@ export const SoraTable = () => {
       <header className="sora-nav"><Link to="/business/sora-table" className="sora-logo">SORA<span>空</span></Link><nav><a href="#story">Story</a><a href="#menu">Menu</a><a href="#visit">Visit</a></nav><a href="#visit">Reserve a table</a></header>
       <section className="sora-hero">
         <div className="sora-hero-text"><span>Seasonal Japanese dining · Bengaluru</span><h1>Quiet food.<br /><em>Bold memory.</em></h1><p>A neighbourhood table shaped by the seasons, charcoal, and the patience to let ingredients speak.</p><a href="#menu">Discover the menu <FiArrowRight /></a></div>
-        <div className="sora-hero-art"><div className="sora-plate"><span /><i /></div><p>秋<br /><span>autumn menu</span></p></div>
+        <div className="sora-hero-art"><div className="sora-plate"><img src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&q=88&w=1600" alt="Colourful seasonal Asian dish" /></div><p>秋<br /><span>autumn menu</span></p></div>
         <div className="sora-side-note">DINNER · TUE—SUN · 6PM—11PM</div>
       </section>
       <section className="sora-marquee"><span>Seasonal produce</span><i>✦</i><span>Open charcoal</span><i>✦</i><span>Local growers</span><i>✦</i><span>Small room</span></section>
@@ -468,7 +477,7 @@ export const SoraTable = () => {
         {[['01','Hokkaido milk bread','miso butter · smoked salt','380'],['02','Charred aubergine','sesame · shiso · black garlic','720'],['03','Market fish','yuzu kosho · daikon · burnt leek','1,480'],['04','Koji duck','plum · turnip · sansho','1,850'], ...(menuOpen ? [['05','Miso caramel','barley · pear · brown butter','620'],['06','Tea service','seasonal wagashi','480']] : [])].map((item) => <article key={item[0]}><span>{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p><strong>₹{item[3]}</strong></article>)}
       </div></section>
       <section className="sora-visit" id="visit"><div><span>Come for dinner</span><h2>Save your seat.</h2><p>Reservations open 30 days ahead. For groups larger than six, write to us directly.</p></div><div className="sora-reserve-card"><label>Choose an evening</label><div><button><span>THU</span><strong>21</strong></button><button className="active"><span>FRI</span><strong>22</strong></button><button><span>SAT</span><strong>23</strong></button></div><label>Available tables</label><select><option>2 guests · 7:30 PM</option><option>2 guests · 9:15 PM</option><option>4 guests · 8:00 PM</option></select><button className="sora-reserve">Continue reservation <FiArrowRight /></button><small>Concept demo—no reservation is created.</small></div></section>
-      <footer className="sora-footer"><span className="sora-logo">SORA<i>空</i></span><p>Concept restaurant website · Bengaluru</p><DemoBack light /></footer>
+      <footer className="sora-footer"><span className="sora-logo">SORA<i>空</i></span><p>Concept restaurant · Image courtesy of Unsplash</p><DemoBack light /></footer>
     </main>
   );
 };
@@ -489,11 +498,11 @@ export const FieldnoteStore = () => {
     <main className="field-site">
       <div className="demo-utility demo-utility--field"><DemoBack /><DemoBadge /></div>
       <header className="field-nav"><button><FiMenu /></button><Link className="field-logo" to="/business/fieldnote">FIELDNOTE<small>objects for unhurried homes</small></Link><button className="field-bag"><FiShoppingBag /><span>{cart}</span></button></header>
-      <section className="field-hero"><div className="field-hero-copy"><span>Collection 04 / Earth & water</span><h1>Made slowly.<br /><em>Kept for years.</em></h1><p>Functional ceramics shaped by hand in small batches, for the rituals that make a home yours.</p><a href="#shop">Shop the collection <FiArrowRight /></a></div><div className="field-hero-object"><span className="field-vessel"/><i>Each form carries<br />the mark of its maker.</i></div><div className="field-edition">04<small>/ 24</small></div></section>
+      <section className="field-hero"><div className="field-hero-copy"><span>Collection 04 / Earth & water</span><h1>Made slowly.<br /><em>Kept for years.</em></h1><p>Functional ceramics shaped by hand in small batches, for the rituals that make a home yours.</p><a href="#shop">Shop the collection <FiArrowRight /></a></div><div className="field-hero-object"><img className="field-hero-photo" src="https://images.unsplash.com/photo-1422246358533-95dcd3d48961?auto=format&fit=crop&q=88&w=1600" alt="Potter shaping clay by hand" /><i>Each form carries<br />the mark of its maker.</i></div><div className="field-edition">04<small>/ 24</small></div></section>
       <section className="field-manifesto"><span>Our approach</span><p>We make fewer things, <em>more carefully.</em> Every object begins with local clay and ends in the hands of one maker.</p><div><span>Hand thrown</span><span>Small batch</span><span>Natural materials</span></div></section>
       <section className="field-shop" id="shop"><div className="field-shop-head"><div><span>The current collection</span><h2>Objects with a quiet presence.</h2></div><div>{['All pieces','Tableware','Drinkware','Objects'].map((item) => <button className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} key={item}>{item}</button>)}</div></div><div className="field-products">{filtered.map((product) => <article key={product.name}><div className={`field-product-art ${product.className}`}><span/><button onClick={() => setCart(cart + 1)} aria-label={`Add ${product.name} to bag`}><FiPlus /></button></div><div><span>{product.category}</span><h3>{product.name}</h3><p>₹{product.price.toLocaleString('en-IN')}</p></div></article>)}</div></section>
       <section className="field-note"><span>Studio notes · 07</span><h2>The beauty of<br />useful things.</h2><p>Good objects do not ask for attention. They earn affection slowly—through morning tea, shared meals, and the small repetitions of a life.</p><a href="#shop">Read the studio journal <FiArrowUpRight /></a></section>
-      <footer className="field-footer"><div className="field-logo">FIELDNOTE<small>objects for unhurried homes</small></div><p>Concept storefront · Products and checkout are illustrative.</p><DemoBack /></footer>
+      <footer className="field-footer"><div className="field-logo">FIELDNOTE<small>objects for unhurried homes</small></div><p>Concept storefront · Image courtesy of Unsplash</p><DemoBack /></footer>
       {cart > 0 && <div className="field-cart-toast"><FiCheck /><span>{cart} {cart === 1 ? 'piece' : 'pieces'} in your bag</span><button onClick={() => setCart(0)}><FiX /></button></div>}
     </main>
   );
