@@ -55,6 +55,13 @@ const Welcome = () => {
             Read my blog
             <FiArrowUpRight size={16} />
           </button>
+          <button
+            onClick={() => navigate('/buiness')}
+            className="inline-flex items-center gap-2 rounded-[12px] border border-[#D9D9D3] bg-transparent px-6 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white dark:border-[#2E2E2E] dark:text-[#EDEDED] dark:hover:bg-[#161616]"
+          >
+            For business
+            <FiArrowUpRight size={16} />
+          </button>
         </div>
 
         <div className="mono mt-14 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11.5px] uppercase tracking-[0.12em] text-[#9B9A93] dark:text-[#6E6E6E]">

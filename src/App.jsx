@@ -13,6 +13,17 @@ import AdminLogin from './components/adminLogin';
 import AdminDashboard from './components/adminDashboard';
 import AdminEditor from './components/adminEditor';
 import { ThemeProvider } from './theme/ThemeContext';
+import {
+  BusinessHub,
+  EmberOak,
+  LuminaCare,
+  NorthlineDashboard,
+  SoraTable,
+  FieldnoteStore,
+  AsterlineStore,
+  BusinessContact,
+  MeherHouse,
+} from './components/business/BusinessShowcase';
 
 const WorldExplorer = React.lazy(() => import('./components/tools/WorldExplorer'));
 const DumbTypes = React.lazy(() => import('./components/tools/DumbTypes'));
@@ -43,6 +54,7 @@ const NavigationLoader = ({ children }) => {
       isFirstMount.current = false;
       return;
     }
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     setLocalLoading(true);
     const t = setTimeout(() => setLocalLoading(false), 350);
     return () => clearTimeout(t);
@@ -89,6 +101,17 @@ const AppRouter = () => {
                 <Route path="/admin/tools/periodic-table" element={<PeriodicTable />} />
                 <Route path="/admin/tools/flag-learn" element={<FlagLearn />} />
                 <Route path="/admin/tools/run-log" element={<RunLog />} />
+                <Route path="/buiness" element={<BusinessHub />} />
+                <Route path="/business" element={<BusinessHub />} />
+                <Route path="/buiness/ember-oak" element={<EmberOak />} />
+                <Route path="/buiness/lumina-care" element={<LuminaCare />} />
+                <Route path="/buiness/northline" element={<NorthlineDashboard />} />
+                <Route path="/buiness/sora-table" element={<SoraTable />} />
+                <Route path="/buiness/fieldnote" element={<FieldnoteStore />} />
+                <Route path="/buiness/asterline" element={<AsterlineStore />} />
+                <Route path="/buiness/meher-house" element={<MeherHouse />} />
+                <Route path="/buiness/contact" element={<BusinessContact />} />
+                <Route path="/business/contact" element={<BusinessContact />} />
                 <Route element={<Layout />}>
                   <Route path="/hero" element={<Hero />} />
                   <Route path="/about" element={<About />} />
