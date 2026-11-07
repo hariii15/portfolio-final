@@ -149,7 +149,7 @@ export const BusinessHub = () => {
           <h1>Turn more visitors into <em>customers.</em></h1>
           <p className="biz-hero-intro">
             Your website should do more than look good. It should help people understand your business, trust you,
-            book a service or place an order—and save you time while doing it.
+            book a service or place an order, and save you time while doing it.
           </p>
           <p className="biz-hero-note">I build the website and the tools behind it. You stay involved, see the progress and approve every important step.</p>
           <div className="biz-hero-actions">
@@ -601,7 +601,7 @@ export const BusinessContact = () => {
             <div className="biz-contact-row"><label>Your name *<input required name="name" value={formData.name} onChange={updateField} placeholder="How should I address you?" /></label><label>Email address *<input required type="email" name="email" value={formData.email} onChange={updateField} placeholder="you@example.com" /></label></div>
             <div className="biz-contact-row"><label>Phone number<input name="phone" value={formData.phone} onChange={updateField} placeholder="Optional" /></label><label>Business name<input name="business" value={formData.business} onChange={updateField} placeholder="Your shop, studio or company" /></label></div>
             <label>What would you like help with? *<select required name="help" value={formData.help} onChange={updateField}><option value="">Choose one</option><option>New business website</option><option>Online booking system</option><option>Online store or ordering</option><option>Dashboard or internal tool</option><option>Improve an existing website</option><option>I am not sure yet</option></select></label>
-            <label>Approximate budget<select name="budget" value={formData.budget} onChange={updateField}><option value="">Choose if you know</option><option>Below ₹25,000</option><option>₹25,000 – ₹50,000</option><option>₹50,000 – ₹1,00,000</option><option>Above ₹1,00,000</option><option>I need guidance</option></select></label>
+            <label>Approximate budget<select name="budget" value={formData.budget} onChange={updateField}><option value="">Choose if you know</option><option>Below ₹3,000</option><option>₹3,000 to ₹5,000</option><option>More than ₹5,000</option><option>I need guidance</option></select></label>
             <label>Tell me about your business and the problem you want to solve *<textarea required rows="6" name="message" value={formData.message} onChange={updateField} placeholder="For example: I run a salon. Customers currently book through WhatsApp and it is difficult to track available times..." /></label>
             {error && <p className="biz-contact-error">{error} <a href="mailto:hariharpradeepjaybal@gmail.com">Send an email</a></p>}
             <button type="submit" disabled={status === 'sending'}>{status === 'sending' ? 'Sending…' : <>Send project enquiry <FiSend /></>}</button>
