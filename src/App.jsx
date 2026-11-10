@@ -44,6 +44,13 @@ const Loader = ({ label }) => (
   </div>
 );
 
+const JayyRoadmapRedirect = () => {
+  useEffect(() => {
+    window.location.replace('/jayy-roadmap.html');
+  }, []);
+  return <Loader label="Opening roadmap" />;
+};
+
 const NavigationLoader = ({ children }) => {
   const location = useLocation();
   const [localLoading, setLocalLoading] = useState(false);
@@ -110,6 +117,7 @@ const AppRouter = () => {
                 <Route path="/business/asterline" element={<AsterlineStore />} />
                 <Route path="/business/meher-house" element={<MeherHouse />} />
                 <Route path="/business/contact" element={<BusinessContact />} />
+                <Route path="/jayy-roadmap" element={<JayyRoadmapRedirect />} />
                 <Route path="/buiness" element={<Navigate to="/business" replace />} />
                 <Route path="/buiness/ember-oak" element={<Navigate to="/business/ember-oak" replace />} />
                 <Route path="/buiness/lumina-care" element={<Navigate to="/business/lumina-care" replace />} />
