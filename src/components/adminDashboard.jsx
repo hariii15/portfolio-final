@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
-import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight, FiFlag, FiTrendingUp } from 'react-icons/fi';
+import { FiLogOut, FiPlus, FiEdit2, FiEdit3, FiTrash2, FiEye, FiCalendar, FiClock, FiFileText, FiGlobe, FiType, FiBox, FiGrid, FiArrowUpRight, FiFlag, FiTrendingUp, FiFilm } from 'react-icons/fi';
 import { Card, SectionLabel, PrimaryButton, SecondaryButton } from './ui';
 import ActivityChart from './activityChart';
 import ActivityInsights from './activityInsights';
@@ -12,6 +12,13 @@ import XpPanel from './xpPanel';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const TOOLS = [
+  {
+    to: '/film',
+    icon: FiFilm,
+    title: 'Shotbook',
+    short: 'Film',
+    sub: 'Stories, scenes, and a plan for every frame',
+  },
   {
     to: '/admin/create',
     icon: FiEdit3,
