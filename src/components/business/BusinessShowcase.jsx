@@ -414,51 +414,7 @@ export const LuminaCare = () => {
   );
 };
 
-const channelRows = [
-  ['Direct', '18,430', '3.8%', '₹12.4L', '+14.2%'],
-  ['Organic search', '14,820', '4.6%', '₹10.8L', '+8.7%'],
-  ['Paid social', '9,240', '2.9%', '₹6.1L', '-2.3%'],
-  ['Partners', '4,810', '6.2%', '₹5.7L', '+21.4%'],
-];
-
-export const NorthlineDashboard = () => {
-  const [range, setRange] = useState('30 days');
-  const multipliers = { '7 days': .28, '30 days': 1, 'Quarter': 2.75 };
-  const multiplier = multipliers[range];
-  const currency = (n) => `₹${(n * multiplier).toFixed(1)}L`;
-
-  return (
-    <main className="north-site">
-      <aside className="north-sidebar">
-        <div className="north-logo"><span>N</span><strong>Northline</strong></div>
-        <nav>
-          <button className="active"><FiGrid />Overview</button><button><FiBarChart2 />Performance</button><button><FiUsers />Customers</button><button><FiZap />Automations</button>
-        </nav>
-        <div className="north-side-bottom"><span>HJ</span><div><strong>Hari J.</strong><small>Administrator</small></div></div>
-      </aside>
-      <div className="north-main">
-        <div className="north-demo-bar"><DemoBack light /><DemoBadge dark /></div>
-        <header className="north-header"><div><span>Workspace / Overview</span><h1>Good morning, Hari.</h1></div><div><button><FiSearch /></button><button className="north-date"><FiCalendar /> Nov 01 — Nov 30</button></div></header>
-        <section className="north-toolbar"><div><span className="north-live"><i /> Live data</span><p>Last synced 2 minutes ago</p></div><div className="north-range">{Object.keys(multipliers).map((item) => <button className={range === item ? 'active' : ''} onClick={() => setRange(item)} key={item}>{item}</button>)}</div></section>
-        <section className="north-metrics">
-          <article><div><span>Net revenue</span><small>↗ 12.4%</small></div><strong>{currency(35.2)}</strong><p>vs. previous period</p></article>
-          <article><div><span>New customers</span><small>↗ 8.1%</small></div><strong>{Math.round(1284 * multiplier).toLocaleString()}</strong><p>68% first-time buyers</p></article>
-          <article><div><span>Conversion rate</span><small>↗ 0.6%</small></div><strong>4.18%</strong><p>Across all channels</p></article>
-          <article><div><span>Avg. order value</span><small className="flat">→ 0.2%</small></div><strong>₹2,742</strong><p>Target ₹2,800</p></article>
-        </section>
-        <section className="north-panels">
-          <article className="north-revenue-panel">
-            <div className="north-panel-head"><div><span>Revenue performance</span><strong>{currency(35.2)}</strong></div><p><i />Revenue <i />Target</p></div>
-            <div className="north-chart"><div className="north-y"><span>12L</span><span>8L</span><span>4L</span><span>0</span></div><div className="north-chart-area"><span className="gridline g1"/><span className="gridline g2"/><span className="gridline g3"/><svg viewBox="0 0 700 210" preserveAspectRatio="none"><defs><linearGradient id="northFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#C8FF45" stopOpacity=".28"/><stop offset="1" stopColor="#C8FF45" stopOpacity="0"/></linearGradient></defs><path d="M0 190 C55 178 80 145 130 152 S210 120 260 134 S345 90 390 106 S475 55 520 75 S610 32 700 20 L700 210 L0 210Z" fill="url(#northFill)"/><path d="M0 190 C55 178 80 145 130 152 S210 120 260 134 S345 90 390 106 S475 55 520 75 S610 32 700 20" fill="none" stroke="#C8FF45" strokeWidth="3"/><path d="M0 165 C100 145 180 150 270 115 S440 100 520 60 S620 52 700 44" fill="none" stroke="#53605c" strokeDasharray="7 7" strokeWidth="2"/></svg><div className="north-x"><span>Nov 01</span><span>Nov 08</span><span>Nov 15</span><span>Nov 22</span><span>Nov 30</span></div></div></div>
-          </article>
-          <article className="north-goal-panel"><div className="north-panel-head"><span>Monthly target</span><FiArrowUpRight /></div><div className="north-context-image"><img src="https://images.unsplash.com/photo-1742836531271-98fd8151d257?auto=format&fit=crop&q=84&w=1200" alt="Small business owner using a tablet at the checkout" /><span>Store operations</span></div><div className="north-goal"><span>78<small>%</small></span><div className="north-goal-ring" /></div><strong>{currency(35.2)} <small>of {currency(45.0)}</small></strong><p>At the current pace, you are projected to reach 96% of target.</p></article>
-        </section>
-        <section className="north-table-panel"><div className="north-panel-head"><div><span>Channel performance</span><p>Where revenue is coming from</p></div><button>View report <FiArrowUpRight /></button></div><div className="north-table"><div className="north-tr north-th"><span>Channel</span><span>Visitors</span><span>Conversion</span><span>Revenue</span><span>Change</span></div>{channelRows.map((row) => <div className="north-tr" key={row[0]}>{row.map((cell, i) => <span className={i === 4 && cell.startsWith('-') ? 'negative' : ''} key={cell}>{cell}</span>)}</div>)}</div></section>
-        <p className="north-disclaimer">Illustrative portfolio dashboard · Sample data · Image courtesy of Unsplash</p>
-      </div>
-    </main>
-  );
-};
+export { default as NorthlineDashboard } from './NorthlineDashboard';
 
 export const SoraTable = () => {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -1,0 +1,774 @@
+.north-site button {
+  cursor: pointer;
+}
+.north-site button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.north-site button:focus-visible,
+.north-site a:focus-visible,
+.north-site input:focus-visible,
+.north-site select:focus-visible {
+  outline: 2px solid #c8ff45;
+  outline-offset: 3px;
+}
+.north-site select,
+.north-site input {
+  min-height: 42px;
+  border: 1px solid #354039;
+  border-radius: 5px;
+  background: #1a211d;
+  color: #dfe8e1;
+  padding: 9px 11px;
+  font: inherit;
+  font-size: 12px;
+  color-scheme: dark;
+  max-width: 100%;
+}
+.north-site .north-date {
+  height: 38px;
+  border: 1px solid #354039;
+  background: #1a211d;
+  color: #b9c3bd;
+  font-size: 11px;
+}
+.north-header .north-intro {
+  color: #8f9d93;
+  font-size: 12px;
+  margin: 9px 0 0;
+}
+.north-mobile-tabs {
+  display: none;
+}
+.north-main .north-view {
+  min-width: 0;
+  animation: north-enter 0.18s ease-out;
+}
+.north-period-chart {
+  height: 270px;
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  padding: 30px 22px 20px;
+}
+.north-period-chart > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.north-period-chart > div > span {
+  color: #cdd7cf;
+  font-size: 10px;
+}
+.north-bar-track {
+  height: 170px;
+  width: 100%;
+  max-width: 70px;
+  display: flex;
+  align-items: flex-end;
+  background: #202a23;
+  border-bottom: 1px solid #52604f;
+}
+.north-bar-track i {
+  display: block;
+  width: 100%;
+  background: #c8ff45;
+  min-height: 3px;
+  transition: height 0.2s;
+}
+.north-period-chart small {
+  color: #9aa79d;
+  text-align: center;
+  font-size: 9px;
+}
+.north-table {
+  overflow-x: auto;
+}
+.north-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 580px;
+  text-align: left;
+}
+.north-data-table th {
+  color: #9aa79d;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.north-data-table th,
+.north-data-table td {
+  padding: 16px 18px;
+  border-top: 1px solid #2c3630;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.north-data-table :is(th, td):not(:first-child) {
+  text-align: right;
+}
+.north-data-table td {
+  color: #cbd6ce;
+}
+.north-data-table td.north-gain {
+  color: #c8ff45;
+}
+.north-data-table td.north-loss,
+.north-metrics .north-loss {
+  color: #ff9b86;
+}
+.north-panel-head > button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  flex-shrink: 0;
+}
+.north-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 5px 0 24px;
+}
+.north-section-heading h2 {
+  font-size: 22px;
+  letter-spacing: -0.04em;
+  margin: 0 0 8px;
+}
+.north-section-heading p {
+  color: #9aa79d;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.7;
+}
+.north-control {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #9aa79d;
+  font-size: 10px;
+  min-width: 0;
+}
+.north-control select {
+  min-width: 145px;
+}
+.north-breakdown {
+  padding-bottom: 15px;
+}
+.north-channel-bar {
+  padding: 17px 18px 0;
+}
+.north-channel-bar > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+}
+.north-channel-bar strong {
+  font-weight: 500;
+}
+.north-channel-bar meter {
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin: 10px 0;
+  background: #303b33;
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+}
+.north-channel-bar meter::-webkit-meter-bar {
+  background: #303b33;
+  border: 0;
+  border-radius: 0;
+}
+.north-channel-bar meter::-webkit-meter-optimum-value {
+  background: #c8ff45;
+}
+.north-channel-bar meter::-moz-meter-bar {
+  background: #c8ff45;
+}
+.north-channel-bar small {
+  color: #9aa79d;
+  font-size: 10px;
+}
+.north-insight {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  border: 1px solid #354532;
+  background: #1d271c;
+  padding: 17px;
+  margin-top: 18px;
+}
+.north-insight > svg {
+  color: #c8ff45;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.north-insight p {
+  font-size: 12px;
+  color: #c2d0bf;
+  line-height: 1.8;
+  margin: 0;
+}
+.north-directory-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px;
+}
+.north-search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 180px;
+}
+.north-search > svg {
+  color: #8c9b91;
+  flex-shrink: 0;
+}
+.north-search input {
+  width: 100%;
+  font-size: 14px;
+}
+.north-customer-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #e1ebe3;
+  text-align: left;
+  min-height: 42px;
+}
+.north-customer-link small {
+  display: block;
+  color: #91a195;
+  font-size: 10px;
+  margin-top: 5px;
+}
+.north-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #314334;
+  color: #cfdfc7;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.north-segment {
+  display: inline-block;
+  padding: 5px 8px;
+  border: 1px solid #3e4c42;
+  color: #b4c5b8;
+  border-radius: 3px;
+  font-size: 10px;
+}
+.north-segment-vip {
+  color: #c8ff45;
+  border-color: #576735;
+}
+.north-segment-inactive {
+  color: #a8a59a;
+  border-color: #4d4b40;
+}
+.north-result-count {
+  padding: 14px 18px;
+  color: #9aa79d;
+  font-size: 11px;
+  border-top: 1px solid #2c3630;
+  margin: 0;
+}
+.north-empty {
+  padding: 36px 20px;
+  text-align: center;
+  color: #9aa79d;
+  font-size: 12px;
+}
+.north-empty h3 {
+  color: #dfe8e1;
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+.north-empty p {
+  margin: 0;
+  line-height: 1.7;
+}
+.north-empty button {
+  margin-top: 16px;
+  padding: 9px 13px;
+  background: none;
+  color: #c8ff45;
+  border: 1px solid #526446;
+}
+.north-action,
+.north-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid #c8ff45;
+  background: #c8ff45;
+  color: #17200f;
+  padding: 9px 13px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.north-secondary {
+  background: transparent;
+  color: #c4d1c6;
+  border-color: #405044;
+}
+.north-new-rule {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  border: 1px solid #3e4c37;
+  background: #1c251e;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.north-new-rule .north-control {
+  flex: 1;
+  min-width: 150px;
+}
+.north-rules {
+  display: grid;
+  gap: 14px;
+}
+.north-rule {
+  border: 1px solid #313b36;
+  background: #151b18;
+  padding: 22px;
+}
+.north-rule-heading {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.north-rule-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #3d4d34;
+  color: #c8ff45;
+  flex-shrink: 0;
+}
+.north-rule-heading > div {
+  flex: 1;
+  min-width: 0;
+}
+.north-rule-heading h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 7px;
+  overflow-wrap: anywhere;
+}
+.north-rule-heading p {
+  color: #99a89e;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 0;
+}
+.north-switch {
+  padding: 3px;
+  width: 44px;
+  height: 25px;
+  flex-shrink: 0;
+  background: #354139;
+  border: 1px solid #526052;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+}
+.north-switch i {
+  width: 17px;
+  height: 17px;
+  background: #adb9ad;
+  display: block;
+  border-radius: 50%;
+}
+.north-switch.on {
+  background: #c8ff45;
+  border-color: #c8ff45;
+  justify-content: flex-end;
+}
+.north-switch.on i {
+  background: #1b2814;
+}
+.north-rule-flow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #303a33;
+  padding: 23px 0 20px;
+  margin-bottom: 13px;
+  color: #c3d0c5;
+  font-size: 11px;
+}
+.north-rule-flow span {
+  flex: 1;
+}
+.north-rule-flow small {
+  display: block;
+  color: #8a9a90;
+  font: 9px monospace;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.north-rule-flow > svg {
+  color: #798d76;
+  flex-shrink: 0;
+}
+.north-rule-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.north-rule-actions > span {
+  color: #9aa79d;
+  font-size: 10px;
+  margin-right: auto;
+}
+.north-rule-actions > button {
+  min-height: 38px;
+  border: 0;
+  background: none;
+  color: #c8ff45;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.north-rule-config {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #303a33;
+}
+.north-rule-config .north-control {
+  flex: 1;
+}
+.north-log-entry {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 17px 18px;
+  border-bottom: 1px solid #2e3c31;
+}
+.north-log-entry > svg {
+  color: #c8ff45;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.north-log-entry > div {
+  flex: 1;
+}
+.north-log-entry strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.north-log-entry p {
+  color: #9aa79d;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 7px 0 0;
+}
+.north-log-entry time {
+  font: 10px monospace;
+  color: #8a9a90;
+}
+.north-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 16px;
+  border: 1px solid #4e643b;
+  margin-top: 18px;
+  background: #202c1b;
+}
+.north-notice p {
+  font-size: 12px;
+  color: #ceddc8;
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+.north-notice button,
+.north-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  color: #b8cbb8;
+  border: 1px solid #40503d;
+  flex-shrink: 0;
+}
+.north-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #060c08b5;
+  z-index: 10000;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.north-customer-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: #17201a;
+  border: 1px solid #455742;
+  padding: 30px;
+  color: #e9f0e9;
+  box-shadow: 0 20px 80px #0005;
+  outline: 0;
+}
+.north-dialog-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+}
+.north-customer-dialog > .north-avatar {
+  width: 55px;
+  height: 55px;
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+.north-eyebrow {
+  font: 9px monospace;
+  letter-spacing: 0.1em;
+  color: #a7ba9e;
+}
+.north-customer-dialog h2 {
+  font-size: 27px;
+  margin: 12px 0 8px;
+}
+.north-customer-dialog > p:not(.north-eyebrow) {
+  color: #99b09f;
+  font-size: 12px;
+}
+.north-customer-dialog dl {
+  margin: 25px 0;
+}
+.north-customer-dialog dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid #344737;
+  font-size: 12px;
+}
+.north-customer-dialog dt {
+  color: #96a98f;
+}
+.north-customer-dialog dd {
+  margin: 0;
+  text-align: right;
+}
+.north-customer-dialog > small {
+  color: #a1b09c;
+  font-size: 10px;
+}
+.north-disclaimer {
+  font-size: 10px;
+  line-height: 1.8;
+  padding-top: 20px;
+  color: #8a9a90;
+}
+@keyframes north-enter {
+  from {
+    opacity: 0.6;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 900px) {
+  .north-site .north-sidebar {
+    display: none;
+  }
+  .north-mobile-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #101512;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    border-bottom: 1px solid #354039;
+    padding: 12px 0;
+    scrollbar-width: thin;
+  }
+  .north-mobile-tabs button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 1;
+    min-width: max-content;
+    min-height: 44px;
+    padding: 8px 13px;
+    background: none;
+    border: 1px solid transparent;
+    color: #9eb0a2;
+    font-size: 12px;
+  }
+  .north-mobile-tabs button.active {
+    background: #29382a;
+    color: #d9f3c5;
+    border-color: #4b603c;
+  }
+  .north-site .north-toolbar > div:first-child {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .north-site input,
+  .north-site select {
+    font-size: 16px;
+  }
+  .north-section-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .north-section-heading h2 {
+    font-size: 21px;
+  }
+  .north-directory-controls .north-search {
+    flex-basis: 100%;
+  }
+  .north-control {
+    flex: 1;
+  }
+  .north-control select {
+    width: 100%;
+    min-width: 0;
+  }
+  .north-rule-config {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 600px) {
+  .north-mobile-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
+    gap: 3px;
+  }
+  .north-period-chart {
+    gap: 8px;
+    padding-inline: 12px;
+  }
+  .north-period-chart > div > span,
+  .north-period-chart small {
+    font-size: 8px;
+  }
+  .north-rule {
+    padding: 17px 14px;
+  }
+  .north-rule-heading {
+    gap: 10px;
+  }
+  .north-rule-heading h3 {
+    font-size: 14px;
+  }
+  .north-rule-icon {
+    width: 28px;
+    height: 30px;
+  }
+  .north-rule-flow {
+    gap: 12px;
+    font-size: 10px;
+  }
+  .north-rule-actions {
+    gap: 12px;
+  }
+  .north-rule-actions > span {
+    flex-basis: 100%;
+  }
+  .north-header .north-intro {
+    max-width: 320px;
+    line-height: 1.7;
+  }
+  .north-customer-dialog {
+    padding: 24px 20px;
+  }
+  .north-mobile-tabs button {
+    font-size: 11px;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+    padding-inline: 3px;
+  }
+  .north-site .north-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .north-site .north-metrics article {
+    padding: 15px 12px;
+    min-width: 0;
+    border-bottom: 1px solid #313b36;
+    border-right: 1px solid #313b36;
+  }
+  .north-site .north-metrics article:nth-child(2n) {
+    border-right: 0;
+  }
+  .north-site .north-metrics article > div {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .north-site .north-metrics article > strong {
+    font-size: 22px;
+  }
+  .north-site .north-metrics article p {
+    font-size: 9px;
+    line-height: 1.7;
+  }
+  .north-site .north-metrics article span {
+    font-size: 10px;
+  }
+  .north-site .north-toolbar p {
+    font-size: 10px;
+  }
+  .north-panel-head p {
+    max-width: 260px;
+    line-height: 1.7;
+  }
+  .north-new-rule {
+    padding: 15px;
+  }
+  .north-rule-config .north-control {
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .north-view,
+  .north-bar-track i {
+    animation: none !important;
+    transition: none !important;
+  }
+}
