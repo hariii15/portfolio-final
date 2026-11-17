@@ -612,21 +612,142 @@ export const newProject = (values) => ({
   story: {},
   sequences: [],
   scenes: [],
+  shots: [],
+  shotOrder: [],
   checklist: {},
   equipment: [],
   templates: [],
   ...values,
 });
-export const allShots = (project) =>
-  project.scenes.flatMap((scene, sceneIndex) =>
-    scene.shots.map((shot, index) => ({
+export const allShots = (project) => {
+  const records = [
+    ...(project.shots || []).map((shot, index) => ({
       ...shot,
-      scene,
-      sceneIndex,
+      scene: null,
+      sceneIndex: -1,
       index,
-      number: `${sceneIndex + 1}.${index + 1}`,
     })),
+    ...project.scenes.flatMap((scene, sceneIndex) =>
+      scene.shots.map((shot, index) => ({
+        ...shot,
+        scene,
+        sceneIndex,
+        index,
+      })),
+    ),
+  ];
+  const ranks = new Map(
+    (project.shotOrder || []).map((id, index) => [id, index]),
   );
+  records.sort(
+    (a, b) => (ranks.get(a.id) ?? Infinity) - (ranks.get(b.id) ?? Infinity),
+  );
+  return records.map((shot, index) => ({
+    ...shot,
+    number: String(index + 1).padStart(2, "0"),
+  }));
+};
+
+// Existing films keep their nested scene shots; standalone shots live on the project.
+export const findShot = (project, id) =>
+  allShots(project).find((shot) => shot.id === id);
+export const shotRecord = (shot) => {
+  const {
+    scene: _scene,
+    sceneIndex: _si,
+    index: _index,
+    number: _number,
+    ...record
+  } = shot;
+  return record;
+};
+export function addShot(project, shot, sceneId = "") {
+  const order = allShots(project).map((s) => s.id);
+  const scene = project.scenes.find((s) => s.id === sceneId);
+  if (scene) scene.shots.push(shotRecord(shot));
+  else {
+    project.shots ||= [];
+    project.shots.push(shotRecord(shot));
+  }
+  project.shotOrder = [...order, shot.id];
+  return project;
+}
+export function updateShot(project, id, patch) {
+  const shot = findShot(project, id);
+  if (!shot) return project;
+  const source = shot.scene
+    ? project.scenes.find((s) => s.id === shot.scene.id).shots
+    : project.shots;
+  source[shot.index] = { ...shotRecord(source[shot.index]), ...patch };
+  return project;
+}
+export function assignScene(project, shotIds, sceneId = "") {
+  const ids = new Set(shotIds),
+    order = allShots(project).map((s) => s.id);
+  const moving = allShots(project)
+    .filter((s) => ids.has(s.id))
+    .map(shotRecord);
+  project.shots = (project.shots || []).filter((s) => !ids.has(s.id));
+  project.scenes.forEach((scene) => {
+    scene.shots = scene.shots.filter((s) => !ids.has(s.id));
+  });
+  const target = project.scenes.find((s) => s.id === sceneId);
+  if (target) target.shots.push(...moving);
+  else project.shots.push(...moving);
+  project.shotOrder = order;
+  return project;
+}
+export function deleteShot(project, id) {
+  project.shots = (project.shots || []).filter((s) => s.id !== id);
+  project.scenes.forEach((scene) => {
+    scene.shots = scene.shots.filter((s) => s.id !== id);
+  });
+  project.shotOrder = (project.shotOrder || []).filter((value) => value !== id);
+  return project;
+}
+export function setShotPosition(project, id, position) {
+  const order = allShots(project).map((s) => s.id),
+    from = order.indexOf(id);
+  if (from < 0) return project;
+  project.shotOrder = reorder(
+    order,
+    from,
+    Math.max(0, Math.min(order.length - 1, position)),
+  );
+  return project;
+}
+export const SCENE_COVERAGE = {
+  Angles: [
+    "Eye level",
+    "Low angle",
+    "High angle",
+    "Overhead",
+    "Over the shoulder",
+    "Point of view",
+    "Reverse angle",
+  ],
+  Frames: [
+    "Establishing wide",
+    "Full shot",
+    "Medium shot",
+    "Close-up",
+    "Extreme close-up",
+    "Two-shot",
+    "Insert / detail",
+    "Cutaway",
+  ],
+  "Shot list": [
+    "Opening / establishing shot",
+    "Character entrance",
+    "Main action",
+    "Reaction shot",
+    "Insert / detail",
+    "Cutaway",
+    "Ending / transition",
+    "Ambient sound",
+    "Room tone",
+  ],
+};
 export const coverage = (scene) => {
   const shots = scene.shots || [];
   return [

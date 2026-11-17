@@ -11,6 +11,27 @@ fields live in expandable sections. Sequence membership is explicit; scenes
 and shots are numbered from their current order. Arrow controls provide a
 touch and keyboard alternative to dragging.
 
+The library is a dashboard with totals and every stored film. Inside a film,
+a persistent sidebar opens Overview, Gallery, Shot list, Scenes, Story,
+Shoot day, Checklist, Equipment, and Settings. On phones, quick navigation
+and a section selector provide access to the same pages. Creating and editing
+take place in the workspace; normal workflows do not open modal dialogs.
+
+Shots can be created without a scene. Assign one shot through its scene
+dropdown, or select several in the gallery and group them together. Filter
+by scene (including Unassigned), status, or search. Scene filters are included
+in the gallery URL for bookmarking. Shooting order is independent of scene
+membership and can be changed through numbers, arrows, or dragging.
+
+Scene cards provide small Angles, Frames, and Shot list checklists. The Shot
+list is the actual assigned shots: checking one marks it filmed everywhere.
+The gallery also has one-tap filmed controls. The shot workspace includes
+take notes and Filmed / next shot. Removing a scene keeps its shots unassigned.
+
+Legacy records keep their nested `scene.shots` arrays. Standalone shots are
+stored in `project.shots`; `project.shotOrder` tracks the global shooting order.
+Older documents remain readable without a destructive migration.
+
 The gallery starts empty. Production never inserts the sample projects used
 for local visual testing. Covers use the original 24 SVG studies in
 `ShotArt.jsx`, with four palettes. Shot references can also use compressed
@@ -47,5 +68,6 @@ option. Daily call sheets use the date selected in Shoot day.
 ## Verification
 
 Frontend: `npm run build` and ESLint scoped to this directory's JS/JSX.
+Model regression checks: `node --test scripts/test-film-model.mjs`.
 Backend: `npm run test:film`; use `npm run test:film -- --firestore` for an
 integration test with a disposable, automatically cleaned-up film record.

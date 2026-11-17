@@ -40,9 +40,9 @@ export function exportFilm(project, format) {
       ["Shot", "Scene", "Location", "Date", ...keys.slice(1)],
       ...shots.map((s) => [
         s.number,
-        s.scene.title,
-        s.scene.location,
-        s.scene.date,
+        s.scene?.title || "Unassigned",
+        s.scene?.location || s.location,
+        s.scene?.date || s.shootDate,
         ...keys.slice(1).map((k) => s[k]),
       ]),
     ];
@@ -78,6 +78,13 @@ export function exportFilm(project, format) {
         .filter(([k]) => !["id", "title"].includes(k))
         .map(([k, v]) => `- ${k}: ${v}`),
     );
+  lines.push(
+    "\n## Shooting order",
+    ...shots.map(
+      (shot) =>
+        `- ${shot.number}. ${shot.title} | ${shot.scene?.title || "Unassigned"} | ${shot.status}`,
+    ),
+  );
   for (const [i, scene] of project.scenes.entries()) {
     lines.push(
       `\n## Scene ${i + 1}: ${scene.title}`,
@@ -99,6 +106,16 @@ export function exportFilm(project, format) {
       );
   }
   lines.push(
+    "\n## Unassigned shots",
+    ...(project.shots || []).flatMap((shot) => [
+      `\n### ${shot.title}`,
+      ...Object.entries(shot)
+        .filter(
+          ([key, value]) =>
+            !["id", "referenceImage", "sketch"].includes(key) && value,
+        )
+        .map(([key, value]) => `- ${key}: ${value}`),
+    ]),
     "\n## Equipment",
     ...(project.equipment || []).map(
       (e) => `- [${e.packed ? "x" : " "}] ${e.name}`,
