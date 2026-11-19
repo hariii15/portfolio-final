@@ -32,6 +32,7 @@ const PeriodicTable = React.lazy(() => import('./components/tools/PeriodicTable'
 const FlagLearn = React.lazy(() => import('./components/tools/FlagLearn'));
 const RunLog = React.lazy(() => import('./components/tools/RunLog'));
 const Shotbook = React.lazy(() => import('./components/film/Shotbook'));
+const SharedFilmGallery = React.lazy(() => import('./components/film/SharedFilmGallery'));
 
 // Flat, static loader — no glow, no blur, no gradient.
 const Loader = ({ label }) => (
@@ -110,6 +111,7 @@ const AppRouter = () => {
                 <Route path="/admin/tools/flag-learn" element={<FlagLearn />} />
                 <Route path="/admin/tools/run-log" element={<RunLog />} />
                 <Route path="/film" element={<Shotbook />} />
+                <Route path="/film/share/:shareId" element={<SharedFilmGallery />} />
                 <Route path="/business" element={<BusinessHub />} />
                 <Route path="/business/ember-oak" element={<EmberOak />} />
                 <Route path="/business/lumina-care" element={<LuminaCare />} />

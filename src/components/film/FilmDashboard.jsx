@@ -29,6 +29,7 @@ import {
 } from "react-icons/fi";
 import { auth } from "../../firebase";
 import ShotArt from "./ShotArt";
+import FilmShareExport from './FilmShareExport';
 import {
   ART,
   ANGLES,
@@ -1282,6 +1283,7 @@ export function FilmWorkspace({ id, onBack }) {
             </Button>
           </div>
         )}
+        {['Overview', 'Gallery', 'Settings'].includes(view) && <FilmShareExport id={id} saved={state === 'saved'} />}
         {recovery && (
           <div className="sb-recovery">
             <p>A device draft from your last visit is available.</p>
