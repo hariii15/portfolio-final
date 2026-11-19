@@ -1921,6 +1921,22 @@ export function FilmWorkspace({ id, onBack }) {
         )}
         {view === "Story" && (
           <section className="fd-story">
+            {p.sourceDocument?.mimeType === "application/pdf" &&
+              /^[A-Za-z0-9+/=]+$/.test(p.sourceDocument.base64 || "") && (
+                <div className="fd-editor-panel">
+                  <h2>Original screenplay</h2>
+                  <p className="sb-muted">Keep the supplied story and screenplay within reach.</p>
+                  <Button quiet onClick={() => {
+                    const bytes = Uint8Array.from(atob(p.sourceDocument.base64), (c) => c.charCodeAt(0));
+                    const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+                    const link = window.document.createElement("a");
+                    link.href = url;
+                    link.download = p.sourceDocument.name || "screenplay.pdf";
+                    link.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 60000);
+                  }}><FiDownload /> Download screenplay PDF</Button>
+                </div>
+              )}
             <StoryEditor
               value={p.story.freewriting || ""}
               onChange={(html) =>
