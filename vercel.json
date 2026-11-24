@@ -1,5 +1,6 @@
 {
   "routes": [
+    {"src": "/lokitha-roadmap", "dest": "/lokitha-roadmap.html"},
     {
       "src": "/jayy-roadmap",
       "dest": "/jayy-roadmap.html"

@@ -48,7 +48,7 @@ const Loader = ({ label }) => (
 
 const JayyRoadmapRedirect = () => {
   useEffect(() => {
-    window.location.replace('/jayy-roadmap.html');
+    window.location.replace(`${window.location.pathname}.html`);
   }, []);
   return <Loader label="Opening roadmap" />;
 };
@@ -122,6 +122,7 @@ const AppRouter = () => {
                 <Route path="/business/meher-house" element={<MeherHouse />} />
                 <Route path="/business/contact" element={<BusinessContact />} />
                 <Route path="/jayy-roadmap" element={<JayyRoadmapRedirect />} />
+                <Route path="/lokitha-roadmap" element={<JayyRoadmapRedirect />} />
                 <Route path="/buiness" element={<Navigate to="/business" replace />} />
                 <Route path="/buiness/ember-oak" element={<Navigate to="/business/ember-oak" replace />} />
                 <Route path="/buiness/lumina-care" element={<Navigate to="/business/lumina-care" replace />} />
